@@ -56,15 +56,55 @@
 		7B241A1227AC1D8800F07F52 /* WeatherForecast */ = {
 			isa = PBXGroup;
 			children = (
+				7B241A2727AC1DA000F07F52 /* ViewControllers */,
+				7B241A2927AC1DC700F07F52 /* Models */,
+				7B241A2827AC1DB300F07F52 /* Services */,
+				7B241A2A27AC1DFE00F07F52 /* SupportingFiles */,
+				7B241A2B27AC1E2800F07F52 /* Resources */,
+			);
+			path = WeatherForecast;
+			sourceTree = "<group>";
+		};
+		7B241A2727AC1DA000F07F52 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				7B241A1727AC1D8800F07F52 /* ViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		7B241A2827AC1DB300F07F52 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		7B241A2927AC1DC700F07F52 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		7B241A2A27AC1DFE00F07F52 /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
 				7B241A1327AC1D8800F07F52 /* AppDelegate.swift */,
 				7B241A1527AC1D8800F07F52 /* SceneDelegate.swift */,
-				7B241A1727AC1D8800F07F52 /* ViewController.swift */,
 				7B241A1927AC1D8800F07F52 /* Main.storyboard */,
-				7B241A1C27AC1D8B00F07F52 /* Assets.xcassets */,
 				7B241A1E27AC1D8B00F07F52 /* LaunchScreen.storyboard */,
 				7B241A2127AC1D8B00F07F52 /* Info.plist */,
 			);
-			path = WeatherForecast;
+			path = SupportingFiles;
+			sourceTree = "<group>";
+		};
+		7B241A2B27AC1E2800F07F52 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7B241A1C27AC1D8B00F07F52 /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -291,7 +331,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J64K7CHM53;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = WeatherForecast/Info.plist;
+				INFOPLIST_FILE = WeatherForecast/SupportingFiles/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -306,7 +346,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -319,7 +359,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J64K7CHM53;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = WeatherForecast/Info.plist;
+				INFOPLIST_FILE = WeatherForecast/SupportingFiles/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -334,7 +374,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
