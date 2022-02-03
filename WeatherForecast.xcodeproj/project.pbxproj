@@ -59,6 +59,7 @@
 				7B241A2727AC1DA000F07F52 /* ViewControllers */,
 				7B241A2927AC1DC700F07F52 /* Models */,
 				7B241A2827AC1DB300F07F52 /* Services */,
+				7B241A2C27AC1F2B00F07F52 /* Storyboards */,
 				7B241A2A27AC1DFE00F07F52 /* SupportingFiles */,
 				7B241A2B27AC1E2800F07F52 /* Resources */,
 			);
@@ -92,8 +93,6 @@
 			children = (
 				7B241A1327AC1D8800F07F52 /* AppDelegate.swift */,
 				7B241A1527AC1D8800F07F52 /* SceneDelegate.swift */,
-				7B241A1927AC1D8800F07F52 /* Main.storyboard */,
-				7B241A1E27AC1D8B00F07F52 /* LaunchScreen.storyboard */,
 				7B241A2127AC1D8B00F07F52 /* Info.plist */,
 			);
 			path = SupportingFiles;
@@ -105,6 +104,15 @@
 				7B241A1C27AC1D8B00F07F52 /* Assets.xcassets */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		7B241A2C27AC1F2B00F07F52 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				7B241A1927AC1D8800F07F52 /* Main.storyboard */,
+				7B241A1E27AC1D8B00F07F52 /* LaunchScreen.storyboard */,
+			);
+			path = Storyboards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
