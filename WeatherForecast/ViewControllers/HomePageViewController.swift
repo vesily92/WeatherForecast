@@ -67,11 +67,11 @@ class HomePageViewController: UIViewController {
         
         view.backgroundColor = .white
         
-        setUpSubviews(containerStackView)
+        setupSubviews(containerStackView)
         setConstraints()
     }
     
-    private func setUpSubviews(_ subviews: UIView...) {
+    private func setupSubviews(_ subviews: UIView...) {
         subviews.forEach { subview in
             view.addSubview(subview)
         }
