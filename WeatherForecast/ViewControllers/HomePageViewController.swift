@@ -36,6 +36,12 @@ class HomePageViewController: UIViewController {
         label.text = "-32 °C"
         return label
     }()
+    private lazy var backgroundImage: UIImageView = {
+        let image = UIImageView()
+        image.image = UIImage(systemName: "house")
+        image.contentMode = .scaleAspectFill
+        return image
+    }()
     
     private lazy var temperatureStackView: UIStackView = {
         let stack = UIStackView()
@@ -67,7 +73,7 @@ class HomePageViewController: UIViewController {
         
         view.backgroundColor = .white
         
-        setupSubviews(containerStackView)
+        setupSubviews(backgroundImage, containerStackView)
         setConstraints()
     }
     
@@ -79,6 +85,11 @@ class HomePageViewController: UIViewController {
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
+            backgroundImage.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundImage.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            backgroundImage.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
             containerStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
             containerStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
