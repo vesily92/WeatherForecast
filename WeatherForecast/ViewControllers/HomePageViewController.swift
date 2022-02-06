@@ -38,8 +38,10 @@ class HomePageViewController: UIViewController {
     }()
     private lazy var backgroundImage: UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(systemName: "house")
-        image.contentMode = .scaleAspectFill
+        image.image = UIImage(systemName: "eye.slash")
+        image.contentMode = .scaleAspectFit
+        image.tintColor = .orange
+        image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
     
