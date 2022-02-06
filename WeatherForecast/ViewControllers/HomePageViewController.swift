@@ -17,7 +17,7 @@ class HomePageViewController: UIViewController {
     private lazy var temperatureLabel: UILabel = {
         let label = UILabel()
         label.text = "-29 °C"
-        label.font = .boldSystemFont(ofSize: 50)
+        label.font = .boldSystemFont(ofSize: 30)
         return label
     }()
     private lazy var weatherIconImage: UIImageView = {
@@ -33,7 +33,7 @@ class HomePageViewController: UIViewController {
     }()
     private lazy var feelsLikeTemperatureLabel: UILabel = {
         let label = UILabel()
-        label.text = "-32 °C"
+        label.text = "Feels like: -32 °C"
         return label
     }()
     private lazy var backgroundImage: UIImageView = {
