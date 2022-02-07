@@ -11,33 +11,31 @@ class HomePageViewController: UIViewController {
     
     private lazy var cityNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Saint-Petersburg"
+        label.font = .systemFont(ofSize: 30)
         return label
     }()
     
     private lazy var temperatureLabel: UILabel = {
         let label = UILabel()
-        label.text = "-29 °C"
-        label.font = .boldSystemFont(ofSize: 30)
+        label.font = .boldSystemFont(ofSize: 40)
         return label
     }()
     
     private lazy var weatherIconImage: UIImageView = {
         let image = UIImageView()
-        image.image = UIImage(systemName: "cloud.fill")
         image.contentMode = .scaleAspectFit
         return image
     }()
     
     private lazy var weatherDescriptionLabel: UILabel = {
         let label = UILabel()
-        label.text = "Cloudy"
+        label.font = .systemFont(ofSize: 14)
         return label
     }()
     
     private lazy var feelsLikeTemperatureLabel: UILabel = {
         let label = UILabel()
-        label.text = "Feels like: -32 °C"
+        label.font = .systemFont(ofSize: 14)
         return label
     }()
     
@@ -81,6 +79,13 @@ class HomePageViewController: UIViewController {
         
         setupSubviews(backgroundImage, containerStackView)
         setConstraints()
+        
+        NetworkManager.shared.fetchWeather(forRequest: .cityName(city: "Moscow"))
+        
+        NetworkManager.shared.onCompletion = { [weak self] currentWeather in
+            guard let self = self else { return }
+            self.updateUI(with: currentWeather)
+        }
     }
     
     private func setupSubviews(_ subviews: UIView...) {
@@ -99,6 +104,16 @@ class HomePageViewController: UIViewController {
             containerStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
             containerStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
+    }
+    
+    private func updateUI(with weather: CurrentWeather) {
+        DispatchQueue.main.async {
+            self.cityNameLabel.text = weather.cityName
+            self.temperatureLabel.text = "\(weather.temperatureString) °"
+            self.weatherDescriptionLabel.text = weather.description.capitalized
+            self.feelsLikeTemperatureLabel.text = "Feels like: \(weather.feelsLikeString) °"
+            self.weatherIconImage.image = UIImage(systemName: weather.systemNameString)
+        }
     }
 }
 

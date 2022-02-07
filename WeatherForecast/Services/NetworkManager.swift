@@ -15,16 +15,20 @@ class NetworkManager {
         case coordinates(latitude: CLLocationDegrees, longitude: CLLocationDegrees)
     }
     
+    static let shared = NetworkManager()
+    
     var onCompletion: ((CurrentWeather) -> Void)?
+    
+    private init() {}
     
     func fetchWeather(forRequest request: RequestType) {
         var urlString = ""
         
         switch request {
         case .cityName(let city):
-            urlString = "api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)"
+            urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric"
         case .coordinates(let latitude, let longitude):
-            urlString = "api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)"
+            urlString = "https://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)&units=metric"
         }
         
         performRequest(withURLString: urlString)
@@ -39,7 +43,9 @@ class NetworkManager {
                 return
             }
             
-            let currentWeather = self.parseJSON(withData: data)
+            if let currentWeather = self.parseJSON(withData: data) {
+                self.onCompletion?(currentWeather)
+            }
 
         }.resume()
     }
@@ -47,7 +53,9 @@ class NetworkManager {
     fileprivate func parseJSON(withData data: Data) -> CurrentWeather? {
         do {
             let currentWeatherData = try JSONDecoder().decode(CurrentWeatherData.self, from: data)
-            guard let currentWeather = CurrentWeather(currentWeatherData: currentWeatherData) else { return nil }
+            guard let currentWeather = CurrentWeather(currentWeatherData: currentWeatherData) else {
+                return nil
+            }
             return currentWeather
             
         } catch let error as NSError {
@@ -56,3 +64,18 @@ class NetworkManager {
         return nil
     }
 }
+
+//class ImageManager {
+//    static let shared = ImageManager()
+//    
+//    var onCompletion: ((CurrentWeather) -> Void)?
+//    
+//    private init() {}
+//    
+//    func fetchImage(fromURL url: String?, withCode code: CurrentWeather?) -> Data? {
+//        guard let imageCode = code else { return nil }
+//        let url = "http://openweathermap.org/img/wn/\(imageCode.systemNameString)@2x.png"
+//        guard let imageURL = URL(string: url) else { return nil }
+//        return try? Data(contentsOf: imageURL)
+//    }
+//}
