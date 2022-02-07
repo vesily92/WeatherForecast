@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 class HomePageViewController: UIViewController {
     
@@ -72,6 +73,14 @@ class HomePageViewController: UIViewController {
         return stack
     }()
     
+    private lazy var locationManager: CLLocationManager = {
+        let lm = CLLocationManager()
+        lm.delegate = self
+        lm.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        lm.requestWhenInUseAuthorization()
+        return lm
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -80,7 +89,11 @@ class HomePageViewController: UIViewController {
         setupSubviews(backgroundImage, containerStackView)
         setConstraints()
         
-        NetworkManager.shared.fetchWeather(forRequest: .cityName(city: "Moscow"))
+        //NetworkManager.shared.fetchWeather(forRequest: .cityName(city: "Moscow"))
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.requestLocation()
+        }
         
         NetworkManager.shared.onCompletion = { [weak self] currentWeather in
             guard let self = self else { return }
@@ -117,3 +130,18 @@ class HomePageViewController: UIViewController {
     }
 }
 
+// MARK: - CLLocationManagerDelegate
+
+extension HomePageViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        let latitude = location.coordinate.latitude
+        let longitude = location.coordinate.longitude
+        
+        NetworkManager.shared.fetchWeather(forRequest: .coordinates(latitude: latitude, longitude: longitude))
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error.localizedDescription)
+    }
+}
