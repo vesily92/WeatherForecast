@@ -14,28 +14,33 @@ class HomePageViewController: UIViewController {
         label.text = "Saint-Petersburg"
         return label
     }()
+    
     private lazy var temperatureLabel: UILabel = {
         let label = UILabel()
         label.text = "-29 °C"
         label.font = .boldSystemFont(ofSize: 30)
         return label
     }()
+    
     private lazy var weatherIconImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(systemName: "cloud.fill")
         image.contentMode = .scaleAspectFit
         return image
     }()
+    
     private lazy var weatherDescriptionLabel: UILabel = {
         let label = UILabel()
         label.text = "Cloudy"
         return label
     }()
+    
     private lazy var feelsLikeTemperatureLabel: UILabel = {
         let label = UILabel()
         label.text = "Feels like: -32 °C"
         return label
     }()
+    
     private lazy var backgroundImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(systemName: "eye.slash")
@@ -69,7 +74,6 @@ class HomePageViewController: UIViewController {
         return stack
     }()
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         

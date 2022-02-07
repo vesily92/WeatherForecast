@@ -13,6 +13,7 @@
 		7B241A1D27AC1D8B00F07F52 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B241A1C27AC1D8B00F07F52 /* Assets.xcassets */; };
 		7B241A2027AC1D8B00F07F52 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B241A1E27AC1D8B00F07F52 /* LaunchScreen.storyboard */; };
 		7B241A2E27AC1FBC00F07F52 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A2D27AC1FBC00F07F52 /* Constants.swift */; };
+		7B241A3027B0F74E00F07F52 /* CurrentWeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A2F27B0F74E00F07F52 /* CurrentWeatherData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		7B241A1F27AC1D8B00F07F52 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7B241A2127AC1D8B00F07F52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7B241A2D27AC1FBC00F07F52 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		7B241A2F27B0F74E00F07F52 /* CurrentWeatherData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +86,7 @@
 		7B241A2927AC1DC700F07F52 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				7B241A2F27B0F74E00F07F52 /* CurrentWeatherData.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -187,6 +190,7 @@
 			files = (
 				7B241A1827AC1D8800F07F52 /* HomePageViewController.swift in Sources */,
 				7B241A1427AC1D8800F07F52 /* AppDelegate.swift in Sources */,
+				7B241A3027B0F74E00F07F52 /* CurrentWeatherData.swift in Sources */,
 				7B241A1627AC1D8800F07F52 /* SceneDelegate.swift in Sources */,
 				7B241A2E27AC1FBC00F07F52 /* Constants.swift in Sources */,
 			);
