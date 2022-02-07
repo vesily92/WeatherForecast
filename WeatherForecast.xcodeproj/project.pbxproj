@@ -14,6 +14,8 @@
 		7B241A2027AC1D8B00F07F52 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B241A1E27AC1D8B00F07F52 /* LaunchScreen.storyboard */; };
 		7B241A2E27AC1FBC00F07F52 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A2D27AC1FBC00F07F52 /* Constants.swift */; };
 		7B241A3027B0F74E00F07F52 /* CurrentWeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A2F27B0F74E00F07F52 /* CurrentWeatherData.swift */; };
+		7B241A3227B1027D00F07F52 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A3127B1027D00F07F52 /* NetworkManager.swift */; };
+		7B241A3427B1078700F07F52 /* CurrentWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A3327B1078700F07F52 /* CurrentWeather.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		7B241A2127AC1D8B00F07F52 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7B241A2D27AC1FBC00F07F52 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		7B241A2F27B0F74E00F07F52 /* CurrentWeatherData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherData.swift; sourceTree = "<group>"; };
+		7B241A3127B1027D00F07F52 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		7B241A3327B1078700F07F52 /* CurrentWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeather.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +83,7 @@
 		7B241A2827AC1DB300F07F52 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				7B241A3127B1027D00F07F52 /* NetworkManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -87,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				7B241A2F27B0F74E00F07F52 /* CurrentWeatherData.swift */,
+				7B241A3327B1078700F07F52 /* CurrentWeather.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -188,8 +194,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B241A3227B1027D00F07F52 /* NetworkManager.swift in Sources */,
 				7B241A1827AC1D8800F07F52 /* HomePageViewController.swift in Sources */,
 				7B241A1427AC1D8800F07F52 /* AppDelegate.swift in Sources */,
+				7B241A3427B1078700F07F52 /* CurrentWeather.swift in Sources */,
 				7B241A3027B0F74E00F07F52 /* CurrentWeatherData.swift in Sources */,
 				7B241A1627AC1D8800F07F52 /* SceneDelegate.swift in Sources */,
 				7B241A2E27AC1FBC00F07F52 /* Constants.swift in Sources */,

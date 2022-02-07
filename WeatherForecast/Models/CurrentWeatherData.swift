@@ -5,29 +5,21 @@
 //  Created by Василий Пронин on 07.02.2022.
 //
 
-struct CurrentWeatherData {
-    let coord: Coordinates
+struct CurrentWeatherData: Codable {
     let weather: [Weather]
     let main: Main
     let wind: Wind
-    let name: String?
+    let name: String
 }
 
-struct Coordinates {
-    let lon: Double?
-    let lat: Double?
+struct Weather: Codable {
+    let id: Int
 }
 
-struct Weather {
-    let id: Int?
-    let main: String?
-    let description: String?
-}
-
-struct Main {
-    let temp: Double?
-    let feelsLike: Double?
-    let pressure: Int?
+struct Main: Codable {
+    let temp: Double
+    let feelsLike: Double
+    let pressure: Int
     
     enum CodingKeys: String, CodingKey {
         case temp
@@ -36,6 +28,6 @@ struct Main {
     }
 }
 
-struct Wind {
-    let speed: Double?
+struct Wind: Codable {
+    let speed: Double
 }
