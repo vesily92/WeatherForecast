@@ -13,6 +13,15 @@ class NetworkManager {
     enum RequestType {
         case cityName(city: String)
         case coordinates(latitude: CLLocationDegrees, longitude: CLLocationDegrees)
+        case oneCall(latitude: CLLocationDegrees, longitude: CLLocationDegrees, exclude: [Exclude])
+    }
+    
+    enum Exclude: String {
+        case current = "current"
+        case minutely = "minutely"
+        case hourly = "hourly"
+        case daily = "daily"
+        case alerts = "alerts"
     }
     
     static let shared = NetworkManager()
@@ -29,6 +38,8 @@ class NetworkManager {
             urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric"
         case .coordinates(let latitude, let longitude):
             urlString = "https://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)&units=metric"
+        case .oneCall(latitude: let latitude, longitude: let longitude, exclude: let exclude):
+            urlString = "https://api.openweathermap.org/data/2.5/onecall?lat=\(latitude)&lon=\(longitude)&exclude=\(exclude)&appid=\(apiKey)&units=metric"
         }
         
         performRequest(withURLString: urlString)
