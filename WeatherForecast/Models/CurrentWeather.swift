@@ -10,14 +10,14 @@ struct CurrentWeather {
     
     let temperature: Double
     var temperatureString: String {
-        return String(format: "%.0f", temperature.rounded(.toNearestOrAwayFromZero))
+        return String(format: "%.0f", temperature.rounded(.toNearestOrAwayFromZero)) + " °"
     }
     
     let description: String
     
     let feelsLike: Double
     var feelsLikeString: String {
-        return String(format: "%.0f", feelsLike.rounded(.toNearestOrAwayFromZero))
+        return "Feels like: " + String(format: "%.0f", feelsLike.rounded(.toNearestOrAwayFromZero)) + " °"
     }
     
     let conditionCode: Int
