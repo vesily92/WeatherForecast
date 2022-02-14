@@ -89,8 +89,6 @@ class HomePageViewController: UIViewController {
         setupSubviews(backgroundImage, containerStackView)
         setConstraints()
         
-        //NetworkManager.shared.fetchWeather(forRequest: .cityName(city: "Moscow"))
-        
         if CLLocationManager.locationServicesEnabled() {
             locationManager.requestLocation()
         }
@@ -122,9 +120,9 @@ class HomePageViewController: UIViewController {
     private func updateUI(with weather: CurrentWeather) {
         DispatchQueue.main.async {
             self.cityNameLabel.text = weather.cityName
-            self.temperatureLabel.text = "\(weather.temperatureString) °"
+            self.temperatureLabel.text = weather.temperatureString
             self.weatherDescriptionLabel.text = weather.description.capitalized
-            self.feelsLikeTemperatureLabel.text = "Feels like: \(weather.feelsLikeString) °"
+            self.feelsLikeTemperatureLabel.text = weather.feelsLikeString
             self.weatherIconImage.image = UIImage(systemName: weather.systemNameString)
         }
     }
@@ -138,7 +136,7 @@ extension HomePageViewController: CLLocationManagerDelegate {
         let latitude = location.coordinate.latitude
         let longitude = location.coordinate.longitude
         
-        NetworkManager.shared.fetchWeather(forRequest: .coordinates(latitude: latitude, longitude: longitude))
+        //NetworkManager.shared.fetchWeather(forRequest: .coordinates(latitude: latitude, longitude: longitude))
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
