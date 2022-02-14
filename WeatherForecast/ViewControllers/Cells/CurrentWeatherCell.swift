@@ -7,21 +7,21 @@
 
 import UIKit
 
-class CurrentWeatherCell: UICollectionViewCell {
+class CurrentWeatherCell: UICollectionViewCell, SelfConfiguringCell {
+    
     static let reuseIdentifier = "CurrentWeatherCell"
     
-    let cityNameLabel = UILabel()
     let temperatureLabel = UILabel()
     let weatherDescriptionLabel = UILabel()
     let temperatureFeelsLikeLabel = UILabel()
     let weatherIconView = UIImageView()
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         backgroundColor = .systemBlue
         
-        cityNameLabel.font = .systemFont(ofSize: 30)
         temperatureLabel.font = .boldSystemFont(ofSize: 50)
         weatherDescriptionLabel.font = .systemFont(ofSize: 16)
         temperatureFeelsLikeLabel.font = .systemFont(ofSize: 16)
@@ -37,7 +37,6 @@ class CurrentWeatherCell: UICollectionViewCell {
         subStackView.distribution = .fillEqually
         
         let mainStackView = UIStackView(arrangedSubviews: [
-            cityNameLabel,
             subStackView,
             weatherDescriptionLabel,
             temperatureFeelsLikeLabel
@@ -55,12 +54,14 @@ class CurrentWeatherCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with currentWeather: CurrentWeather) {
-        cityNameLabel.text = currentWeather.cityName
-        temperatureLabel.text = currentWeather.temperatureString
-        weatherDescriptionLabel.text = currentWeather.description
-        temperatureFeelsLikeLabel.text = currentWeather.feelsLikeString
-        weatherIconView.image = UIImage(systemName: currentWeather.systemNameString)
+    func configure(with forecast: AnyHashable) {
+        guard let model = forecast as? Current.DiffableNow else { return }
+        DispatchQueue.main.async {
+            self.temperatureLabel.text = model.temperature
+            self.weatherDescriptionLabel.text = model.description
+            self.temperatureFeelsLikeLabel.text = model.feelsLike
+            self.weatherIconView.image = UIImage(systemName: model.systemNameString)
+        }
     }
     
     fileprivate func setupConstraints(for uiView: UIView) {

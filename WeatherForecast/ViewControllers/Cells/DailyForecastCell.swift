@@ -7,7 +7,10 @@
 
 import UIKit
 
-class DailyForecastCell: UICollectionViewCell {
+class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
+    
+    static let reuseIdentifier = "DailyForecastCell"
+    
     let dateLabel = UILabel()
     let weekdayLabel = UILabel()
     let highestTemperatureLabel = UILabel()
@@ -40,12 +43,13 @@ class DailyForecastCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with dailyForecast: DailyForecast) {
-        dateLabel.text = dailyForecast.dateString
-        weekdayLabel.text = dailyForecast.weekdayString
-        highestTemperatureLabel.text = dailyForecast.highestTemperatureString
-        lowestTemperatureLabel.text = dailyForecast.lowestTemperatureString
-        weatherIconView.image = UIImage(systemName: dailyForecast.systemNameString)
+    func configure(with forecast: AnyHashable) {
+        guard let model = forecast as? Daily.Diffable else { return }
+        dateLabel.text = model.date
+        weekdayLabel.text = model.weekday
+        highestTemperatureLabel.text = model.highestTemperature
+        lowestTemperatureLabel.text = model.lowestTemperature
+        weatherIconView.image = UIImage(systemName: model.systemNameString)
     }
     
     fileprivate func setupConstraints(for uiView: UIView) {
