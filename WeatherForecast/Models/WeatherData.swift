@@ -4,10 +4,7 @@
 //
 //  Created by Василий Пронин on 07.02.2022.
 //
-
-enum Section: Int, CaseIterable {
-    case currentWeather, hourlyForecast, dailyForecast
-}
+import Foundation
 
 struct CurrentWeatherData: Codable {
     let weather: [Weather]
@@ -16,9 +13,21 @@ struct CurrentWeatherData: Codable {
     let name: String
 }
 
-struct Weather: Codable {
+struct Weather: Codable, Hashable {
     let id: Int
     let description: String
+    
+    var identifier: UUID {
+        return UUID()
+    }
+    
+    static func == (lhs: Weather, rhs: Weather) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+    }
 }
 
 struct Main: Codable {
@@ -37,11 +46,94 @@ struct Wind: Codable {
     let speed: Double
 }
 
+struct ForecastData: Codable, Hashable {
+    let identifier = UUID()
+    
+    let lat: Double
+    let lon: Double
+    let timezone: String
+    let timezoneOffset: Int
+    let current: Current
+    let hourly: [Current]
+    let daily: [Daily]
+    
+    enum CodingKeys: String, CodingKey {
+        case lat
+        case lon
+        case timezone
+        case timezoneOffset = "timezone_offset"
+        case current
+        case hourly
+        case daily
+    }
+    
+    static func == (lhs: ForecastData, rhs: ForecastData) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+    }
+}
 
-struct Daily: Codable {
+struct Current: Codable, Hashable {
+    let identifier = UUID()
+    
+    let dt: Int?
+    let temp: Double?
+    let feelsLike: Double?
+    let weather: [Weather]?
+    let pop: Int?
+    
+    enum CodingKeys: String, CodingKey {
+        case dt
+        case temp
+        case feelsLike = "feels_like"
+        case weather
+        case pop
+    }
+    
+    static func == (lhs: Current, rhs: Current) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+    }
+}
+
+struct Hourly: Codable, Hashable {
+    let identifier = UUID()
+    
+    let dt: Int?
+    let temp: Double?
+    let feelsLike: Double?
+    let weather: [Weather]?
+    let pop: Double?
+    
+    enum CodingKeys: String, CodingKey {
+        case dt
+        case temp
+        case feelsLike = "feels_like"
+        case weather
+        case pop
+    }
+    
+    static func == (lhs: Hourly, rhs: Hourly) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+    }
+}
+
+struct Daily: Codable, Hashable {
+    let identifier = UUID()
+    
     let dt: Int
-    let sunrise: Int
-    let sunset: Int
+    let sunrise: Int?
+    let sunset: Int?
     let temperature: Temperature
     let pressure: Int
     let humidity: Int
@@ -62,21 +154,16 @@ struct Daily: Codable {
         case pop
         case uvi
     }
-}
-
-struct Hourly: Codable {
-    let dt: Int
-    let temp: Double
-    let weather: [Weather]
-    let pop: Int
     
-    enum CodingKeys: String, CodingKey {
-        case dt
-        case temp
-        case weather
-        case pop
+    static func == (lhs: Daily, rhs: Daily) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
     }
 }
+
 
 struct Temperature: Codable {
     let min: Double
