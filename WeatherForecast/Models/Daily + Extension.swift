@@ -77,14 +77,23 @@ extension Daily {
         
         init?(model: Daily) {
             
-            self.date = DateManager.shared.defineDate(withUnixTime: model.dt, andDateFormat: .date)
-            self.weekday = DateManager.shared.defineDate(withUnixTime: model.dt, andDateFormat: .weekday)
+//            self.date = DateManager.shared.defineDate(withUnixTime: model.dt, andDateFormat: .date)
+//            self.weekday = DateManager.shared.defineDate(withUnixTime: model.dt, andDateFormat: .weekday)
+//            self.sunrise = DateManager.shared.defineDate(withUnixTime: model.sunrise ?? 0, andDateFormat: .time)
+//            self.sunset = DateManager.shared.defineDate(withUnixTime: model.sunset ?? 0, andDateFormat: .time)
+//            self.highestTemperature = String(format: "%.0f", model.temperature.max.rounded(.toNearestOrAwayFromZero))
+//            self.lowestTemperature = String(format: "%.0f", model.temperature.min.rounded(.toNearestOrAwayFromZero))
+//            self.probabilityOfPrecipitation = String(format: "%.0f", model.pop.rounded(.toNearestOrAwayFromZero)) + " %"
+//            self.conditionCode = model.weather.first!.id
+            
+            self.date = DateManager.shared.defineDate(withUnixTime: model.dt ?? 0, andDateFormat: .date)
+            self.weekday = DateManager.shared.defineDate(withUnixTime: model.dt ?? 0, andDateFormat: .weekday)
             self.sunrise = DateManager.shared.defineDate(withUnixTime: model.sunrise ?? 0, andDateFormat: .time)
             self.sunset = DateManager.shared.defineDate(withUnixTime: model.sunset ?? 0, andDateFormat: .time)
-            self.highestTemperature = String(format: "%.0f", model.temperature.max.rounded(.toNearestOrAwayFromZero))
-            self.lowestTemperature = String(format: "%.0f", model.temperature.min.rounded(.toNearestOrAwayFromZero))
-            self.probabilityOfPrecipitation = String(format: "%.0f", model.pop.rounded(.toNearestOrAwayFromZero)) + " %"
-            self.conditionCode = model.weather.first!.id
+            self.highestTemperature = String(format: "%.0f", model.temperature?.max.rounded(.toNearestOrAwayFromZero) ?? 0)
+            self.lowestTemperature = String(format: "%.0f", model.temperature?.min.rounded(.toNearestOrAwayFromZero) ?? 0)
+            self.probabilityOfPrecipitation = String(format: "%.0f", model.pop?.rounded(.toNearestOrAwayFromZero) ?? 0) + " %"
+            self.conditionCode = model.weather?.first!.id ?? 0
         }
         
         static func == (lhs: Daily.Diffable, rhs: Daily.Diffable) -> Bool {

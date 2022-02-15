@@ -5,22 +5,22 @@
 //  Created by Василий Пронин on 07.02.2022.
 //
 
-struct CurrentWeather {
-    let cityName: String
+import Foundation
+
+struct CurrentWeather: Codable {
     
-    let temperature: Double
+    let cityName: String
+    let description: String
+    
     var temperatureString: String {
         return String(format: "%.0f", temperature.rounded(.toNearestOrAwayFromZero)) + " °"
     }
     
-    let description: String
     
-    let feelsLike: Double
     var feelsLikeString: String {
         return "Feels like: " + String(format: "%.0f", feelsLike.rounded(.toNearestOrAwayFromZero)) + " °"
     }
     
-    let conditionCode: Int
     var systemNameString: String {
         switch conditionCode {
         case 200...232: return "cloud.bolt.rain.fill" //"11d"
@@ -33,12 +33,26 @@ struct CurrentWeather {
         default: return "nosign"
         }
     }
+    private let temperature: Double
+    private let feelsLike: Double
+    private let conditionCode: Int
     
     init?(currentWeatherData: CurrentWeatherData) {
         cityName = currentWeatherData.name
         temperature = currentWeatherData.main.temp
-        description = currentWeatherData.weather.first!.description
+        description = currentWeatherData.weather.first!.description.capitalized
         feelsLike = currentWeatherData.main.feelsLike
         conditionCode = currentWeatherData.weather.first!.id
+    }
+}
+
+extension CurrentWeather: Hashable {
+
+    var id: UUID {
+        return UUID()
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

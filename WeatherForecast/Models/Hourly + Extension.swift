@@ -39,7 +39,7 @@ extension Hourly {
 //        }
 //    }
     
-    struct DiffableHourly: Decodable, Hashable {
+    struct Diffable: Decodable, Hashable {
         var id: UUID {
             let id = UUID()
             return id
@@ -71,7 +71,7 @@ extension Hourly {
             self.conditionCode = model.weather?.first!.id ?? 0
         }
         
-        static func == (lhs: Hourly.DiffableHourly, rhs: Hourly.DiffableHourly) -> Bool {
+        static func == (lhs: Hourly.Diffable, rhs: Hourly.Diffable) -> Bool {
             return lhs.id == rhs.id
         }
         
