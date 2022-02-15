@@ -35,6 +35,8 @@
 		7B42473C27BA7407009DDADE /* HourlyJSON.json in Resources */ = {isa = PBXBuildFile; fileRef = 7B42473B27BA7407009DDADE /* HourlyJSON.json */; };
 		7B42473E27BA7419009DDADE /* DailyJSON.json in Resources */ = {isa = PBXBuildFile; fileRef = 7B42473D27BA7418009DDADE /* DailyJSON.json */; };
 		7B42474027BAA8E3009DDADE /* Hourly + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42473F27BAA8E3009DDADE /* Hourly + Extension.swift */; };
+		7B42474227BBC396009DDADE /* BackgroundSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42474127BBC396009DDADE /* BackgroundSupplementaryView.swift */; };
+		7B42474427BBE114009DDADE /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42474327BBE114009DDADE /* SectionHeader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +70,8 @@
 		7B42473B27BA7407009DDADE /* HourlyJSON.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = HourlyJSON.json; sourceTree = "<group>"; };
 		7B42473D27BA7418009DDADE /* DailyJSON.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = DailyJSON.json; sourceTree = "<group>"; };
 		7B42473F27BAA8E3009DDADE /* Hourly + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hourly + Extension.swift"; sourceTree = "<group>"; };
+		7B42474127BBC396009DDADE /* BackgroundSupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundSupplementaryView.swift; sourceTree = "<group>"; };
+		7B42474327BBE114009DDADE /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,7 +126,7 @@
 				7B241A3527B2876D00F07F52 /* MainPageViewController.swift */,
 				7B241A4927B5560C00F07F52 /* StartPageViewController.swift */,
 				7B241A4D27B676CF00F07F52 /* ViewController.swift */,
-				7B241A3E27B3ED9500F07F52 /* Cells */,
+				7B241A3E27B3ED9500F07F52 /* Views */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -175,15 +179,17 @@
 			path = Storyboards;
 			sourceTree = "<group>";
 		};
-		7B241A3E27B3ED9500F07F52 /* Cells */ = {
+		7B241A3E27B3ED9500F07F52 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				7B241A3F27B3EDFF00F07F52 /* CurrentWeatherCell.swift */,
 				7B241A4127B3F57100F07F52 /* HourlyForecastCell.swift */,
 				7B241A4327B3F62900F07F52 /* DailyForecastCell.swift */,
 				7B241A4527B4F2AB00F07F52 /* SelfConfiguringCell.swift */,
+				7B42474127BBC396009DDADE /* BackgroundSupplementaryView.swift */,
+				7B42474327BBE114009DDADE /* SectionHeader.swift */,
 			);
-			path = Cells;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		7B241A5127B6876B00F07F52 /* Objects */ = {
@@ -279,6 +285,7 @@
 				7B241A4A27B5560C00F07F52 /* StartPageViewController.swift in Sources */,
 				7B241A4027B3EDFF00F07F52 /* CurrentWeatherCell.swift in Sources */,
 				7B241A1827AC1D8800F07F52 /* HomePageViewController.swift in Sources */,
+				7B42474227BBC396009DDADE /* BackgroundSupplementaryView.swift in Sources */,
 				7B241A1427AC1D8800F07F52 /* AppDelegate.swift in Sources */,
 				7B241A4227B3F57100F07F52 /* HourlyForecastCell.swift in Sources */,
 				7B241A3B27B39D1F00F07F52 /* Hourly.swift in Sources */,
@@ -290,6 +297,7 @@
 				7B241A4E27B676CF00F07F52 /* ViewController.swift in Sources */,
 				7B241A1627AC1D8800F07F52 /* SceneDelegate.swift in Sources */,
 				7B241A4827B53D1E00F07F52 /* Daily.swift in Sources */,
+				7B42474427BBE114009DDADE /* SectionHeader.swift in Sources */,
 				7B241A4427B3F62900F07F52 /* DailyForecastCell.swift in Sources */,
 				7B241A3D27B3AD1300F07F52 /* DateManager.swift in Sources */,
 				7B241A2E27AC1FBC00F07F52 /* Constants.swift in Sources */,
