@@ -13,21 +13,34 @@ struct CurrentWeatherData: Codable {
     let name: String
 }
 
-struct Weather: Codable, Hashable {
+struct Weather: Codable {
     let id: Int
     let description: String
     
-    var identifier: UUID {
-        return UUID()
+    var systemNameString: String {
+        switch id {
+        case 200...232: return "cloud.bolt.rain.fill" //"11d"
+        case 300...321: return "cloud.drizzle.fill" //"09d"
+        case 500...531: return "cloud.heavyrain.fill" //"10d"
+        case 600...622: return "snowflake" //"13d"
+        case 700...781: return "cloud.fog.fill" //"50d"
+        case 800: return "sun.max.fill" //"01d"
+        case 801...804: return "cloud.sun.fill" //"04d"
+        default: return "nosign"
+        }
     }
     
-    static func == (lhs: Weather, rhs: Weather) -> Bool {
-        return lhs.identifier == rhs.identifier
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(identifier)
-    }
+//    var identifier: UUID {
+//        return UUID()
+//    }
+//
+//    static func == (lhs: Weather, rhs: Weather) -> Bool {
+//        return lhs.identifier == rhs.identifier
+//    }
+//
+//    func hash(into hasher: inout Hasher) {
+//        hasher.combine(identifier)
+//    }
 }
 
 struct Main: Codable {
@@ -111,6 +124,8 @@ struct Hourly: Codable, Hashable {
     let weather: [Weather]?
     let pop: Double?
     
+    var sectionName = "Hourly Forecast"
+    
     enum CodingKeys: String, CodingKey {
         case dt
         case temp
@@ -131,16 +146,18 @@ struct Hourly: Codable, Hashable {
 struct Daily: Codable, Hashable {
     let identifier = UUID()
     
-    let dt: Int
+    let dt: Int?
     let sunrise: Int?
     let sunset: Int?
-    let temperature: Temperature
-    let pressure: Int
-    let humidity: Int
-    let windSpeed: Double
-    let weather: [Weather]
-    let pop: Double
-    let uvi: Double
+    let temperature: Temperature?
+    let pressure: Int?
+    let humidity: Int?
+    let windSpeed: Double?
+    let weather: [Weather]?
+    let pop: Double?
+    let uvi: Double?
+    
+    var sectionName = "7-Day Forecast"
     
     enum CodingKeys: String, CodingKey {
         case dt
@@ -163,7 +180,6 @@ struct Daily: Codable, Hashable {
         hasher.combine(identifier)
     }
 }
-
 
 struct Temperature: Codable {
     let min: Double
