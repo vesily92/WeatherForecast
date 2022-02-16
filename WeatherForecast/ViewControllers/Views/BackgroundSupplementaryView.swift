@@ -10,11 +10,14 @@ import UIKit
 final class BackgroundSupplementaryView: UICollectionReusableView {
     static let reuseIdentifier = "BackgroundView"
     
+    static let shared = BackgroundSupplementaryView()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         layer.cornerRadius = 16
         backgroundColor = .systemGray2
+        
     }
     
     required init?(coder: NSCoder) {
