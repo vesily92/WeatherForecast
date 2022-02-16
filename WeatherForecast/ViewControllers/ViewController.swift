@@ -141,22 +141,22 @@ class ViewController: UIViewController {
     }
     
     private func createHourlySection(using: Section) -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(120))
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        
-        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(80), heightDimension: .estimated(1))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .estimated(80), heightDimension: .estimated(120))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
-        section.contentInsets = NSDirectionalEdgeInsets(top: sectionInsetY, leading: sectionInsetX, bottom: sectionInsetY, trailing: sectionInsetX)
+        section.contentInsets = NSDirectionalEdgeInsets(top: sectionInsetY, leading: 100, bottom: sectionInsetY, trailing: sectionInsetX)
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
         
         let sectionHeader = createSectionHeader()
         section.boundarySupplementaryItems = [sectionHeader]
+        
         
         return section
     }
@@ -197,4 +197,10 @@ class ViewController: UIViewController {
         
         return backgroundItem
     }
+    
+//    private func createSeparator() -> NSCollectionLayoutSupplementaryItem {
+//        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+//        let separator = NSCollectionLayoutSupplementaryItem(layoutSize: itemSize, elementKind: Separator.reuseIdentifier, containerAnchor: NSCollectionLayoutAnchor(edges: [.leading, .top]))
+//        return separator
+//    }
 }
