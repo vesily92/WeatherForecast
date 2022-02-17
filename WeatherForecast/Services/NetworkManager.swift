@@ -16,11 +16,11 @@ enum NetworkError: Error {
 
 class NetworkManager {
     
-//    enum RequestType {
-//        case cityName(city: String)
-//        case coordinates(latitude: CLLocationDegrees, longitude: CLLocationDegrees)
-////        case oneCall(latitude: CLLocationDegrees, longitude: CLLocationDegrees, exclude: [Exclude])
-//    }
+    enum RequestType {
+        case cityName(city: String)
+        case coordinates(latitude: CLLocationDegrees, longitude: CLLocationDegrees)
+//        case oneCall(latitude: CLLocationDegrees, longitude: CLLocationDegrees, exclude: [Exclude])
+    }
     
     
     static let shared = NetworkManager()
@@ -61,50 +61,50 @@ class NetworkManager {
 //        return nil
 //    }
     
-    enum RequestType {
-        case current
-        case hourly
-        case daily
-    }
-    
-    func fetchForecast() {
-        
-    }
-    
-    func fetchHourly(latitude: CLLocationDegrees, longitude: CLLocationDegrees, completion: @escaping(Result<Daily, NetworkError>) -> Void) {
-        let urlString = "https://api.openweathermap.org/data/2.5/onecall?lat=\(latitude)&lon=\(longitude)&exclude=minutely,hourly,daily,alerts&appid=\(apiKey)"
-        
-        guard let url = URL(string: urlString) else {
-            completion(.failure(.invalidURL))
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data else {
-                completion(.failure(.noData))
-                print(error?.localizedDescription ?? "No error description")
-                return
-            }
-            
-            do {
-                let current = try JSONDecoder().decode(Daily.self, from: data)
-                DispatchQueue.main.async {
-                    completion(.success(current))
-                }
-            
-            } catch DecodingError.keyNotFound(let key, let context) {
-                Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
-            } catch DecodingError.valueNotFound(let type, let context) {
-                Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
-            } catch DecodingError.typeMismatch(let type, let context) {
-                Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
-            } catch DecodingError.dataCorrupted(let context) {
-                Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
-            } catch let error as NSError {
-                NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
-            }
-        }.resume()
-    }
+//    enum RequestType {
+//        case current
+//        case hourly
+//        case daily
+//    }
+//
+//    func fetchForecast() {
+//
+//    }
+//
+//    func fetchHourly(latitude: CLLocationDegrees, longitude: CLLocationDegrees, completion: @escaping(Result<Daily, NetworkError>) -> Void) {
+//        let urlString = "https://api.openweathermap.org/data/2.5/onecall?lat=\(latitude)&lon=\(longitude)&exclude=minutely,hourly,daily,alerts&appid=\(apiKey)"
+//
+//        guard let url = URL(string: urlString) else {
+//            completion(.failure(.invalidURL))
+//            return
+//        }
+//
+//        URLSession.shared.dataTask(with: url) { data, response, error in
+//            guard let data = data else {
+//                completion(.failure(.noData))
+//                print(error?.localizedDescription ?? "No error description")
+//                return
+//            }
+//
+//            do {
+//                let current = try JSONDecoder().decode(Daily.self, from: data)
+//                DispatchQueue.main.async {
+//                    completion(.success(current))
+//                }
+//
+//            } catch DecodingError.keyNotFound(let key, let context) {
+//                Swift.print("could not find key \(key) in JSON: \(context.debugDescription)")
+//            } catch DecodingError.valueNotFound(let type, let context) {
+//                Swift.print("could not find type \(type) in JSON: \(context.debugDescription)")
+//            } catch DecodingError.typeMismatch(let type, let context) {
+//                Swift.print("type mismatch for type \(type) in JSON: \(context.debugDescription)")
+//            } catch DecodingError.dataCorrupted(let context) {
+//                Swift.print("data found to be corrupted in JSON: \(context.debugDescription)")
+//            } catch let error as NSError {
+//                NSLog("Error in read(from:ofType:) domain= \(error.domain), description= \(error.localizedDescription)")
+//            }
+//        }.resume()
+//    }
     
     
     
@@ -150,50 +150,50 @@ class NetworkManager {
 //    }
     
     
-//    func fetchCurrentWeather(forRequest request: RequestType) {
-//        var urlString = ""
-//
-//        switch request {
-//        case .cityName(let city):
-//            urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric"
-//        case .coordinates(let latitude, let longitude):
-//            urlString = "https://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)&units=metric"
-//        }
-//
-//        performRequest(withURLString: urlString)
-//    }
+    func fetchWeather(forRequest request: RequestType) {
+        var urlString = ""
+
+        switch request {
+        case .cityName(let city):
+            urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric"
+        case .coordinates(let latitude, let longitude):
+            urlString = "https://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)&units=metric"
+        }
+
+        performRequest(withURLString: urlString)
+    }
     
     
     
-//    fileprivate func performRequest(withURLString urlString: String) {
-//        guard let url = URL(string: urlString) else { return }
-//
-//        URLSession.shared.dataTask(with: url) { data, response, error in
-//            guard let data = data else {
-//                print(error?.localizedDescription ?? "No error description")
-//                return
-//            }
-//
-//            if let currentWeather = self.parseJSON(withData: data) {
-//                self.onCompletion?(currentWeather)
-//            }
-//
-//        }.resume()
-//    }
-//
-//    fileprivate func parseJSON(withData data: Data) -> CurrentWeather? {
-//        do {
-//            let currentWeatherData = try JSONDecoder().decode(CurrentWeatherData.self, from: data)
-//            guard let currentWeather = CurrentWeather(currentWeatherData: currentWeatherData) else {
-//                return nil
-//            }
-//            return currentWeather
-//
-//        } catch let error as NSError {
-//            print(error.localizedDescription)
-//        }
-//        return nil
-//    }
+    fileprivate func performRequest(withURLString urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else {
+                print(error?.localizedDescription ?? "No error description")
+                return
+            }
+
+            if let currentWeather = self.parseJSON(withData: data) {
+                self.onCompletion?(currentWeather)
+            }
+
+        }.resume()
+    }
+
+    fileprivate func parseJSON(withData data: Data) -> CurrentWeather? {
+        do {
+            let currentWeatherData = try JSONDecoder().decode(CurrentWeatherData.self, from: data)
+            guard let currentWeather = CurrentWeather(currentWeatherData: currentWeatherData) else {
+                return nil
+            }
+            return currentWeather
+
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
+        return nil
+    }
     
     
     

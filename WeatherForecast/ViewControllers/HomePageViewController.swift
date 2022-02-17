@@ -136,7 +136,7 @@ extension HomePageViewController: CLLocationManagerDelegate {
         let latitude = location.coordinate.latitude
         let longitude = location.coordinate.longitude
         
-        //NetworkManager.shared.fetchWeather(forRequest: .coordinates(latitude: latitude, longitude: longitude))
+        NetworkManager.shared.fetchWeather(forRequest: .coordinates(latitude: latitude, longitude: longitude))
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
