@@ -24,13 +24,19 @@ class ViewController: UIViewController {
     var weatherCollectionView: UICollectionView!
     
     private let sectionInsetY: CGFloat = 8
-    private let sectionInsetX: CGFloat = 32
+    private let sectionInsetX: CGFloat = 16
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         
+        setupNavigationBar()
         setupCollectionView()
         
+//        let refreshControl = UIRefreshControl()
+//        weatherCollectionView.refreshControl = refreshControl
+        
+        view.backgroundColor = .systemGray4
         weatherCollectionView.register(SectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeader.reuseIdentifier)
         
         weatherCollectionView.register(CurrentWeatherCell.self, forCellWithReuseIdentifier: CurrentWeatherCell.reuseIdentifier)
@@ -50,11 +56,42 @@ class ViewController: UIViewController {
         reloadData()
     }
     
+    private func setupNavigationBar() {
+        title = "City Name"
+        
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
+        
+        let appearance = UINavigationBarAppearance()
+        
+        appearance.configureWithTransparentBackground()
+//        appearance.backgroundColor = .black
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        
+        navigationItem.standardAppearance = appearance
+        navigationItem.scrollEdgeAppearance = appearance
+        navigationItem.compactAppearance = appearance
+        
+//        edgesForExtendedLayout = []
+    }
+    
     private func setupCollectionView() {
         weatherCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
-        weatherCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        //weatherCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         weatherCollectionView.backgroundColor = .systemGray4
+        weatherCollectionView.showsVerticalScrollIndicator = false
+        
         view.addSubview(weatherCollectionView)
+        weatherCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            weatherCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            weatherCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            weatherCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            weatherCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
     }
     
     private func configure<T: SelfConfiguringCell>(_ cellType: T.Type, with model: AnyHashable, for indexPath: IndexPath) -> T {
@@ -144,12 +181,12 @@ class ViewController: UIViewController {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .estimated(80), heightDimension: .estimated(120))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .estimated(65), heightDimension: .estimated(120))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
-        section.contentInsets = NSDirectionalEdgeInsets(top: sectionInsetY, leading: 100, bottom: sectionInsetY, trailing: sectionInsetX)
+        section.contentInsets = NSDirectionalEdgeInsets(top: sectionInsetY, leading: sectionInsetX, bottom: sectionInsetY, trailing: sectionInsetX)
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
@@ -165,7 +202,7 @@ class ViewController: UIViewController {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(60))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
@@ -190,7 +227,7 @@ class ViewController: UIViewController {
     private func createBackgroundView() -> NSCollectionLayoutDecorationItem {
         
         let topBottomInset: CGFloat = 4
-        let leadingTrailingInset: CGFloat = 16
+        let leadingTrailingInset: CGFloat = 0
         
         let backgroundItem = NSCollectionLayoutDecorationItem.background(elementKind: BackgroundSupplementaryView.reuseIdentifier)
         backgroundItem.contentInsets = NSDirectionalEdgeInsets(top: topBottomInset, leading: leadingTrailingInset, bottom: topBottomInset, trailing: leadingTrailingInset)
