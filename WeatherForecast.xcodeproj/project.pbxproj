@@ -37,6 +37,7 @@
 		7B42474027BAA8E3009DDADE /* Hourly + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42473F27BAA8E3009DDADE /* Hourly + Extension.swift */; };
 		7B42474227BBC396009DDADE /* BackgroundSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42474127BBC396009DDADE /* BackgroundSupplementaryView.swift */; };
 		7B42474427BBE114009DDADE /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42474327BBE114009DDADE /* SectionHeader.swift */; };
+		7B42474827BCDF98009DDADE /* Separator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42474727BCDF98009DDADE /* Separator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +73,7 @@
 		7B42473F27BAA8E3009DDADE /* Hourly + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Hourly + Extension.swift"; sourceTree = "<group>"; };
 		7B42474127BBC396009DDADE /* BackgroundSupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundSupplementaryView.swift; sourceTree = "<group>"; };
 		7B42474327BBE114009DDADE /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
+		7B42474727BCDF98009DDADE /* Separator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Separator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,6 +190,7 @@
 				7B241A4527B4F2AB00F07F52 /* SelfConfiguringCell.swift */,
 				7B42474127BBC396009DDADE /* BackgroundSupplementaryView.swift */,
 				7B42474327BBE114009DDADE /* SectionHeader.swift */,
+				7B42474727BCDF98009DDADE /* Separator.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -299,6 +302,7 @@
 				7B241A4827B53D1E00F07F52 /* Daily.swift in Sources */,
 				7B42474427BBE114009DDADE /* SectionHeader.swift in Sources */,
 				7B241A4427B3F62900F07F52 /* DailyForecastCell.swift in Sources */,
+				7B42474827BCDF98009DDADE /* Separator.swift in Sources */,
 				7B241A3D27B3AD1300F07F52 /* DateManager.swift in Sources */,
 				7B241A2E27AC1FBC00F07F52 /* Constants.swift in Sources */,
 			);
