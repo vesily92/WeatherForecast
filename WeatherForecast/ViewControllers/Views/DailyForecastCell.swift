@@ -18,7 +18,9 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     let probabilityOfPrecipitationLabel = UILabel()
     let weatherIconView = UIImageView()
     
-    private let configuration = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 24))
+    var collectionView: UICollectionView!
+    
+    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 24))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -63,7 +65,6 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
             lowestTemperatureLabel
         ])
         temperatureStackView.axis = .horizontal
-        //temperatureStackView.alignment = .leading
         temperatureStackView.distribution = .equalCentering
         temperatureStackView.spacing = 10
         
@@ -107,7 +108,7 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         highestTemperatureLabel.text = format(input: maxTemp, modifier: true)
         lowestTemperatureLabel.text = format(input: minTemp, modifier: true)
         probabilityOfPrecipitationLabel.text = format(input: pop)
-        weatherIconView.image = UIImage(systemName: icon, withConfiguration: configuration)
+        weatherIconView.image = UIImage(systemName: icon, withConfiguration: symbolConfig)
     }
     
     fileprivate func setupConstraints(for uiView: UIView) {

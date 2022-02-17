@@ -16,7 +16,6 @@ class CurrentWeatherCell: UICollectionViewCell, SelfConfiguringCell {
     let temperatureFeelsLikeLabel = UILabel()
     let weatherIconView = UIImageView()
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         

@@ -11,18 +11,16 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     
     static let reuseIdentifier = "HourlyForecastCell"
     
-    var hourlyForecast: Current!
-    
     let timeLabel = UILabel()
     let probabilityOfPrecipitationLabel = UILabel()
     let temperatureLabel = UILabel()
     let weatherIconView = UIImageView()
     
-    private let configuration = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 24))
+    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 24))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         timeLabel.font = .systemFont(ofSize: 16, weight: .medium)
         timeLabel.textColor = .white
         
@@ -45,7 +43,7 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         stackView.alignment = .center
         stackView.distribution = .fillEqually
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         setupConstraints(for: stackView)
     }
     
@@ -71,7 +69,7 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         timeLabel.text = DateManager.shared.defineDate(withUnixTime: time, andDateFormat: .time)
         probabilityOfPrecipitationLabel.text = format(input: pop)
         temperatureLabel.text = format(input: temp, modifier: true)
-        weatherIconView.image = UIImage(systemName: icon, withConfiguration: configuration)
+        weatherIconView.image = UIImage(systemName: icon, withConfiguration: symbolConfig)
     }
     
     fileprivate func setupConstraints(for uiView: UIView) {
