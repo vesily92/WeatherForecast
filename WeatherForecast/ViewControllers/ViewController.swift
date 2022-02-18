@@ -79,7 +79,6 @@ class ViewController: UIViewController {
     
     private func setupCollectionView() {
         weatherCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
-        //weatherCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         weatherCollectionView.backgroundColor = .systemGray4
         weatherCollectionView.showsVerticalScrollIndicator = false
         
@@ -157,7 +156,7 @@ class ViewController: UIViewController {
             
             switch section {
             case .hourly: return self.createHourlySection(using: section)
-            case .daily: return self.createDailySection(using: section)
+            case .daily: return self.createDailyListSection(using: section, and: layoutEnvironment)
             default: return self.createCurrentSection(using: section)
             }
         }
@@ -194,20 +193,37 @@ class ViewController: UIViewController {
         let sectionHeader = createSectionHeader()
         section.boundarySupplementaryItems = [sectionHeader]
         
-        
         return section
     }
     
-    private func createDailySection(using: Section) -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+//    private func createDailySection(using: Section) -> NSCollectionLayoutSection {
+//        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+//        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+//
+//        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60))
+//        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+//
+//        let section = NSCollectionLayoutSection(group: group)
+//        section.contentInsets = NSDirectionalEdgeInsets(top: sectionInsetY, leading: sectionInsetX, bottom: sectionInsetY, trailing: sectionInsetX)
+//
+//
+//        let backgroundView = createBackgroundView()
+//        section.decorationItems = [backgroundView]
+//
+//        let sectionHeader = createSectionHeader()
+//        section.boundarySupplementaryItems = [sectionHeader]
+//
+//        return section
+//    }
+    
+    private func createDailyListSection(using: Section, and layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
+        var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+        configuration.separatorConfiguration.bottomSeparatorInsets.leading = 0
+        configuration.separatorConfiguration.color = .systemBackground
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60))
-        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+        let section = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
         
-        let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: sectionInsetY, leading: sectionInsetX, bottom: sectionInsetY, trailing: sectionInsetX)
-        
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
@@ -216,6 +232,7 @@ class ViewController: UIViewController {
         section.boundarySupplementaryItems = [sectionHeader]
         
         return section
+    
     }
     
     private func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
