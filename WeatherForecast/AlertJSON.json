@@ -1,0 +1,61 @@
+
+[
+    {
+      "sender_name": "",
+      "event": "Wind",
+      "start": 1645182000,
+      "end": 1645200000,
+      "description": "",
+      "tags": [
+        "Wind"
+      ]
+    },
+    {
+      "sender_name": "",
+      "event": "Ветер",
+      "start": 1645182000,
+      "end": 1645200000,
+      "description": "Утром и днем порывы ветра 15-20 м/с",
+      "tags": [
+        "Wind"
+      ]
+    },
+    {
+      "sender_name": "",
+      "event": "Freezing rain, icing",
+      "start": 1645250400,
+      "end": 1645293600,
+      "description": "",
+      "tags": [
+        "Extreme temperature value",
+        "Rain",
+        "Black ice"
+      ]
+    },
+    {
+      "sender_name": "",
+      "event": "Гололедно - изморозевое отложение",
+      "start": 1645250400,
+      "end": 1645293600,
+      "description": "местами налипание мокрого снега.",
+      "tags": [
+        "Black ice"
+      ]
+    },
+    {
+      "sender_name": "",
+      "event": "Other dangers",
+      "start": 1645250400,
+      "end": 1645293600,
+      "description": "",
+      "tags": []
+    },
+    {
+      "sender_name": "",
+      "event": "Прочие опасности",
+      "start": 1645250400,
+      "end": 1645293600,
+      "description": "местами налипание мокрого снега",
+      "tags": []
+    }
+  ]
