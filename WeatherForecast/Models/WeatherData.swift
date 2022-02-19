@@ -43,6 +43,23 @@ struct Weather: Codable {
 //    }
 }
 
+enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
+    case alert
+    case current
+    case hourly
+    case daily
+    
+    var description: String {
+        switch self {
+        case .alert: return ""
+        case .current: return ""
+        case .hourly: return ""
+        case .daily: return ""
+        }
+    }
+}
+
+
 struct Main: Codable {
     let temp: Double
     let feelsLike: Double
@@ -69,6 +86,7 @@ struct ForecastData: Codable, Hashable {
     let current: Current
     let hourly: [Current]
     let daily: [Daily]
+    let alerts: [Alert]
     
     enum CodingKeys: String, CodingKey {
         case lat
@@ -78,6 +96,7 @@ struct ForecastData: Codable, Hashable {
         case current
         case hourly
         case daily
+        case alerts
     }
     
     static func == (lhs: ForecastData, rhs: ForecastData) -> Bool {
@@ -93,6 +112,8 @@ struct Current: Codable, Hashable {
     let identifier = UUID()
     
     let dt: Int?
+    let sunrise: Int?
+    let sunset: Int?
     let temp: Double?
     let feelsLike: Double?
     let weather: [Weather]?
@@ -100,6 +121,8 @@ struct Current: Codable, Hashable {
     
     enum CodingKeys: String, CodingKey {
         case dt
+        case sunrise
+        case sunset
         case temp
         case feelsLike = "feels_like"
         case weather
@@ -187,4 +210,31 @@ struct Temperature: Codable {
     
 }
 
+struct Alert: Codable, Hashable {
+    let identifier = UUID()
+    
+    let senderName: String
+    let event: String
+    let start: Int
+    let end: Int
+    let alertDescription: String
+    let tags: [String]
+    
+    enum CodingKeys: String, CodingKey {
+        case senderName = "sender_name"
+        case event
+        case start
+        case end
+        case alertDescription = "description"
+        case tags
+    }
+    
+    static func == (lhs: Alert, rhs: Alert) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+    }
+}
 
