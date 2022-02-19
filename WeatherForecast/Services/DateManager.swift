@@ -9,6 +9,7 @@ import UIKit
 
 enum DefineDateFormat: String {
     case time
+    case sunTime
     case weekday
     case date
 }
@@ -25,6 +26,7 @@ class DateManager {
         
         switch dateFormat {
         case .time: dateFormatter.dateFormat = "HH"
+        case .sunTime: dateFormatter.dateFormat = "HH MM"
         case .weekday: dateFormatter.dateFormat = "EEEE"
         case .date: dateFormatter.dateFormat = "d MMMM"
         }
