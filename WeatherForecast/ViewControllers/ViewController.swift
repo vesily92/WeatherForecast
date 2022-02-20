@@ -30,6 +30,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         
+        
         setupNavigationBar()
         setupCollectionView()
         
@@ -59,21 +60,25 @@ class ViewController: UIViewController {
     private func setupNavigationBar() {
         title = "City Name"
         
-        
-        navigationController?.navigationBar.prefersLargeTitles = true
-        
-        
+
+//        let paragraph = NSMutableParagraphStyle()
+//        paragraph.alignment = .center
+
         let appearance = UINavigationBarAppearance()
-        
-        appearance.configureWithTransparentBackground()
+//        appearance.configureWithTransparentBackground()
 //        appearance.backgroundColor = .black
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
-        
+//        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.backgroundColor = .systemGray4
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white, .font: UIFont.systemFont(ofSize: 32, weight: .bold)]
+
+//        navigationController?.navigationBar.prefersLargeTitles = true
+
+        navigationItem.largeTitleDisplayMode = .always
+
         navigationItem.standardAppearance = appearance
-        navigationItem.scrollEdgeAppearance = appearance
-        navigationItem.compactAppearance = appearance
-        
+//        navigationItem.scrollEdgeAppearance = appearance
+//        navigationItem.compactAppearance = appearance
+
 //        edgesForExtendedLayout = []
     }
     
@@ -82,8 +87,8 @@ class ViewController: UIViewController {
         weatherCollectionView.backgroundColor = .systemGray4
         weatherCollectionView.showsVerticalScrollIndicator = false
         
-        view.addSubview(weatherCollectionView)
         weatherCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(weatherCollectionView)
         
         NSLayoutConstraint.activate([
             weatherCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -128,11 +133,11 @@ class ViewController: UIViewController {
             
             switch section {
             case .current:
-                sectionHeader.title.text = nil
+                return nil
             case .hourly:
-                sectionHeader.title.text = "HOURLY FORECAST"
+                sectionHeader.titleLabel.text = "HOURLY FORECAST"
             case .daily:
-                sectionHeader.title.text = "7-DAY FORECAST"
+                sectionHeader.titleLabel.text = "7-DAY FORECAST"
             }
             
             return sectionHeader
@@ -173,6 +178,7 @@ class ViewController: UIViewController {
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
+        
         return section
     }
     
@@ -185,7 +191,7 @@ class ViewController: UIViewController {
 
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
-        section.contentInsets = NSDirectionalEdgeInsets(top: sectionInsetY, leading: sectionInsetX, bottom: sectionInsetY, trailing: sectionInsetX)
+        section.contentInsets = NSDirectionalEdgeInsets(top: sectionInsetY, leading: sectionInsetX, bottom: 400, trailing: sectionInsetX)
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
@@ -236,8 +242,10 @@ class ViewController: UIViewController {
     }
     
     private func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(80))
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(40))
         let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        sectionHeader.pinToVisibleBounds = true
+        sectionHeader.zIndex = 2
         return sectionHeader
     }
     
@@ -251,10 +259,4 @@ class ViewController: UIViewController {
         
         return backgroundItem
     }
-    
-//    private func createSeparator() -> NSCollectionLayoutSupplementaryItem {
-//        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-//        let separator = NSCollectionLayoutSupplementaryItem(layoutSize: itemSize, elementKind: Separator.reuseIdentifier, containerAnchor: NSCollectionLayoutAnchor(edges: [.leading, .top]))
-//        return separator
-//    }
 }
