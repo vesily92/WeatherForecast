@@ -16,7 +16,7 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     let temperatureLabel = UILabel()
     let weatherIconView = UIImageView()
     
-    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 24))
+    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 22))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -33,10 +33,19 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         weatherIconView.preferredSymbolConfiguration = .preferringMulticolor()
         weatherIconView.contentMode = .scaleAspectFit
         
+        let iconPopStackView = UIStackView(arrangedSubviews: [
+            weatherIconView,
+            probabilityOfPrecipitationLabel
+        ])
+        iconPopStackView.axis = .vertical
+        iconPopStackView.distribution = .fill
+        iconPopStackView.clipsToBounds = true
+        
         let stackView = UIStackView(arrangedSubviews: [
             timeLabel,
-            weatherIconView,
-            probabilityOfPrecipitationLabel,
+//            weatherIconView,
+//            probabilityOfPrecipitationLabel,
+            iconPopStackView,
             temperatureLabel
         ])
         stackView.axis = .vertical
@@ -77,7 +86,8 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         
         NSLayoutConstraint.activate([
             uiView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            uiView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            uiView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            uiView.heightAnchor.constraint(equalToConstant: 120)
         ])
     }
     

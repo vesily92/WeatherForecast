@@ -28,7 +28,7 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         weekdayLabel.font = .systemFont(ofSize: 18, weight: .bold)
         weekdayLabel.textColor = .white
         
-        dateLabel.font = .systemFont(ofSize: 16, weight: .light)
+        dateLabel.font = .systemFont(ofSize: 12, weight: .light)
         dateLabel.textColor = .white
         
         highestTemperatureLabel.font = .systemFont(ofSize: 18, weight: .bold)
