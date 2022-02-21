@@ -20,7 +20,7 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     
     var collectionView: UICollectionView!
     
-    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 24))
+    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 16))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -69,7 +69,8 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         temperatureStackView.spacing = 10
         
         let mainStackView = UIStackView(arrangedSubviews: [
-            dateStackView,
+            weekdayLabel,
+//            dateStackView,
             temperatureStackView
         ])
         mainStackView.distribution = .equalCentering
