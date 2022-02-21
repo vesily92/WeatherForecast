@@ -11,41 +11,46 @@ final class SectionHeader: UICollectionReusableView {
     static let reuseIdentifier = "SectionHeader"
     
     let titleLabel = UILabel()
-    let subtitleLabel = UILabel()
+    let symbolView = UIImageView()
     let backgroundView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         titleLabel.font = .systemFont(ofSize: 12)
-        titleLabel.textColor = .systemBackground
+        titleLabel.textColor = .systemGray4
+        
+        symbolView.contentMode = .scaleAspectFit
+        symbolView.tintColor = .systemGray4
         
         backgroundView.backgroundColor = .systemGray2
-        
+        backgroundView.layer.cornerRadius = 12
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(backgroundView)
-        addSubview(titleLabel)
         
-//        NSLayoutConstraint.activate([
-//            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-//            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-//            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
-//            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
-//        ])
+        let headerTitleStackView = UIStackView(arrangedSubviews: [
+            symbolView,
+            titleLabel
+        ])
+        headerTitleStackView.axis = .horizontal
+        headerTitleStackView.alignment = .firstBaseline
+        
+        headerTitleStackView.spacing = 4
+        headerTitleStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(backgroundView)
+        addSubview(headerTitleStackView)
         
         NSLayoutConstraint.activate([
             backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
             backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            backgroundView.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            backgroundView.topAnchor.constraint(equalTo: topAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            titleLabel.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor),
-            titleLabel.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 4),
-            titleLabel.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -4)
+            headerTitleStackView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 16),
+            headerTitleStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 50),
+            headerTitleStackView.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 12)
         ])
-        //title.setCustomSpacing(10, after: title)
+        
     }
     
     required init?(coder: NSCoder) {
