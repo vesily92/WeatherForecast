@@ -23,26 +23,24 @@ class ViewController: UIViewController {
     
     var weatherCollectionView: UICollectionView!
     
-    private let sectionInsetY: CGFloat = 8
+    private let sectionInsetY: CGFloat = 4
     private let sectionInsetX: CGFloat = 16
+    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 14))
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         
+        view.backgroundColor = .systemGray4
         
-        setupNavigationBar()
+//        setupNavigationBar()
         setupCollectionView()
+        
+        
         
 //        let refreshControl = UIRefreshControl()
 //        weatherCollectionView.refreshControl = refreshControl
         
-        view.backgroundColor = .systemGray4
-        weatherCollectionView.register(SectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeader.reuseIdentifier)
-        
-        weatherCollectionView.register(CurrentWeatherCell.self, forCellWithReuseIdentifier: CurrentWeatherCell.reuseIdentifier)
-        weatherCollectionView.register(HourlyForecastCell.self, forCellWithReuseIdentifier: HourlyForecastCell.reuseIdentifier)
-        weatherCollectionView.register(DailyForecastCell.self, forCellWithReuseIdentifier: DailyForecastCell.reuseIdentifier)
         
 //        NetworkManager.shared.fetchHourly(latitude: 33.44, longitude: -94.04) { result in
 //            switch result {
@@ -86,7 +84,6 @@ class ViewController: UIViewController {
         weatherCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
         weatherCollectionView.backgroundColor = .systemGray4
         weatherCollectionView.showsVerticalScrollIndicator = false
-        
         weatherCollectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(weatherCollectionView)
         
@@ -96,6 +93,12 @@ class ViewController: UIViewController {
             weatherCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             weatherCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
+        
+        weatherCollectionView.register(SectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: SectionHeader.reuseIdentifier)
+//        weatherCollectionView.register(GlobalHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: GlobalHeader.reuseIdentifier)
+        weatherCollectionView.register(CurrentWeatherCell.self, forCellWithReuseIdentifier: CurrentWeatherCell.reuseIdentifier)
+        weatherCollectionView.register(HourlyForecastCell.self, forCellWithReuseIdentifier: HourlyForecastCell.reuseIdentifier)
+        weatherCollectionView.register(DailyForecastCell.self, forCellWithReuseIdentifier: DailyForecastCell.reuseIdentifier)
     }
     
     private func configure<T: SelfConfiguringCell>(_ cellType: T.Type, with model: AnyHashable, for indexPath: IndexPath) -> T {
@@ -135,8 +138,10 @@ class ViewController: UIViewController {
             case .current:
                 return nil
             case .hourly:
+                sectionHeader.symbolView.image = UIImage(systemName: "clock", withConfiguration: self.symbolConfig)
                 sectionHeader.titleLabel.text = "HOURLY FORECAST"
             case .daily:
+                sectionHeader.symbolView.image = UIImage(systemName: "calendar", withConfiguration: self.symbolConfig)
                 sectionHeader.titleLabel.text = "7-DAY FORECAST"
             }
             
@@ -165,8 +170,25 @@ class ViewController: UIViewController {
             default: return self.createCurrentSection(using: section)
             }
         }
-        
-        layout.register(BackgroundSupplementaryView.self, forDecorationViewOfKind: BackgroundSupplementaryView.reuseIdentifier)
+//        let globalHeaderFooterSize = NSCollectionLayoutSize(
+//            widthDimension: .fractionalWidth(1),
+//            heightDimension: .estimated(100)
+//        )
+//
+//        let globalHeader = NSCollectionLayoutBoundarySupplementaryItem(
+//            layoutSize: globalHeaderFooterSize,
+//            elementKind: UICollectionView.elementKindSectionHeader,
+//            alignment: .top
+//        )
+//        globalHeader.pinToVisibleBounds = true
+//        let config = UICollectionViewCompositionalLayoutConfiguration()
+//        config.boundarySupplementaryItems = [globalHeader]
+//
+//        layout.configuration = config
+        layout.register(
+            BackgroundSupplementaryView.self,
+            forDecorationViewOfKind: BackgroundSupplementaryView.reuseIdentifier
+        )
         return layout
     }
     
@@ -191,13 +213,14 @@ class ViewController: UIViewController {
 
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
-        section.contentInsets = NSDirectionalEdgeInsets(top: sectionInsetY, leading: sectionInsetX, bottom: 400, trailing: sectionInsetX)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: sectionInsetX, bottom: sectionInsetY, trailing: sectionInsetX)
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
         
         let sectionHeader = createSectionHeader()
         section.boundarySupplementaryItems = [sectionHeader]
+        section.supplementariesFollowContentInsets = false
         
         return section
     }
@@ -223,35 +246,36 @@ class ViewController: UIViewController {
 //    }
     
     private func createDailyListSection(using: Section, and layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
-        var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+        var configuration = UICollectionLayoutListConfiguration(appearance: .sidebar)
         configuration.separatorConfiguration.bottomSeparatorInsets.leading = 0
-        configuration.separatorConfiguration.color = .systemBackground
+        configuration.separatorConfiguration.topSeparatorVisibility = .visible
+        configuration.separatorConfiguration.color = .systemGray4
         
         let section = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
         
-        section.contentInsets = NSDirectionalEdgeInsets(top: sectionInsetY, leading: sectionInsetX, bottom: sectionInsetY, trailing: sectionInsetX)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: sectionInsetX, bottom: 800, trailing: sectionInsetX)
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
         
         let sectionHeader = createSectionHeader()
         section.boundarySupplementaryItems = [sectionHeader]
+        section.supplementariesFollowContentInsets = false
         
         return section
     
     }
     
     private func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .absolute(40))
-        let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(30))
+        let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .topLeading)
         sectionHeader.pinToVisibleBounds = true
-        sectionHeader.zIndex = 2
+        
         return sectionHeader
     }
     
     private func createBackgroundView() -> NSCollectionLayoutDecorationItem {
-        
-        let topBottomInset: CGFloat = 4
+        let topBottomInset: CGFloat = 8
         let leadingTrailingInset: CGFloat = 0
         
         let backgroundItem = NSCollectionLayoutDecorationItem.background(elementKind: BackgroundSupplementaryView.reuseIdentifier)
