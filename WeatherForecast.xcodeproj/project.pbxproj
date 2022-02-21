@@ -38,6 +38,7 @@
 		7B42474227BBC396009DDADE /* BackgroundSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42474127BBC396009DDADE /* BackgroundSupplementaryView.swift */; };
 		7B42474427BBE114009DDADE /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42474327BBE114009DDADE /* SectionHeader.swift */; };
 		7B42475027BFCDBB009DDADE /* AlertCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42474F27BFCDBA009DDADE /* AlertCell.swift */; };
+		7B42475227C3D47D009DDADE /* GlobalHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42475127C3D47D009DDADE /* GlobalHeader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +75,7 @@
 		7B42474127BBC396009DDADE /* BackgroundSupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundSupplementaryView.swift; sourceTree = "<group>"; };
 		7B42474327BBE114009DDADE /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		7B42474F27BFCDBA009DDADE /* AlertCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertCell.swift; sourceTree = "<group>"; };
+		7B42475127C3D47D009DDADE /* GlobalHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalHeader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +193,7 @@
 				7B241A4527B4F2AB00F07F52 /* SelfConfiguringCell.swift */,
 				7B42474127BBC396009DDADE /* BackgroundSupplementaryView.swift */,
 				7B42474327BBE114009DDADE /* SectionHeader.swift */,
+				7B42475127C3D47D009DDADE /* GlobalHeader.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -289,6 +292,7 @@
 				7B241A4027B3EDFF00F07F52 /* CurrentWeatherCell.swift in Sources */,
 				7B241A1827AC1D8800F07F52 /* HomePageViewController.swift in Sources */,
 				7B42474227BBC396009DDADE /* BackgroundSupplementaryView.swift in Sources */,
+				7B42475227C3D47D009DDADE /* GlobalHeader.swift in Sources */,
 				7B241A1427AC1D8800F07F52 /* AppDelegate.swift in Sources */,
 				7B241A4227B3F57100F07F52 /* HourlyForecastCell.swift in Sources */,
 				7B241A3B27B39D1F00F07F52 /* Hourly.swift in Sources */,
