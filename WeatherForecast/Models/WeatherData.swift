@@ -43,7 +43,7 @@ struct Weather: Codable {
 //    }
 }
 
-enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
+enum Section2: Int, Hashable, CaseIterable, CustomStringConvertible {
     case alert
     case current
     case hourly
@@ -84,7 +84,7 @@ struct ForecastData: Codable, Hashable {
     let timezone: String
     let timezoneOffset: Int
     let current: Current
-    let hourly: [Current]
+    let hourly: [Hourly]
     let daily: [Daily]
     let alerts: [Alert]
     

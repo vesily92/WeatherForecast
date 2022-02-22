@@ -27,7 +27,7 @@ class DateManager {
         switch dateFormat {
         case .time: dateFormatter.dateFormat = "HH"
         case .sunTime: dateFormatter.dateFormat = "HH MM"
-        case .weekday: dateFormatter.dateFormat = "EEEE"
+        case .weekday: dateFormatter.dateFormat = "EE"
         case .date: dateFormatter.dateFormat = "d MMMM"
         }
         

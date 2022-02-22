@@ -16,6 +16,10 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     let temperatureLabel = UILabel()
     let weatherIconView = UIImageView()
     
+    var sunTime: [Current] {
+        Bundle.main.decode([Current].self, from: "CurrentJSON.json")
+    }
+    
     private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 22))
     
     override init(frame: CGRect) {
@@ -65,6 +69,8 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
 //        weatherIconView.image = UIImage(systemName: model.systemNameString)
 //    }
     
+    
+    
     func configure(with forecast: AnyHashable) {
         guard let model = forecast as? Hourly else { return }
         
@@ -80,6 +86,8 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         temperatureLabel.text = format(input: temp, modifier: true)
         weatherIconView.image = UIImage(systemName: icon, withConfiguration: symbolConfig)
     }
+    
+    
     
     fileprivate func setupConstraints(for uiView: UIView) {
         contentView.addSubview(uiView)
