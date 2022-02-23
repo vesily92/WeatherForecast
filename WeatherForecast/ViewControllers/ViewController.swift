@@ -39,7 +39,7 @@ class ViewController: UIViewController {
     
 //    private func setupNavigationBar() {
 //        title = "City Name"
-//        
+//
 //
 //        let paragraph = NSMutableParagraphStyle()
 //        paragraph.alignment = .center
@@ -349,7 +349,7 @@ extension ViewController {
         return sectionHeader
     }
     
-    private func createGlobalHeader(withKind headerKind: String, andFooterWithKind footerKind: String) -> [NSCollectionLayoutBoundarySupplementaryItem] {
+    private func createGlobalHeader(withKind headerKind: String, andFooterWithKind footerKind: String? = nil) -> [NSCollectionLayoutBoundarySupplementaryItem] {
         var globalHeaderAndFooter: [NSCollectionLayoutBoundarySupplementaryItem] = []
         
         let globalHeaderFooterSize = NSCollectionLayoutSize(
@@ -366,15 +366,16 @@ extension ViewController {
         
         globalHeaderAndFooter.append(globalHeader)
         
-        let globalFooter = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: globalHeaderFooterSize,
-            elementKind: footerKind,
-            alignment: .bottom
-        )
-        globalFooter.pinToVisibleBounds = true
-        
-        globalHeaderAndFooter.append(globalFooter)
-        
+        if let footerKind = footerKind {
+            let globalFooter = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: globalHeaderFooterSize,
+                elementKind: footerKind,
+                alignment: .bottom
+            )
+            globalFooter.pinToVisibleBounds = true
+            
+            globalHeaderAndFooter.append(globalFooter)
+        }
         
         return globalHeaderAndFooter
     }
