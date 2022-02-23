@@ -32,53 +32,35 @@ class ViewController: UIViewController {
 
         
         view.backgroundColor = .systemGray4
-        
-//        setupNavigationBar()
         setupCollectionView()
-        
-        
-        
-//        let refreshControl = UIRefreshControl()
-//        weatherCollectionView.refreshControl = refreshControl
-        
-        
-//        NetworkManager.shared.fetchHourly(latitude: 33.44, longitude: -94.04) { result in
-//            switch result {
-//            case .success(let forecast):
-//                self.dailyForecasts.append(forecast)
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
-
         createDataSource()
         reloadData()
     }
     
-    private func setupNavigationBar() {
-        title = "City Name"
-        
-
+//    private func setupNavigationBar() {
+//        title = "City Name"
+//        
+//
 //        let paragraph = NSMutableParagraphStyle()
 //        paragraph.alignment = .center
-
-        let appearance = UINavigationBarAppearance()
+//
+//        let appearance = UINavigationBarAppearance()
 //        appearance.configureWithTransparentBackground()
 //        appearance.backgroundColor = .black
 //        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-        appearance.backgroundColor = .systemGray4
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.white, .font: UIFont.systemFont(ofSize: 32, weight: .bold)]
-
+//        appearance.backgroundColor = .systemGray4
+//        appearance.titleTextAttributes = [.foregroundColor: UIColor.white, .font: UIFont.systemFont(ofSize: 32, weight: .bold)]
+//
 //        navigationController?.navigationBar.prefersLargeTitles = true
-
-        navigationItem.largeTitleDisplayMode = .always
-
-        navigationItem.standardAppearance = appearance
+//
+//        navigationItem.largeTitleDisplayMode = .always
+//
+//        navigationItem.standardAppearance = appearance
 //        navigationItem.scrollEdgeAppearance = appearance
 //        navigationItem.compactAppearance = appearance
-
+//
 //        edgesForExtendedLayout = []
-    }
+//    }
     
     private func setupCollectionView() {
         weatherCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
@@ -134,6 +116,39 @@ class ViewController: UIViewController {
         return cell
     }
     
+    private func createCompositionalLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
+            guard let section = Section(rawValue: sectionIndex) else {
+                fatalError("Unknown section kind")
+            }
+            
+            switch section {
+            case .hourly: return self.createHourlySection(using: section)
+            case .daily: return self.createDailyListSection(using: section, and: layoutEnvironment)
+            default: return self.createCurrentSection(using: section)
+            }
+        }
+        
+        let globalHeaderAndFooter = createGlobalHeader(
+            withKind: GlobalHeader.reuseIdentifier,
+            andFooterWithKind: GlobalFooter.reuseIdentifier
+        )
+        let config = UICollectionViewCompositionalLayoutConfiguration()
+        config.boundarySupplementaryItems = globalHeaderAndFooter
+        
+        layout.configuration = config
+        layout.register(
+            BackgroundSupplementaryView.self,
+            forDecorationViewOfKind: BackgroundSupplementaryView.reuseIdentifier
+        )
+        return layout
+    }
+}
+
+// - MARK: DataSource
+
+extension ViewController {
+    
     private func createDataSource() {
         dataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>(collectionView: weatherCollectionView, cellProvider: { collectionView, indexPath, forecast in
             guard let section = Section(rawValue: indexPath.section) else {
@@ -187,7 +202,7 @@ class ViewController: UIViewController {
             }
         }
     }
-
+    
     private func reloadData() {
         var snapshot = NSDiffableDataSourceSnapshot<Section,AnyHashable>()
         snapshot.appendSections([.current, .hourly, .daily])
@@ -196,45 +211,10 @@ class ViewController: UIViewController {
         snapshot.appendItems(dailyForecasts, toSection: .daily)
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
-    
-    private func createCompositionalLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
-            guard let section = Section(rawValue: sectionIndex) else {
-                fatalError("Unknown section kind")
-            }
-            
-            switch section {
-            case .hourly: return self.createHourlySection(using: section)
-            case .daily: return self.createDailyListSection(using: section, and: layoutEnvironment)
-            default: return self.createCurrentSection(using: section)
-            }
-        }
-//        let globalHeaderFooterSize = NSCollectionLayoutSize(
-//            widthDimension: .fractionalWidth(1),
-//            heightDimension: .estimated(100)
-//        )
-//
-//        let globalHeader = NSCollectionLayoutBoundarySupplementaryItem(
-//            layoutSize: globalHeaderFooterSize,
-//            elementKind: GlobalHeader.reuseIdentifier,
-//            alignment: .top
-//        )
-//        globalHeader.pinToVisibleBounds = true
-        
-        let globalHeaderAndFooter = createGlobalHeader(
-            withKind: GlobalHeader.reuseIdentifier,
-            andFooterWithKind: GlobalFooter.reuseIdentifier
-        )
-        let config = UICollectionViewCompositionalLayoutConfiguration()
-        config.boundarySupplementaryItems = globalHeaderAndFooter
-        
-        layout.configuration = config
-        layout.register(
-            BackgroundSupplementaryView.self,
-            forDecorationViewOfKind: BackgroundSupplementaryView.reuseIdentifier
-        )
-        return layout
-    }
+}
+
+// - MARK: Sections
+extension ViewController {
     
     private func createCurrentSection(using: Section) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
@@ -324,26 +304,6 @@ class ViewController: UIViewController {
         
         return section
     }
-    
-//    private func createDailySection(using: Section) -> NSCollectionLayoutSection {
-//        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-//        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-//
-//        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(60))
-//        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
-//
-//        let section = NSCollectionLayoutSection(group: group)
-//        section.contentInsets = NSDirectionalEdgeInsets(top: sectionInsetY, leading: sectionInsetX, bottom: sectionInsetY, trailing: sectionInsetX)
-//
-//
-//        let backgroundView = createBackgroundView()
-//        section.decorationItems = [backgroundView]
-//
-//        let sectionHeader = createSectionHeader()
-//        section.boundarySupplementaryItems = [sectionHeader]
-//
-//        return section
-//    }
     
     private func createDailyListSection(using: Section, and layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         var configuration = UICollectionLayoutListConfiguration(appearance: .sidebar)
