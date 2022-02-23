@@ -42,8 +42,6 @@ class GlobalFooter: UICollectionReusableView {
             titleLabel.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
             titleLabel.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -16),
             titleLabel.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 16)
-            
-            
         ])
     }
     
