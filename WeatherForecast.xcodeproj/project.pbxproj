@@ -41,6 +41,7 @@
 		7B42475227C3D47D009DDADE /* GlobalHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42475127C3D47D009DDADE /* GlobalHeader.swift */; };
 		7B42475427C4E297009DDADE /* GlobalFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42475327C4E296009DDADE /* GlobalFooter.swift */; };
 		7B42475627C51479009DDADE /* SunriseSunsetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42475527C51478009DDADE /* SunriseSunsetCell.swift */; };
+		7B42475827C6C424009DDADE /* HourlyForecastViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42475727C6C424009DDADE /* HourlyForecastViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +81,7 @@
 		7B42475127C3D47D009DDADE /* GlobalHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalHeader.swift; sourceTree = "<group>"; };
 		7B42475327C4E296009DDADE /* GlobalFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalFooter.swift; sourceTree = "<group>"; };
 		7B42475527C51478009DDADE /* SunriseSunsetCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunriseSunsetCell.swift; sourceTree = "<group>"; };
+		7B42475727C6C424009DDADE /* HourlyForecastViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyForecastViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +136,7 @@
 				7B241A3527B2876D00F07F52 /* MainPageViewController.swift */,
 				7B241A4927B5560C00F07F52 /* StartPageViewController.swift */,
 				7B241A4D27B676CF00F07F52 /* ViewController.swift */,
+				7B42475727C6C424009DDADE /* HourlyForecastViewController.swift */,
 				7B241A3E27B3ED9500F07F52 /* Views */,
 			);
 			path = ViewControllers;
@@ -314,6 +317,7 @@
 				7B241A4827B53D1E00F07F52 /* Daily.swift in Sources */,
 				7B42474427BBE114009DDADE /* SectionHeader.swift in Sources */,
 				7B241A4427B3F62900F07F52 /* DailyForecastCell.swift in Sources */,
+				7B42475827C6C424009DDADE /* HourlyForecastViewController.swift in Sources */,
 				7B241A3D27B3AD1300F07F52 /* DateManager.swift in Sources */,
 				7B42475027BFCDBB009DDADE /* AlertCell.swift in Sources */,
 				7B241A2E27AC1FBC00F07F52 /* Constants.swift in Sources */,
