@@ -110,7 +110,9 @@ class ViewController: UIViewController {
         guard let cell = weatherCollectionView.dequeueReusableCell(
             withReuseIdentifier: cellType.reuseIdentifier,
             for: indexPath
-        ) as? T else { fatalError("Unable to dequeue \(cellType)") }
+        ) as? T else {
+            fatalError("Unable to dequeue \(cellType)")
+        }
         
         cell.configure(with: model)
         return cell
@@ -259,7 +261,8 @@ extension ViewController {
             top: 0,
             leading: sectionInsetX,
             bottom: sectionInsetY,
-            trailing: sectionInsetX)
+            trailing: sectionInsetX
+        )
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
@@ -293,7 +296,8 @@ extension ViewController {
             top: 0,
             leading: sectionInsetX,
             bottom: sectionInsetY,
-            trailing: sectionInsetX)
+            trailing: sectionInsetX
+        )
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
