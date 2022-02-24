@@ -1,5 +1,5 @@
 //
-//  SunriseSunsetCell.swift
+//  SunriseCell.swift
 //  WeatherForecast
 //
 //  Created by Василий Пронин on 22.02.2022.
@@ -7,9 +7,9 @@
 
 import UIKit
 
-class SunriseSunsetCell: UICollectionViewCell, SelfConfiguringCell {
+class SunriseCell: UICollectionViewCell, SelfConfiguringCell {
     
-    static let reuseIdentifier = "SunriseSunsetCell"
+    static let reuseIdentifier = "SunriseCell"
     
     let timeLabel = UILabel()
     let titleLabel = UILabel()
