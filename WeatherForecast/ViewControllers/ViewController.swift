@@ -29,38 +29,11 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        
         view.backgroundColor = .systemGray4
         setupCollectionView()
         createDataSource()
         reloadData()
     }
-    
-//    private func setupNavigationBar() {
-//        title = "City Name"
-//
-//
-//        let paragraph = NSMutableParagraphStyle()
-//        paragraph.alignment = .center
-//
-//        let appearance = UINavigationBarAppearance()
-//        appearance.configureWithTransparentBackground()
-//        appearance.backgroundColor = .black
-//        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-//        appearance.backgroundColor = .systemGray4
-//        appearance.titleTextAttributes = [.foregroundColor: UIColor.white, .font: UIFont.systemFont(ofSize: 32, weight: .bold)]
-//
-//        navigationController?.navigationBar.prefersLargeTitles = true
-//
-//        navigationItem.largeTitleDisplayMode = .always
-//
-//        navigationItem.standardAppearance = appearance
-//        navigationItem.scrollEdgeAppearance = appearance
-//        navigationItem.compactAppearance = appearance
-//
-//        edgesForExtendedLayout = []
-//    }
     
     private func setupCollectionView() {
         weatherCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
@@ -68,6 +41,7 @@ class ViewController: UIViewController {
         weatherCollectionView.backgroundColor = .systemGray4
         weatherCollectionView.showsVerticalScrollIndicator = false
         weatherCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(weatherCollectionView)
         
         NSLayoutConstraint.activate([
@@ -77,16 +51,16 @@ class ViewController: UIViewController {
             weatherCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
         
-        weatherCollectionView.register(
-            GlobalHeader.self,
-            forSupplementaryViewOfKind: GlobalHeader.reuseIdentifier,
-            withReuseIdentifier: GlobalHeader.reuseIdentifier
-        )
-        weatherCollectionView.register(
-            GlobalFooter.self,
-            forSupplementaryViewOfKind: GlobalFooter.reuseIdentifier,
-            withReuseIdentifier: GlobalFooter.reuseIdentifier
-        )
+//        weatherCollectionView.register(
+//            GlobalHeader.self,
+//            forSupplementaryViewOfKind: GlobalHeader.reuseIdentifier,
+//            withReuseIdentifier: GlobalHeader.reuseIdentifier
+//        )
+//        weatherCollectionView.register(
+//            GlobalFooter.self,
+//            forSupplementaryViewOfKind: GlobalFooter.reuseIdentifier,
+//            withReuseIdentifier: GlobalFooter.reuseIdentifier
+//        )
         weatherCollectionView.register(
             SectionHeader.self,
             forSupplementaryViewOfKind: SectionHeader.reuseIdentifier,
@@ -131,14 +105,13 @@ class ViewController: UIViewController {
             }
         }
         
-        let globalHeaderAndFooter = createGlobalHeader(
-            withKind: GlobalHeader.reuseIdentifier,
-            andFooterWithKind: GlobalFooter.reuseIdentifier
-        )
-        let config = UICollectionViewCompositionalLayoutConfiguration()
-        config.boundarySupplementaryItems = globalHeaderAndFooter
-        
-        layout.configuration = config
+//        let globalHeader = createGlobalHeader(
+//            withKind: GlobalHeader.reuseIdentifier
+//        )
+//        let config = UICollectionViewCompositionalLayoutConfiguration()
+//        config.boundarySupplementaryItems = globalHeader
+//
+//        layout.configuration = config
         layout.register(
             BackgroundSupplementaryView.self,
             forDecorationViewOfKind: BackgroundSupplementaryView.reuseIdentifier
@@ -168,22 +141,22 @@ extension ViewController {
         })
         
         dataSource?.supplementaryViewProvider = { weatherCollectionView, kind, indexPath in
-            switch kind {
-            case GlobalHeader.reuseIdentifier:
-                guard let globalHeader = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: GlobalHeader.reuseIdentifier, withReuseIdentifier: GlobalHeader.reuseIdentifier, for: indexPath) as? GlobalHeader else {
-                    return nil
-                }
-                globalHeader.titleLabel.text = "City Name"
-                return globalHeader
-                
-            case GlobalFooter.reuseIdentifier:
-                guard let globalFooter = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: GlobalFooter.reuseIdentifier, withReuseIdentifier: GlobalFooter.reuseIdentifier, for: indexPath) as? GlobalFooter else {
-                    return nil
-                }
-                globalFooter.titleLabel.text = "Footer"
-                return globalFooter
-                
-            default:
+//            switch kind {
+//            case GlobalHeader.reuseIdentifier:
+//                guard let globalHeader = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: GlobalHeader.reuseIdentifier, withReuseIdentifier: GlobalHeader.reuseIdentifier, for: indexPath) as? GlobalHeader else {
+//                    return nil
+//                }
+//                globalHeader.titleLabel.text = "City Name"
+//                return globalHeader
+//
+//            case GlobalFooter.reuseIdentifier:
+//                guard let globalFooter = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: GlobalFooter.reuseIdentifier, withReuseIdentifier: GlobalFooter.reuseIdentifier, for: indexPath) as? GlobalFooter else {
+//                    return nil
+//                }
+//                globalFooter.titleLabel.text = "Footer"
+//                return globalFooter
+//
+//            default:
                 guard let sectionHeader = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: SectionHeader.reuseIdentifier, withReuseIdentifier: SectionHeader.reuseIdentifier, for: indexPath) as? SectionHeader else {
                     return nil
                 }
@@ -201,7 +174,7 @@ extension ViewController {
                     sectionHeader.titleLabel.text = "7-DAY FORECAST"
                 }
                 return sectionHeader
-            }
+//            }
         }
     }
     
@@ -400,4 +373,26 @@ extension ViewController {
         
         return backgroundItem
     }
+}
+
+import SwiftUI
+
+struct ViewControllerProvider: PreviewProvider {
+    static var previews: some View {
+        ContainerView().edgesIgnoringSafeArea(.all)
+    }
+    
+    struct ContainerView: UIViewControllerRepresentable {
+        
+        let viewController = ViewController()
+        
+        func makeUIViewController(context: UIViewControllerRepresentableContext<ViewControllerProvider.ContainerView>) -> ViewController {
+            return viewController
+        }
+        
+        func updateUIViewController(_ uiViewController: ViewControllerProvider.ContainerView.UIViewControllerType, context: UIViewControllerRepresentableContext<ViewControllerProvider.ContainerView>) {
+            
+        }
+    }
+    
 }
