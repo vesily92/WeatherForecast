@@ -43,6 +43,7 @@
 		7B42475627C51479009DDADE /* SunriseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42475527C51478009DDADE /* SunriseCell.swift */; };
 		7B42475827C6C424009DDADE /* HourlyForecastViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42475727C6C424009DDADE /* HourlyForecastViewController.swift */; };
 		7B42475A27C75AE8009DDADE /* SunsetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42475927C75AE8009DDADE /* SunsetCell.swift */; };
+		7B42475C27C8FAC8009DDADE /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42475B27C8FAC8009DDADE /* CustomNavigationBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +85,7 @@
 		7B42475527C51478009DDADE /* SunriseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunriseCell.swift; sourceTree = "<group>"; };
 		7B42475727C6C424009DDADE /* HourlyForecastViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyForecastViewController.swift; sourceTree = "<group>"; };
 		7B42475927C75AE8009DDADE /* SunsetCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunsetCell.swift; sourceTree = "<group>"; };
+		7B42475B27C8FAC8009DDADE /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 				7B241A3527B2876D00F07F52 /* MainPageViewController.swift */,
 				7B241A4927B5560C00F07F52 /* StartPageViewController.swift */,
 				7B241A4D27B676CF00F07F52 /* ViewController.swift */,
+				7B42475B27C8FAC8009DDADE /* CustomNavigationBar.swift */,
 				7B42475727C6C424009DDADE /* HourlyForecastViewController.swift */,
 				7B241A3E27B3ED9500F07F52 /* Views */,
 			);
@@ -300,6 +303,7 @@
 				7B241A4C27B5716A00F07F52 /* Current.swift in Sources */,
 				7B241A3227B1027D00F07F52 /* NetworkManager.swift in Sources */,
 				7B241A5327B6879800F07F52 /* Current + Extension.swift in Sources */,
+				7B42475C27C8FAC8009DDADE /* CustomNavigationBar.swift in Sources */,
 				7B241A4A27B5560C00F07F52 /* StartPageViewController.swift in Sources */,
 				7B241A4027B3EDFF00F07F52 /* CurrentWeatherCell.swift in Sources */,
 				7B241A1827AC1D8800F07F52 /* HomePageViewController.swift in Sources */,
