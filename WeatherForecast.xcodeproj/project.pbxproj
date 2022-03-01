@@ -44,6 +44,7 @@
 		7B42475827C6C424009DDADE /* HourlyForecastViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42475727C6C424009DDADE /* HourlyForecastViewController.swift */; };
 		7B42475A27C75AE8009DDADE /* SunsetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42475927C75AE8009DDADE /* SunsetCell.swift */; };
 		7B42475C27C8FAC8009DDADE /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42475B27C8FAC8009DDADE /* CustomNavigationBar.swift */; };
+		7B59756827CE3E2200302F9C /* CurrentWeatherHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B59756727CE3E2200302F9C /* CurrentWeatherHeader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +87,7 @@
 		7B42475727C6C424009DDADE /* HourlyForecastViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyForecastViewController.swift; sourceTree = "<group>"; };
 		7B42475927C75AE8009DDADE /* SunsetCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunsetCell.swift; sourceTree = "<group>"; };
 		7B42475B27C8FAC8009DDADE /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
+		7B59756727CE3E2200302F9C /* CurrentWeatherHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherHeader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +210,7 @@
 				7B42474127BBC396009DDADE /* BackgroundSupplementaryView.swift */,
 				7B42474327BBE114009DDADE /* SectionHeader.swift */,
 				7B42475127C3D47D009DDADE /* GlobalHeader.swift */,
+				7B59756727CE3E2200302F9C /* CurrentWeatherHeader.swift */,
 				7B42475327C4E296009DDADE /* GlobalFooter.swift */,
 			);
 			path = Views;
@@ -315,6 +318,7 @@
 				7B241A4227B3F57100F07F52 /* HourlyForecastCell.swift in Sources */,
 				7B241A3B27B39D1F00F07F52 /* Hourly.swift in Sources */,
 				7B241A4627B4F2AC00F07F52 /* SelfConfiguringCell.swift in Sources */,
+				7B59756827CE3E2200302F9C /* CurrentWeatherHeader.swift in Sources */,
 				7B241A5527B68A1B00F07F52 /* Daily + Extension.swift in Sources */,
 				7B241A3427B1078700F07F52 /* CurrentWeather.swift in Sources */,
 				7B42475427C4E297009DDADE /* GlobalFooter.swift in Sources */,
