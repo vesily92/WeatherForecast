@@ -17,7 +17,6 @@ final class BackgroundSupplementaryView: UICollectionReusableView {
         
         layer.cornerRadius = 12
         backgroundColor = .systemGray2
-        
     }
     
     required init?(coder: NSCoder) {
