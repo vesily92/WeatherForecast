@@ -29,18 +29,6 @@ struct Weather: Codable {
         default: return "nosign"
         }
     }
-    
-//    var identifier: UUID {
-//        return UUID()
-//    }
-//
-//    static func == (lhs: Weather, rhs: Weather) -> Bool {
-//        return lhs.identifier == rhs.identifier
-//    }
-//
-//    func hash(into hasher: inout Hasher) {
-//        hasher.combine(identifier)
-//    }
 }
 
 enum Section2: Int, Hashable, CaseIterable, CustomStringConvertible {
@@ -76,7 +64,7 @@ struct Wind: Codable {
     let speed: Double
 }
 
-struct ForecastData: Codable, Hashable {
+struct ForecastData: Codable {
     let identifier = UUID()
     
     let lat: Double
@@ -98,54 +86,64 @@ struct ForecastData: Codable, Hashable {
         case daily
         case alerts
     }
-    
-    static func == (lhs: ForecastData, rhs: ForecastData) -> Bool {
-        return lhs.identifier == rhs.identifier
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(identifier)
-    }
 }
 
-struct Current: Codable, Hashable {
-    let identifier = UUID()
+struct Current: Codable {
+    let dt: Int
+    let sunrise: Int
+    let sunset: Int
+    let temp: Double
+    let feelsLike: Double
+    let weather: [Weather]
     
-    let dt: Int?
-    let sunrise: Int?
-    let sunset: Int?
-    let temp: Double?
-    let feelsLike: Double?
-    let weather: [Weather]?
-    let pop: Int?
-    
-    enum CodingKeys: String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case dt
         case sunrise
         case sunset
         case temp
         case feelsLike = "feels_like"
         case weather
-        case pop
+    }
+}
+
+extension Current: Hashable {
+    var id: UUID {
+        let id = UUID()
+        return id
     }
     
     static func == (lhs: Current, rhs: Current) -> Bool {
-        return lhs.identifier == rhs.identifier
+        return lhs.id == rhs.id
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(identifier)
+        hasher.combine(id)
     }
 }
+
+//extension Current: Hashable {
+//    var identifier: UUID {
+//        let id = UUID()
+//        return id
+//    }
+//    
+//    static func == (lhs: Current, rhs: Current) -> Bool {
+//        return lhs.identifier == rhs.identifier
+//    }
+//
+//    func hash(into hasher: inout Hasher) {
+//        hasher.combine(identifier)
+//    }
+//}
 
 struct Hourly: Codable, Hashable {
     let identifier = UUID()
     
-    let dt: Int?
-    let temp: Double?
-    let feelsLike: Double?
-    let weather: [Weather]?
-    let pop: Double?
+    let dt: Int
+    let temp: Double
+    let feelsLike: Double
+    let weather: [Weather]
+    let pop: Double
     
     var sectionName = "Hourly Forecast"
     
@@ -160,7 +158,7 @@ struct Hourly: Codable, Hashable {
     static func == (lhs: Hourly, rhs: Hourly) -> Bool {
         return lhs.identifier == rhs.identifier
     }
-    
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
     }
@@ -169,16 +167,16 @@ struct Hourly: Codable, Hashable {
 struct Daily: Codable, Hashable {
     let identifier = UUID()
     
-    let dt: Int?
-    let sunrise: Int?
-    let sunset: Int?
-    let temperature: Temperature?
-    let pressure: Int?
-    let humidity: Int?
-    let windSpeed: Double?
-    let weather: [Weather]?
-    let pop: Double?
-    let uvi: Double?
+    let dt: Int
+    let sunrise: Int
+    let sunset: Int
+    let temperature: Temperature
+    let pressure: Int
+    let humidity: Int
+    let windSpeed: Double
+    let weather: [Weather]
+    let pop: Double
+    let uvi: Double
     
     var sectionName = "7-Day Forecast"
     
