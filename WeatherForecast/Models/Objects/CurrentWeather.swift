@@ -12,15 +12,17 @@ struct CurrentWeather: Codable {
     let cityName: String
     let description: String
     
+    let temperature: Double
     var temperatureString: String {
         return String(format: "%.0f", temperature.rounded(.toNearestOrAwayFromZero)) + " °"
     }
     
-    
+    let feelsLike: Double
     var feelsLikeString: String {
         return "Feels like: " + String(format: "%.0f", feelsLike.rounded(.toNearestOrAwayFromZero)) + " °"
     }
     
+    let conditionCode: Int
     var systemNameString: String {
         switch conditionCode {
         case 200...232: return "cloud.bolt.rain.fill" //"11d"
@@ -33,16 +35,13 @@ struct CurrentWeather: Codable {
         default: return "nosign"
         }
     }
-    private let temperature: Double
-    private let feelsLike: Double
-    private let conditionCode: Int
     
-    init?(currentWeatherData: CurrentWeatherData) {
-        cityName = currentWeatherData.name
-        temperature = currentWeatherData.main.temp
-        description = currentWeatherData.weather.first!.description.capitalized
-        feelsLike = currentWeatherData.main.feelsLike
-        conditionCode = currentWeatherData.weather.first!.id
+    init?(model: CurrentWeatherData) {
+        cityName = model.name
+        temperature = model.main.temp
+        description = model.weather.first!.description.capitalized
+        feelsLike = model.main.feelsLike
+        conditionCode = model.weather.first!.id
     }
 }
 
