@@ -63,13 +63,13 @@ extension Hourly {
             }
         }
         
-        init?(model: Hourly) {
-            
-            self.time = DateManager.shared.defineDate(withUnixTime: model.dt ?? 0, andDateFormat: .time)
-            self.hourlyTemperature = String(format: "%.0f", model.temp?.rounded(.toNearestOrAwayFromZero) ?? 0)
-            self.probabilityOfPrecipitation = "\(model.pop ?? 0) %"
-            self.conditionCode = model.weather?.first!.id ?? 0
-        }
+//        init?(model: Hourly) {
+//            
+//            self.time = DateManager.shared.defineDate(withUnixTime: model.dt ?? 0, andDateFormat: .time)
+//            self.hourlyTemperature = String(format: "%.0f", model.temp?.rounded(.toNearestOrAwayFromZero) ?? 0)
+//            self.probabilityOfPrecipitation = "\(model.pop ?? 0) %"
+//            self.conditionCode = model.weather?.first!.id ?? 0
+//        }
         
         static func == (lhs: Hourly.Diffable, rhs: Hourly.Diffable) -> Bool {
             return lhs.id == rhs.id

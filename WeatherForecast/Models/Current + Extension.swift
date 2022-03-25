@@ -14,8 +14,8 @@ extension Current {
             return id
         }
         
-        let description: String
         let temperature: String
+        let description: String
         let feelsLike: String
         let conditionCode: Int
         
@@ -33,11 +33,14 @@ extension Current {
         }
         
         init?(model: Current) {
-            
-            self.description = model.temp?.description ?? ""
-            self.temperature = String(format: "%.0f", model.temp?.rounded(.toNearestOrAwayFromZero) ?? 0)
-            self.feelsLike = String(format: "%.0f", model.feelsLike?.rounded(.toNearestOrAwayFromZero) ?? 0)
-            self.conditionCode = model.weather?.first!.id ?? 0
+            temperature = String(format: "%.0f", model.temp.rounded(.toNearestOrAwayFromZero))
+            description = model.temp.description
+            feelsLike = String(format: "%.0f", model.feelsLike.rounded(.toNearestOrAwayFromZero))
+            conditionCode = model.weather.first!.id
+//            temperature = model.temp ?? 0
+//            description = model.weather?.first?.description ?? ""
+//            feelsLike = model.feelsLike ?? 0
+//            conditionCode = model.weather?.first?.id ?? 0
         }
         
         static func == (lhs: Current.Diffable, rhs: Current.Diffable) -> Bool {
