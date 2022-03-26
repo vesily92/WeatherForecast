@@ -9,18 +9,16 @@ import UIKit
 
 class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     
+    
+    
     static let reuseIdentifier = "HourlyForecastCell"
     
-    let timeLabel = UILabel()
-    let probabilityOfPrecipitationLabel = UILabel()
-    let temperatureLabel = UILabel()
-    let weatherIconView = UIImageView()
+    lazy private var timeLabel = UILabel()
+    lazy private var probabilityOfPrecipitationLabel = UILabel()
+    lazy private var temperatureLabel = UILabel()
+    lazy private var weatherIconView = UIImageView()
     
-    var sunTime: [Current] {
-        Bundle.main.decode([Current].self, from: "CurrentJSON.json")
-    }
-    
-    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 22))
+    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 16))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -73,19 +71,28 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     
     func configure(with forecast: AnyHashable) {
         guard let model = forecast as? Hourly else { return }
-        
-        guard let time = model.dt,
-              let pop = model.pop,
-              let temp = model.temp,
-              let icon = model.weather?.first?.systemNameString else {
-                  return
-              }
-        
+
+        let time = model.dt
+        let pop = model.pop
+        let temp = model.temp
+        let icon = model.weather.first!.systemNameString
+
         timeLabel.text = DateManager.shared.defineDate(withUnixTime: time, andDateFormat: .time)
         probabilityOfPrecipitationLabel.text = format(input: pop)
         temperatureLabel.text = format(input: temp, modifier: true)
         weatherIconView.image = UIImage(systemName: icon, withConfiguration: symbolConfig)
     }
+    
+//    func configure(with forecast: AnyHashable) {
+//        guard let forecast = forecast as? ForecastData.HourlyData else { return }
+//
+//        DispatchQueue.main.async {
+//            self.timeLabel.text = forecast.time
+//            self.probabilityOfPrecipitationLabel.text = forecast.probabilityOfPrecipitation
+//            self.temperatureLabel.text = forecast.temperature
+//            self.weatherIconView.image = UIImage(systemName: forecast.systemNameString, withConfiguration: self.symbolConfig)
+//        }
+//    }
     
     
     

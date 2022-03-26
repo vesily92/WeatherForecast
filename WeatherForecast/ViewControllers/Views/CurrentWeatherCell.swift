@@ -11,10 +11,10 @@ class CurrentWeatherCell: UICollectionViewCell, SelfConfiguringCell {
     
     static let reuseIdentifier = "CurrentWeatherCell"
     
-    let temperatureLabel = UILabel()
-    let weatherDescriptionLabel = UILabel()
-    let temperatureFeelsLikeLabel = UILabel()
-    let weatherIconView = UIImageView()
+    lazy private var temperatureLabel = UILabel()
+    lazy private var weatherDescriptionLabel = UILabel()
+    lazy private var temperatureFeelsLikeLabel = UILabel()
+    lazy private var weatherIconView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -57,32 +57,32 @@ class CurrentWeatherCell: UICollectionViewCell, SelfConfiguringCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    func configure(with forecast: AnyHashable) {
-//        guard let model = forecast as? Current.Diffable else { return }
-//        DispatchQueue.main.async {
-//            self.temperatureLabel.text = model.temperature
-//            self.weatherDescriptionLabel.text = model.description
-//            self.temperatureFeelsLikeLabel.text = model.feelsLike
-//            self.weatherIconView.image = UIImage(systemName: model.systemNameString)
-//        }
-//    }
-    
     func configure(with forecast: AnyHashable) {
-        guard let model = forecast as? Current else { return }
-        
-        guard let temp = model.temp,
-              let description = model.weather?.first?.description,
-              let feelsLike = model.feelsLike,
-              let icon = model.weather?.first?.systemNameString else {
-                  return
-              }
-        
-        self.temperatureLabel.text = format(input: temp, modifier: true)
-        self.weatherDescriptionLabel.text = description.capitalized
-        self.temperatureFeelsLikeLabel.text = format(input: feelsLike, modifier: true)
-        self.weatherIconView.image = UIImage(systemName: icon)
-        
+        guard let model = forecast as? Current.Diffable else { return }
+        DispatchQueue.main.async {
+            self.temperatureLabel.text = model.temperature
+            self.weatherDescriptionLabel.text = model.description
+            self.temperatureFeelsLikeLabel.text = model.feelsLike
+            self.weatherIconView.image = UIImage(systemName: model.systemNameString)
+        }
     }
+    
+//    func configure(with forecast: AnyHashable) {
+//        guard let model = forecast as? Current else { return }
+//        
+//        guard let temp = model.temp,
+//              let description = model.weather?.first?.description,
+//              let feelsLike = model.feelsLike,
+//              let icon = model.weather?.first?.systemNameString else {
+//                  return
+//              }
+//        
+//        self.temperatureLabel.text = format(input: temp, modifier: true)
+//        self.weatherDescriptionLabel.text = description.capitalized
+//        self.temperatureFeelsLikeLabel.text = format(input: feelsLike, modifier: true)
+//        self.weatherIconView.image = UIImage(systemName: icon)
+//        
+//    }
     
     fileprivate func setupConstraints(for uiView: UIView) {
         contentView.addSubview(uiView)

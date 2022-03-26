@@ -11,12 +11,12 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     
     static let reuseIdentifier = "DailyForecastCell"
     
-    let dateLabel = UILabel()
-    let weekdayLabel = UILabel()
-    let highestTemperatureLabel = UILabel()
-    let lowestTemperatureLabel = UILabel()
-    let probabilityOfPrecipitationLabel = UILabel()
-    let weatherIconView = UIImageView()
+    lazy private var dateLabel = UILabel()
+    lazy private var weekdayLabel = UILabel()
+    lazy private var highestTemperatureLabel = UILabel()
+    lazy private var lowestTemperatureLabel = UILabel()
+    lazy private var probabilityOfPrecipitationLabel = UILabel()
+    lazy private var weatherIconView = UIImageView()
     
     var collectionView: UICollectionView!
     
@@ -95,15 +95,13 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     
     func configure(with forecast: AnyHashable) {
         guard let model = forecast as? Daily else { return }
-        
-        guard let time = model.dt,
-              let maxTemp = model.temperature?.max,
-              let minTemp = model.temperature?.min,
-              let pop = model.pop,
-              let icon = model.weather?.first?.systemNameString else {
-                  return
-              }
-        
+
+        let time = model.dt
+        let maxTemp = model.temperature.max
+        let minTemp = model.temperature.min
+        let pop = model.pop
+        let icon = model.weather.first!.systemNameString
+
         dateLabel.text = DateManager.shared.defineDate(withUnixTime: time, andDateFormat: .date)
         weekdayLabel.text = DateManager.shared.defineDate(withUnixTime: time, andDateFormat: .weekday).capitalized
         highestTemperatureLabel.text = format(input: maxTemp, modifier: true)
@@ -111,6 +109,19 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         probabilityOfPrecipitationLabel.text = format(input: pop)
         weatherIconView.image = UIImage(systemName: icon, withConfiguration: symbolConfig)
     }
+    
+//    func configure(with forecast: AnyHashable) {
+//        guard let forecast = forecast as? ForecastData.DailyData else { return }
+//
+//        DispatchQueue.main.async {
+//            self.dateLabel.text = forecast.date
+//            self.weekdayLabel.text = forecast.weekday
+//            self.highestTemperatureLabel.text = forecast.highestTemperature
+//            self.lowestTemperatureLabel.text = forecast.lowestTemperature
+//            self.probabilityOfPrecipitationLabel.text = forecast.probabilityOfPrecipitation
+//            self.weatherIconView.image = UIImage(systemName: forecast.systemNameString, withConfiguration: self.symbolConfig)
+//        }
+//    }
     
     fileprivate func setupConstraints(for uiView: UIView) {
         contentView.addSubview(uiView)
