@@ -11,13 +11,14 @@ class CurrentWeatherHeader: UICollectionReusableView {
     
     static let reuseIdentifier = "CurrentWeatherHeader"
     
-    let temperatureLabel = UILabel()
-    let weatherDescriptionLabel = UILabel()
-    let temperatureFeelsLikeLabel = UILabel()
-    let weatherIconView = UIImageView()
+    lazy private var temperatureLabel = UILabel()
+    lazy private var weatherDescriptionLabel = UILabel()
+    lazy private var temperatureFeelsLikeLabel = UILabel()
+    lazy private var weatherIconView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        layer.zPosition = -1
         
         temperatureLabel.font = .boldSystemFont(ofSize: 50)
         temperatureLabel.textColor = .white
@@ -53,26 +54,39 @@ class CurrentWeatherHeader: UICollectionReusableView {
         setupConstraints(for: mainStackView)
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    func configure(with forecast: AnyHashable) {
-        guard let model = forecast as? Current else { return }
-        
-        guard let temp = model.temp,
-              let description = model.weather?.first?.description,
-              let feelsLike = model.feelsLike,
-              let icon = model.weather?.first?.systemNameString else {
-                  return
-              }
-        
-        self.temperatureLabel.text = format(input: temp, modifier: true)
-        self.weatherDescriptionLabel.text = description.capitalized
-        self.temperatureFeelsLikeLabel.text = format(input: feelsLike, modifier: true)
-        self.weatherIconView.image = UIImage(systemName: icon)
+    override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         
     }
+    
+    func configure(with model: Current) {
+        
+        DispatchQueue.main.async {
+            self.temperatureLabel.text = String(format: "%.0f", model.temp.rounded(.toNearestOrAwayFromZero)) + "°"
+            self.weatherDescriptionLabel.text = model.weather.first?.description.capitalized ?? ""
+            self.temperatureFeelsLikeLabel.text = "Feels like: " + String(format: "%.0f", model.feelsLike.rounded(.toNearestOrAwayFromZero)) + "°"
+            self.weatherIconView.image = UIImage(systemName: model.weather.first?.systemNameString ?? "")
+        }
+    }
+//----------------------------------------------------------------------------------------
+//    func configure(with forecast: ForecastData.CurrentData) {
+////        guard let forecast = forecast as? ForecastData.CurrentData else { return }
+//        DispatchQueue.main.async {
+//            self.temperatureLabel.text = forecast.temperature
+//            self.weatherDescriptionLabel.text = forecast.description
+//            self.temperatureFeelsLikeLabel.text = forecast.feelsLike
+//            self.weatherIconView.image = UIImage(systemName: forecast.systemNameString)
+//        }
+//    }
+//----------------------------------------------------------------------------------------
+//    func configure(with model: AnyHashable) {
+//        guard let forecast = model as? CurrentWeather else { return }
+//        DispatchQueue.main.async {
+//            self.temperatureLabel.text = forecast.temperatureString
+//            self.weatherDescriptionLabel.text = forecast.description
+//            self.temperatureFeelsLikeLabel.text = forecast.feelsLikeString
+//            self.weatherIconView.image = UIImage(systemName: forecast.systemNameString)
+//        }
+//    }
     
     fileprivate func setupConstraints(for uiView: UIView) {
         addSubview(uiView)
@@ -92,6 +106,10 @@ class CurrentWeatherHeader: UICollectionReusableView {
         } else {
             return nil
         }
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
