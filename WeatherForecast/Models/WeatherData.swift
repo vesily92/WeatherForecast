@@ -31,18 +31,28 @@ struct Weather: Codable {
     }
 }
 
-enum Section2: Int, Hashable, CaseIterable, CustomStringConvertible {
-    case alert
-    case current
+enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
+    var description: String {
+        return ""
+    }
+    
+    //case alert
+    //case current
     case hourly
     case daily
     
-    var description: String {
+    var sectionName: String {
         switch self {
-        case .alert: return ""
-        case .current: return ""
-        case .hourly: return ""
-        case .daily: return ""
+        //case .alert: return ""
+        //case .current: return ""
+        case .hourly: return "Hourly forecast"
+        case .daily: return "7-day forecast"
+        }
+    }
+    var sectionSystemIcon: String {
+        switch self {
+        case .hourly: return "clock"
+        case .daily: return "calendar"
         }
     }
 }
