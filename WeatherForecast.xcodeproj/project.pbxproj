@@ -34,6 +34,7 @@
 		7B42475027BFCDBB009DDADE /* AlertCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42474F27BFCDBA009DDADE /* AlertCell.swift */; };
 		7B59756827CE3E2200302F9C /* CurrentWeatherHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B59756727CE3E2200302F9C /* CurrentWeatherHeader.swift */; };
 		7B6BF66D27EE0CCA005A13E4 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6BF66C27EE0CCA005A13E4 /* Weather.swift */; };
+		7B6BF66F27EF1DF8005A13E4 /* WeatherCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6BF66E27EF1DF7005A13E4 /* WeatherCollectionViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +67,7 @@
 		7B42474F27BFCDBA009DDADE /* AlertCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertCell.swift; sourceTree = "<group>"; };
 		7B59756727CE3E2200302F9C /* CurrentWeatherHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherHeader.swift; sourceTree = "<group>"; };
 		7B6BF66C27EE0CCA005A13E4 /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
+		7B6BF66E27EF1DF7005A13E4 /* WeatherCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCollectionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				7B241A4D27B676CF00F07F52 /* ViewController.swift */,
+				7B6BF66E27EF1DF7005A13E4 /* WeatherCollectionViewController.swift */,
 				7B241A3E27B3ED9500F07F52 /* Views */,
 			);
 			path = ViewControllers;
@@ -279,6 +282,7 @@
 				7B59756827CE3E2200302F9C /* CurrentWeatherHeader.swift in Sources */,
 				7B241A5527B68A1B00F07F52 /* Daily + Extension.swift in Sources */,
 				7B241A3427B1078700F07F52 /* CurrentWeather.swift in Sources */,
+				7B6BF66F27EF1DF8005A13E4 /* WeatherCollectionViewController.swift in Sources */,
 				7B241A5027B6774B00F07F52 /* Bundle + Decodable.swift in Sources */,
 				7B241A3027B0F74E00F07F52 /* WeatherData.swift in Sources */,
 				7B6BF66D27EE0CCA005A13E4 /* Weather.swift in Sources */,
