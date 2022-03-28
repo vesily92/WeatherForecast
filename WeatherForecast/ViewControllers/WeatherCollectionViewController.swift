@@ -8,24 +8,30 @@
 import UIKit
 import SwiftUI
 
-private let reuseIdentifier = "Cell"
-
 class WeatherCollectionViewController: UICollectionViewController {
     
     typealias DataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>
     
+    private lazy var dataSource = createDataSource()
+    private var currentWeather: Current?
+    private var hourlyWeather: [Hourly] = []
+    private var dailyWeather: [Daily] = []
+    
     private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 14))
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        //collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Register cell classes
-        createCompositionalLayout()
-        registerCells()
+        
+        self.collectionView.collectionViewLayout = createCompositionalLayout()
+        fetchWeather()
+        applySnapshot()
         // Do any additional setup after loading the view.
     }
     
@@ -48,6 +54,20 @@ class WeatherCollectionViewController: UICollectionViewController {
             forSupplementaryViewOfKind: SectionHeader.reuseIdentifier,
             withReuseIdentifier: SectionHeader.reuseIdentifier
         )
+    }
+    
+    private func fetchWeather() {
+        NetworkManager.shared.fetchCurrentData { current in
+            self.currentWeather = current
+        }
+        
+//        NetworkManager.shared.fetchHourlyData { hourly in
+//            self.hourlyWeather = hourly
+//        }
+        
+        NetworkManager.shared.fetchDailyData { daily in
+            self.dailyWeather = daily
+        }
     }
     
     private func createCompositionalLayout() -> UICollectionViewLayout {
@@ -89,7 +109,7 @@ class WeatherCollectionViewController: UICollectionViewController {
         return cell
     }
     
-    private func createDataSouce() -> DataSource {
+    private func createDataSource() -> DataSource {
         let dataSource = DataSource(collectionView: collectionView) { collectionView, indexPath, model in
             guard let section = Section(rawValue: indexPath.section) else {
                 fatalError("Unknown section kind")
@@ -127,21 +147,31 @@ class WeatherCollectionViewController: UICollectionViewController {
                 switch section {
                 case .hourly:
                     sectionHeader.symbolView.image = UIImage(
-                        systemName: section.sectionSystemIcon,
+                        systemName: section.headerIcon,
                         withConfiguration: self.symbolConfig
                     )
-                    sectionHeader.titleLabel.text = section.sectionName.uppercased()
+                    sectionHeader.titleLabel.text = section.headerTitle.uppercased()
                 case .daily:
                     sectionHeader.symbolView.image = UIImage(
-                        systemName: section.sectionSystemIcon,
+                        systemName: section.headerIcon,
                         withConfiguration: self.symbolConfig
                     )
-                    sectionHeader.titleLabel.text = section.sectionName.uppercased()
+                    sectionHeader.titleLabel.text = section.headerTitle.uppercased()
                 }
                 return sectionHeader
             }
         }
         return dataSource
+    }
+    
+    private func applySnapshot() {
+        var snapshot = Snapshot()
+        snapshot.appendSections(Section.allCases)
+        snapshot.appendItems(hourlyWeather, toSection: .hourly)
+        snapshot.appendItems(dailyWeather, toSection: .daily)
+        
+        dataSource.apply(snapshot, animatingDifferences: true)
+        
     }
     
     private func createGlobalHeader(using kind: String) -> NSCollectionLayoutBoundarySupplementaryItem {
@@ -248,24 +278,24 @@ class WeatherCollectionViewController: UICollectionViewController {
 
     // MARK: UICollectionViewDataSource
 
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-    }
-
-
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return 0
-    }
-
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-    
-        // Configure the cell
-    
-        return cell
-    }
+//    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+//        // #warning Incomplete implementation, return the number of sections
+//        return 0
+//    }
+//
+//
+//    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        // #warning Incomplete implementation, return the number of items
+//        return 0
+//    }
+//
+//    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
+//    
+//        // Configure the cell
+//    
+//        return cell
+//    }
 
     // MARK: UICollectionViewDelegate
 
