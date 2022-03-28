@@ -5,6 +5,7 @@
 //  Created by Василий Пронин on 07.02.2022.
 //
 import Foundation
+import UIKit
 
 struct CurrentWeatherData: Codable {
     let weather: [Weather]
@@ -41,7 +42,7 @@ enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
     case hourly
     case daily
     
-    var sectionName: String {
+    var headerTitle: String {
         switch self {
         //case .alert: return ""
         //case .current: return ""
@@ -49,7 +50,7 @@ enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
         case .daily: return "7-day forecast"
         }
     }
-    var sectionSystemIcon: String {
+    var headerIcon: String {
         switch self {
         case .hourly: return "clock"
         case .daily: return "calendar"
