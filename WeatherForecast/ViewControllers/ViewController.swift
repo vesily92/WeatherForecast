@@ -9,19 +9,19 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    enum Section: Int, CaseIterable {
-        case hourly
-        case daily
-    }
+//    enum Section: Int, CaseIterable {
+//        case hourly
+//        case daily
+//    }
     
 //    var currentWeather = Bundle.main.decode(Current.Diffable.self, from: "CurrentJSON.json")
 //    var currentWeather: Current.Diffable!
-    var hourlyWeather = Bundle.main.decode([Hourly].self, from: "HourlyJSON.json")
-    var dailyWeather = Bundle.main.decode([Daily].self, from: "DailyJSON.json")
+//    var hourlyWeather = Bundle.main.decode([Hourly].self, from: "HourlyJSON.json")
+//    var dailyWeather = Bundle.main.decode([Daily].self, from: "DailyJSON.json")
     
     var forecastData: ForecastData?
-    var hourlyData: [Hourly] = []
-    var dailyData: [Daily] = []
+    var hourlyWeather: [Hourly] = []
+    var dailyWeather: [Daily] = []
     
     var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>?
     
@@ -35,28 +35,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemGray4
 
-//        NetworkManager.shared.fetchWeatherData { forecast in
-//            self.forecastData = forecast
-//        }
-//        NetworkManager.shared.fetchCurrentWeather { result in
-//            switch result {
-//            case .success(let result):
-//                self.currentWeather = result
-//            case .failure(let error):
-//                print(error)
-//            }
-//        }
-        NetworkManager.shared.fetchHourlyData { hourly in
-            self.hourlyData = hourly
-        }
-        NetworkManager.shared.fetchDailyData { daily in
-            self.dailyData = daily
-        }
         setupForecastCollectionView()
         cellRegister()
         createDataSource()
-        reloadData()
-        
+        makeSnapshot()
     }
     
     private func setupForecastCollectionView() {
@@ -102,9 +84,7 @@ class ViewController: UIViewController {
         
         print("cellRegister")
     }
-    
-    
-    
+
     private func configure<T: SelfConfiguringCell>(_ cellType: T.Type, with model: AnyHashable, for indexPath: IndexPath) -> T {
         guard let cell = forecastCollectionView.dequeueReusableCell(
             withReuseIdentifier: cellType.reuseIdentifier,
@@ -146,6 +126,21 @@ class ViewController: UIViewController {
         print("ceateCompositionalLayout")
         return layout
     }
+    
+    private func fetchData(with type: Section) {
+        switch type {
+        case .hourly:
+            NetworkManager.shared.fetchData(.hourly) { hourly in
+                guard let hourlyData = hourly as? [Hourly] else { return }
+                self.hourlyWeather = hourlyData
+            }
+        case .daily:
+            NetworkManager.shared.fetchData(.daily) { daily in
+                guard let dailyData = daily as? [Daily] else { return }
+                self.dailyWeather = dailyData
+            }
+        }
+    }
 }
 
 // - MARK: DataSource
@@ -157,7 +152,7 @@ extension ViewController {
             guard let section = Section(rawValue: indexPath.section) else {
                 fatalError("Unknown section kind")
             }
-
+            
             switch section {
             case .hourly:
                 return self.configure(HourlyForecastCell.self, with: forecast, for: indexPath)
@@ -172,16 +167,6 @@ extension ViewController {
                 guard let currentWeatherHeader = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: CurrentWeatherHeader.reuseIdentifier, withReuseIdentifier: CurrentWeatherHeader.reuseIdentifier, for: indexPath) as? CurrentWeatherHeader else {
                     fatalError("Unknown header kind")
                 }
-//                NetworkManager.shared.fetchCurrentWeather { result in
-//                    switch result {
-//                    case .success(let weather):
-//                        currentWeatherHeader.configure(with: weather)
-//                    case .failure(let error):
-//                        print(error)
-//                    }
-//                }
-                
-                
                 NetworkManager.shared.fetchCurrentData { current in
                     currentWeatherHeader.configure(with: current)
                 }
@@ -200,11 +185,15 @@ extension ViewController {
                 }
                 switch section {
                 case .hourly:
-                    sectionHeader.symbolView.image = UIImage(systemName: "clock", withConfiguration: self.symbolConfig)
-                    sectionHeader.titleLabel.text = "HOURLY FORECAST"
+                    sectionHeader.symbolView.image = UIImage(
+                        systemName: section.headerIcon,
+                        withConfiguration: self.symbolConfig)
+                    sectionHeader.titleLabel.text = section.headerTitle.uppercased()
                 case .daily:
-                    sectionHeader.symbolView.image = UIImage(systemName: "calendar", withConfiguration: self.symbolConfig)
-                    sectionHeader.titleLabel.text = "7-DAY FORECAST"
+                    sectionHeader.symbolView.image = UIImage(
+                        systemName: section.headerIcon,
+                        withConfiguration: self.symbolConfig)
+                    sectionHeader.titleLabel.text = section.headerTitle.uppercased()
                 }
                 return sectionHeader
             }
@@ -212,17 +201,14 @@ extension ViewController {
         print("createDataSource")
     }
     
-    private func reloadData() {
+    private func makeSnapshot() {
         var snapshot = NSDiffableDataSourceSnapshot<Section,AnyHashable>()
-//        NetworkManager.shared.fetchHourlyData { hourly in
-//            self.hourlyData = hourly
-//        }
-//        NetworkManager.shared.fetchDailyData { daily in
-//            self.dailyData = daily
-//        }
+        fetchData(with: .hourly)
+        fetchData(with: .daily)
+        
         snapshot.appendSections([.hourly, .daily])
-        snapshot.appendItems(hourlyData, toSection: .hourly)
-        snapshot.appendItems(dailyData, toSection: .daily)
+        snapshot.appendItems(hourlyWeather, toSection: .hourly)
+        snapshot.appendItems(dailyWeather, toSection: .daily)
         dataSource?.apply(snapshot, animatingDifferences: true)
         
         print("makeSnapshot")
