@@ -132,21 +132,6 @@ extension Current: Hashable {
     }
 }
 
-//extension Current: Hashable {
-//    var identifier: UUID {
-//        let id = UUID()
-//        return id
-//    }
-//    
-//    static func == (lhs: Current, rhs: Current) -> Bool {
-//        return lhs.identifier == rhs.identifier
-//    }
-//
-//    func hash(into hasher: inout Hasher) {
-//        hasher.combine(identifier)
-//    }
-//}
-
 struct Hourly: Codable, Hashable {
     let identifier = UUID()
     
