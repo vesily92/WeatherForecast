@@ -9,23 +9,21 @@ import UIKit
 
 class ViewController: UIViewController {
 
-//    enum Section: Int, CaseIterable {
-//        case hourly
-//        case daily
-//    }
-    
-//    var currentWeather = Bundle.main.decode(Current.Diffable.self, from: "CurrentJSON.json")
-//    var currentWeather: Current.Diffable!
 //    var hourlyWeather = Bundle.main.decode([Hourly].self, from: "HourlyJSON.json")
 //    var dailyWeather = Bundle.main.decode([Daily].self, from: "DailyJSON.json")
+//
+    typealias DataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>
+    typealias Snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>
     
-    var forecastData: ForecastData?
-    var hourlyWeather: [Hourly] = []
-    var dailyWeather: [Daily] = []
+    private var forecastData: ForecastData? {
+        didSet {
+            dataSource?.apply(makeSnapshot(), animatingDifferences: true)
+        }
+    }
+
+    private var dataSource: DataSource?
     
-    var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>?
-    
-    var forecastCollectionView: UICollectionView!
+    private var forecastCollectionView: UICollectionView!
     
     private let sectionInsetY: CGFloat = 4
     private let sectionInsetX: CGFloat = 16
@@ -34,11 +32,12 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray4
-
+        
+        fetchData()
         setupForecastCollectionView()
         cellRegister()
         createDataSource()
-        makeSnapshot()
+        //makeSnapshot()
     }
     
     private func setupForecastCollectionView() {
@@ -126,19 +125,10 @@ class ViewController: UIViewController {
         print("ceateCompositionalLayout")
         return layout
     }
-    
-    private func fetchData(with type: Section) {
-        switch type {
-        case .hourly:
-            NetworkManager.shared.fetchData(.hourly) { hourly in
-                guard let hourlyData = hourly as? [Hourly] else { return }
-                self.hourlyWeather = hourlyData
-            }
-        case .daily:
-            NetworkManager.shared.fetchData(.daily) { daily in
-                guard let dailyData = daily as? [Daily] else { return }
-                self.dailyWeather = dailyData
-            }
+
+    private func fetchData() {
+        NetworkManager.shared.fetchForecastData { forecastData in
+            self.forecastData = forecastData
         }
     }
 }
@@ -148,7 +138,7 @@ class ViewController: UIViewController {
 extension ViewController {
     
     private func createDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>(collectionView: forecastCollectionView, cellProvider: { collectionView, indexPath, forecast in
+        dataSource = DataSource(collectionView: forecastCollectionView, cellProvider: { collectionView, indexPath, forecast in
             guard let section = Section(rawValue: indexPath.section) else {
                 fatalError("Unknown section kind")
             }
@@ -198,20 +188,30 @@ extension ViewController {
                 return sectionHeader
             }
         }
+        dataSource?.apply(makeSnapshot(), animatingDifferences: false)
         print("createDataSource")
     }
     
-    private func makeSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section,AnyHashable>()
-        fetchData(with: .hourly)
-        fetchData(with: .daily)
-        
+    
+//    private func makeSnapshot() {
+//        var snapshot = NSDiffableDataSourceSnapshot<Section,AnyHashable>()
+//        snapshot.appendSections([.hourly, .daily])
+//
+//        snapshot.appendItems(hourlyWeather, toSection: .hourly)
+//        snapshot.appendItems(dailyWeather, toSection: .daily)
+//
+//        dataSource?.apply(snapshot, animatingDifferences: true)
+//
+//        print("makeSnapshot")
+//    }
+    private func makeSnapshot() -> NSDiffableDataSourceSnapshot<Section, AnyHashable> {
+        var snapshot = Snapshot()
         snapshot.appendSections([.hourly, .daily])
-        snapshot.appendItems(hourlyWeather, toSection: .hourly)
-        snapshot.appendItems(dailyWeather, toSection: .daily)
-        dataSource?.apply(snapshot, animatingDifferences: true)
-        
-        print("makeSnapshot")
+        if let forecastData = forecastData {
+            snapshot.appendItems(forecastData.hourly, toSection: .hourly)
+            snapshot.appendItems(forecastData.daily, toSection: .daily)
+        }
+        return snapshot
     }
 }
 
@@ -225,8 +225,8 @@ extension ViewController {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(
-            widthDimension: .estimated(65),
-            heightDimension: .estimated(120)
+            widthDimension: .estimated(60),
+            heightDimension: .estimated(100)
         )
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: groupSize,
@@ -234,12 +234,7 @@ extension ViewController {
         )
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
-        section.contentInsets = NSDirectionalEdgeInsets(
-            top: 0,
-            leading: sectionInsetX,
-            bottom: sectionInsetY,
-            trailing: sectionInsetX
-        )
+        
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
         
