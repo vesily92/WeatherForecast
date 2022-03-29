@@ -9,8 +9,6 @@ import UIKit
 
 class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     
-    
-    
     static let reuseIdentifier = "HourlyForecastCell"
     
     lazy private var timeLabel = UILabel()
@@ -18,7 +16,7 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     lazy private var temperatureLabel = UILabel()
     lazy private var weatherIconView = UIImageView()
     
-    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 16))
+    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 18))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -34,75 +32,55 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         
         weatherIconView.preferredSymbolConfiguration = .preferringMulticolor()
         weatherIconView.contentMode = .scaleAspectFit
-        
+
         let iconPopStackView = UIStackView(arrangedSubviews: [
             weatherIconView,
             probabilityOfPrecipitationLabel
         ])
         iconPopStackView.axis = .vertical
-        iconPopStackView.distribution = .fill
-        iconPopStackView.clipsToBounds = true
-        
+        iconPopStackView.translatesAutoresizingMaskIntoConstraints = false
+       
         let stackView = UIStackView(arrangedSubviews: [
             timeLabel,
-//            weatherIconView,
-//            probabilityOfPrecipitationLabel,
             iconPopStackView,
             temperatureLabel
         ])
         stackView.axis = .vertical
         stackView.alignment = .center
-        stackView.distribution = .fillEqually
+        stackView.distribution = .equalCentering
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(stackView)
 
         setupConstraints(for: stackView)
     }
-    
-//    func configure(with forecast: AnyHashable) {
-//        guard let model = forecast as? Hourly.Diffable else { return }
-//
-//        timeLabel.text = model.time
-//        probabilityOfPrecipitationLabel.text = model.probabilityOfPrecipitation
-//        temperatureLabel.text = model.hourlyTemperature
-//        weatherIconView.image = UIImage(systemName: model.systemNameString)
-//    }
-    
-    
-    
+  
     func configure(with forecast: AnyHashable) {
         guard let model = forecast as? Hourly else { return }
-
+        
+        
         let time = model.dt
         let pop = model.pop
         let temp = model.temp
-        let icon = model.weather.first!.systemNameString
-
-        timeLabel.text = DateManager.shared.defineDate(withUnixTime: time, andDateFormat: .time)
-        probabilityOfPrecipitationLabel.text = format(input: pop)
-        temperatureLabel.text = format(input: temp, modifier: true)
-        weatherIconView.image = UIImage(systemName: icon, withConfiguration: symbolConfig)
+        let icon = model.systemNameString
+        
+        var isNow: Bool {
+            return DateFormatter.verify(.hour, from: time)
+        }
+        
+        DispatchQueue.main.async {
+            self.timeLabel.text = isNow ? "Now" : DateFormatter.format(unixTime: time, to: .time)
+            self.probabilityOfPrecipitationLabel.text = self.format(input: pop)
+            self.temperatureLabel.text = self.format(input: temp, modifier: true)
+            self.weatherIconView.image = UIImage(systemName: icon, withConfiguration: self.symbolConfig)
+        }
     }
     
-//    func configure(with forecast: AnyHashable) {
-//        guard let forecast = forecast as? ForecastData.HourlyData else { return }
-//
-//        DispatchQueue.main.async {
-//            self.timeLabel.text = forecast.time
-//            self.probabilityOfPrecipitationLabel.text = forecast.probabilityOfPrecipitation
-//            self.temperatureLabel.text = forecast.temperature
-//            self.weatherIconView.image = UIImage(systemName: forecast.systemNameString, withConfiguration: self.symbolConfig)
-//        }
-//    }
-    
-    
-    
     fileprivate func setupConstraints(for uiView: UIView) {
-        contentView.addSubview(uiView)
-        
         NSLayoutConstraint.activate([
             uiView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            uiView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            uiView.heightAnchor.constraint(equalToConstant: 120)
+            uiView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            uiView.heightAnchor.constraint(greaterThanOrEqualToConstant: 80)
         ])
     }
     
