@@ -5,32 +5,6 @@
 //  Created by Василий Пронин on 07.02.2022.
 //
 import Foundation
-import UIKit
-
-struct CurrentWeatherData: Codable {
-    let weather: [Weather]
-    let main: Main
-    let wind: Wind
-    let name: String
-}
-
-struct Weather: Codable {
-    let id: Int
-    let description: String
-    
-    var systemNameString: String {
-        switch id {
-        case 200...232: return "cloud.bolt.rain.fill" //"11d"
-        case 300...321: return "cloud.drizzle.fill" //"09d"
-        case 500...531: return "cloud.heavyrain.fill" //"10d"
-        case 600...622: return "snowflake" //"13d"
-        case 700...781: return "cloud.fog.fill" //"50d"
-        case 800: return "sun.max.fill" //"01d"
-        case 801...804: return "cloud.sun.fill" //"04d"
-        default: return "nosign"
-        }
-    }
-}
 
 enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
     var description: String {
@@ -58,35 +32,7 @@ enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
     }
 }
 
-
-struct Main: Codable {
-    let temp: Double
-    let feelsLike: Double
-    let pressure: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case temp
-        case feelsLike = "feels_like"
-        case pressure
-    }
-}
-
-struct Wind: Codable {
-    let speed: Double
-}
-
 struct ForecastData: Codable {
-    let identifier = UUID()
-    
-    let lat: Double
-    let lon: Double
-    let timezone: String
-    let timezoneOffset: Int
-    let current: Current
-    let hourly: [Hourly]
-    let daily: [Daily]
-    let alerts: [Alert]
-    
     enum CodingKeys: String, CodingKey {
         case lat
         case lon
@@ -97,16 +43,18 @@ struct ForecastData: Codable {
         case daily
         case alerts
     }
+    
+    let lat: Double
+    let lon: Double
+    let timezone: String
+    let timezoneOffset: Int
+    let current: Current
+    let hourly: [Hourly]
+    let daily: [Daily]
+    let alerts: [Alert]?
 }
 
-struct Current: Codable {
-    let dt: Int
-    let sunrise: Int
-    let sunset: Int
-    let temp: Double
-    let feelsLike: Double
-    let weather: [Weather]
-    
+struct Current: Codable, Hashable {
     private enum CodingKeys: String, CodingKey {
         case dt
         case sunrise
@@ -115,34 +63,44 @@ struct Current: Codable {
         case feelsLike = "feels_like"
         case weather
     }
-}
-
-extension Current: Hashable {
-    var id: UUID {
-        let id = UUID()
-        return id
+    
+    let id = UUID()
+    let dt: Int
+    let sunrise: Int
+    let sunset: Int
+    let temp: Double
+    let feelsLike: Double
+    let weather: [Weather]
+    
+    var sunIsUp: Bool {
+        let hour = DateFormatter.getHour(from: dt)
+        switch hour {
+        case 7...21: return true
+        default: return false
+        }
+    }
+    var systemNameString: String {
+        switch weather.first!.id {
+        case 200...232: return "cloud.bolt.rain.fill"
+        case 300...321: return "cloud.drizzle.fill"
+        case 500...531: return "cloud.heavyrain.fill"
+        case 600...622: return "snowflake"
+        case 700...781: return "cloud.fog.fill"
+        case 800: return sunIsUp ? "sun.max.fill" : "moon.stars.fill"
+        case 801...804: return sunIsUp ? "cloud.sun.fill" : "cloud.moon.fill"
+        default: return "nosign"
+        }
     }
     
     static func == (lhs: Current, rhs: Current) -> Bool {
         return lhs.id == rhs.id
     }
-    
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
 }
 
 struct Hourly: Codable, Hashable {
-    let identifier = UUID()
-    
-    let dt: Int
-    let temp: Double
-    let feelsLike: Double
-    let weather: [Weather]
-    let pop: Double
-    
-    var sectionName = "Hourly Forecast"
-    
     enum CodingKeys: String, CodingKey {
         case dt
         case temp
@@ -151,31 +109,42 @@ struct Hourly: Codable, Hashable {
         case pop
     }
     
-    static func == (lhs: Hourly, rhs: Hourly) -> Bool {
-        return lhs.identifier == rhs.identifier
+    let id = UUID()
+    let dt: Int
+    let temp: Double
+    let feelsLike: Double
+    let weather: [Weather]
+    let pop: Double
+    
+    var sunIsUp: Bool {
+        let hour = DateFormatter.getHour(from: dt)
+        switch hour {
+        case 7...21: return true
+        default: return false
+        }
     }
-
+    var systemNameString: String {
+        switch weather.first!.id {
+        case 200...232: return "cloud.bolt.rain.fill"
+        case 300...321: return "cloud.drizzle.fill"
+        case 500...531: return "cloud.heavyrain.fill"
+        case 600...622: return "snowflake"
+        case 700...781: return "cloud.fog.fill"
+        case 800: return sunIsUp ? "sun.max.fill" : "moon.stars.fill"
+        case 801...804: return sunIsUp ? "cloud.sun.fill" : "cloud.moon.fill"
+        default: return "nosign"
+        }
+    }
+    
+    static func == (lhs: Hourly, rhs: Hourly) -> Bool {
+        return lhs.id == rhs.id
+    }
     func hash(into hasher: inout Hasher) {
-        hasher.combine(identifier)
+        hasher.combine(id)
     }
 }
 
 struct Daily: Codable, Hashable {
-    let identifier = UUID()
-    
-    let dt: Int
-    let sunrise: Int
-    let sunset: Int
-    let temperature: Temperature
-    let pressure: Int
-    let humidity: Int
-    let windSpeed: Double
-    let weather: [Weather]
-    let pop: Double
-    let uvi: Double
-    
-    var sectionName = "7-Day Forecast"
-    
     enum CodingKeys: String, CodingKey {
         case dt
         case sunrise
@@ -189,31 +158,27 @@ struct Daily: Codable, Hashable {
         case uvi
     }
     
+    let id = UUID()
+    let dt: Int
+    let sunrise: Int
+    let sunset: Int
+    let temperature: Temperature
+    let pressure: Int
+    let humidity: Int
+    let windSpeed: Double
+    let weather: [Weather]
+    let pop: Double
+    let uvi: Double
+    
     static func == (lhs: Daily, rhs: Daily) -> Bool {
-        return lhs.identifier == rhs.identifier
+        return lhs.id == rhs.id
     }
-    
     func hash(into hasher: inout Hasher) {
-        hasher.combine(identifier)
+        hasher.combine(id)
     }
-}
-
-struct Temperature: Codable {
-    let min: Double
-    let max: Double
-    
 }
 
 struct Alert: Codable, Hashable {
-    let identifier = UUID()
-    
-    let senderName: String
-    let event: String
-    let start: Int
-    let end: Int
-    let alertDescription: String
-    let tags: [String]
-    
     enum CodingKeys: String, CodingKey {
         case senderName = "sender_name"
         case event
@@ -223,12 +188,44 @@ struct Alert: Codable, Hashable {
         case tags
     }
     
+    let id = UUID()
+    let senderName: String
+    let event: String
+    let start: Int
+    let end: Int
+    let alertDescription: String
+    let tags: [String]
+    
     static func == (lhs: Alert, rhs: Alert) -> Bool {
-        return lhs.identifier == rhs.identifier
+        return lhs.id == rhs.id
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(identifier)
+        hasher.combine(id)
+    }
+}
+
+struct Temperature: Codable {
+    let min: Double
+    let max: Double
+    
+}
+
+struct Weather: Codable {
+    let id: Int
+    let description: String
+    
+    var systemNameString: String {
+        switch id {
+        case 200...232: return "cloud.bolt.rain.fill" //"11d"
+        case 300...321: return "cloud.drizzle.fill" //"09d"
+        case 500...531: return "cloud.heavyrain.fill" //"10d"
+        case 600...622: return "snowflake" //"13d"
+        case 700...781: return "cloud.fog.fill" //"50d"
+        case 800: return "sun.max.fill" //"01d"
+        case 801...804: return "cloud.sun.fill" //"04d"
+        default: return "nosign"
+        }
     }
 }
 
