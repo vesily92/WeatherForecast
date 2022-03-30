@@ -21,13 +21,13 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        timeLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        timeLabel.font = .systemFont(ofSize: 16, weight: .semibold)
         timeLabel.textColor = .white
         
         probabilityOfPrecipitationLabel.textColor = .systemCyan
-        probabilityOfPrecipitationLabel.font = .systemFont(ofSize: 12, weight: .bold)
+        probabilityOfPrecipitationLabel.font = .systemFont(ofSize: 12, weight: .semibold)
         
-        temperatureLabel.font = .systemFont(ofSize: 18, weight: .bold)
+        temperatureLabel.font = .systemFont(ofSize: 18, weight: .semibold)
         temperatureLabel.textColor = .white
         
         weatherIconView.preferredSymbolConfiguration = .preferringMulticolor()
@@ -57,30 +57,41 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
   
     func configure(with forecast: AnyHashable) {
         guard let model = forecast as? Hourly else { return }
-        
-        
-        let time = model.dt
-        let pop = model.pop
-        let temp = model.temp
-        let icon = model.systemNameString
-        
+
+        var sunIsUp: Bool {
+            let hour = DateFormatter.getHour(from: model.dt)
+            switch hour {
+            case 7...21: return true
+            default: return false
+            }
+        }
         var isNow: Bool {
-            return DateFormatter.verify(.hour, from: time)
+            return DateFormatter.compare(.hour, with: model.dt)
+        }
+        var systemNameString: String {
+            switch model.weather.first!.id {
+            case 200...232: return "cloud.bolt.rain.fill"
+            case 300...321: return "cloud.drizzle.fill"
+            case 500...531: return "cloud.heavyrain.fill"
+            case 600...622: return "snowflake"
+            case 700...781: return "cloud.fog.fill"
+            case 800: return sunIsUp ? "sun.max.fill" : "moon.stars.fill"
+            case 801...804: return sunIsUp ? "cloud.sun.fill" : "cloud.moon.fill"
+            default: return "nosign"
+            }
         }
         
-        DispatchQueue.main.async {
-            self.timeLabel.text = isNow ? "Now" : DateFormatter.format(unixTime: time, to: .time)
-            self.probabilityOfPrecipitationLabel.text = self.format(input: pop)
-            self.temperatureLabel.text = self.format(input: temp, modifier: true)
-            self.weatherIconView.image = UIImage(systemName: icon, withConfiguration: self.symbolConfig)
-        }
+        timeLabel.text = isNow ? "Now" : DateFormatter.format(unixTime: model.dt, to: .time)
+        probabilityOfPrecipitationLabel.text = format(input: model.pop)
+        temperatureLabel.text = format(input: model.temp, modifier: true)
+        weatherIconView.image = UIImage(systemName: systemNameString, withConfiguration: symbolConfig)
     }
     
     fileprivate func setupConstraints(for uiView: UIView) {
         NSLayoutConstraint.activate([
             uiView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             uiView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            uiView.heightAnchor.constraint(greaterThanOrEqualToConstant: 80)
+            uiView.heightAnchor.constraint(greaterThanOrEqualToConstant: 90)
         ])
     }
     
