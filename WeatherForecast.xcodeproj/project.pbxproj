@@ -35,6 +35,7 @@
 		7B59756827CE3E2200302F9C /* CurrentWeatherHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B59756727CE3E2200302F9C /* CurrentWeatherHeader.swift */; };
 		7B6BF66D27EE0CCA005A13E4 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6BF66C27EE0CCA005A13E4 /* Weather.swift */; };
 		7B6BF66F27EF1DF8005A13E4 /* WeatherCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6BF66E27EF1DF7005A13E4 /* WeatherCollectionViewController.swift */; };
+		7B9CD3F427F44C0B00D33DBC /* GridLayoutCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9CD3F327F44C0B00D33DBC /* GridLayoutCell.swift */; };
 		7BB7659127F3202A0049C6A1 /* DateFormatter + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BB7659027F3202A0049C6A1 /* DateFormatter + Extension.swift */; };
 		7BB7659327F338ED0049C6A1 /* ForecastData + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BB7659227F338ED0049C6A1 /* ForecastData + Extensions.swift */; };
 /* End PBXBuildFile section */
@@ -70,6 +71,7 @@
 		7B59756727CE3E2200302F9C /* CurrentWeatherHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherHeader.swift; sourceTree = "<group>"; };
 		7B6BF66C27EE0CCA005A13E4 /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
 		7B6BF66E27EF1DF7005A13E4 /* WeatherCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCollectionViewController.swift; sourceTree = "<group>"; };
+		7B9CD3F327F44C0B00D33DBC /* GridLayoutCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridLayoutCell.swift; sourceTree = "<group>"; };
 		7BB7659027F3202A0049C6A1 /* DateFormatter + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter + Extension.swift"; sourceTree = "<group>"; };
 		7BB7659227F338ED0049C6A1 /* ForecastData + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForecastData + Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -187,6 +189,7 @@
 				7B241A3F27B3EDFF00F07F52 /* CurrentWeatherCell.swift */,
 				7B241A4127B3F57100F07F52 /* HourlyForecastCell.swift */,
 				7B241A4327B3F62900F07F52 /* DailyForecastCell.swift */,
+				7B9CD3F327F44C0B00D33DBC /* GridLayoutCell.swift */,
 				7B241A4527B4F2AB00F07F52 /* SelfConfiguringCell.swift */,
 				7B42474127BBC396009DDADE /* BackgroundSupplementaryView.swift */,
 				7B42474327BBE114009DDADE /* SectionHeader.swift */,
@@ -301,6 +304,7 @@
 				7B241A3D27B3AD1300F07F52 /* DateManager.swift in Sources */,
 				7B42475027BFCDBB009DDADE /* AlertCell.swift in Sources */,
 				7B241A2E27AC1FBC00F07F52 /* Constants.swift in Sources */,
+				7B9CD3F427F44C0B00D33DBC /* GridLayoutCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
