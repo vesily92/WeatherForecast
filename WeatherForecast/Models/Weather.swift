@@ -47,14 +47,14 @@ extension ForecastData {
         let temperature: String
         let probabilityOfPrecipitation: String
 //        let conditionCode: Int
-        let systemNameString: String
+        //let systemNameString: String
         
-        init?(model: ForecastData) {
-            time = DateManager.shared.defineDate(withUnixTime: model.hourly.first!.dt, andDateFormat: .time)
-            temperature = String(format: "%.0f", model.hourly.first!.temp.rounded(.toNearestOrAwayFromZero))
-            probabilityOfPrecipitation = "\(model.hourly.first!.pop) %"
+//        init?(model: ForecastData) {
+//            time = DateManager.shared.defineDate(withUnixTime: model.hourly.first!.dt, andDateFormat: .time)
+//            temperature = String(format: "%.0f", model.hourly.first!.temp.rounded(.toNearestOrAwayFromZero))
+//            probabilityOfPrecipitation = "\(model.hourly.first!.pop) %"
 //            conditionCode = model.weather.first!.id
-            systemNameString = model.hourly.first!.weather.first!.systemNameString
+            //systemNameString = model.hourly.first!.weather.first!.systemNameString
         }
     }
     
@@ -72,18 +72,18 @@ extension ForecastData {
         let lowestTemperature: String
         let probabilityOfPrecipitation: String
 //        let conditionCode: Int
-        let systemNameString: String
+        //let systemNameString: String
         
-        init?(model: ForecastData) {
-            date = DateManager.shared.defineDate(withUnixTime: model.daily.first!.dt, andDateFormat: .date)
-            weekday = DateManager.shared.defineDate(withUnixTime: model.daily.first!.dt, andDateFormat: .weekday)
-            sunrise = DateManager.shared.defineDate(withUnixTime: model.daily.first!.sunrise, andDateFormat: .time)
-            sunset = DateManager.shared.defineDate(withUnixTime: model.daily.first!.sunset, andDateFormat: .time)
-            highestTemperature = String(format: "%.0f", model.daily.first!.temperature.max.rounded(.toNearestOrAwayFromZero))
-            lowestTemperature = String(format: "%.0f", model.daily.first!.temperature.min.rounded(.toNearestOrAwayFromZero))
-            probabilityOfPrecipitation = String(format: "%.0f", model.daily.first!.pop.rounded(.toNearestOrAwayFromZero)) + " %"
+//        init?(model: ForecastData) {
+//            date = DateManager.shared.defineDate(withUnixTime: model.daily.first!.dt, andDateFormat: .date)
+//            weekday = DateManager.shared.defineDate(withUnixTime: model.daily.first!.dt, andDateFormat: .weekday)
+//            sunrise = DateManager.shared.defineDate(withUnixTime: model.daily.first!.sunrise, andDateFormat: .time)
+//            sunset = DateManager.shared.defineDate(withUnixTime: model.daily.first!.sunset, andDateFormat: .time)
+//            highestTemperature = String(format: "%.0f", model.daily.first!.temperature.max.rounded(.toNearestOrAwayFromZero))
+//            lowestTemperature = String(format: "%.0f", model.daily.first!.temperature.min.rounded(.toNearestOrAwayFromZero))
+//            probabilityOfPrecipitation = String(format: "%.0f", model.daily.first!.pop.rounded(.toNearestOrAwayFromZero)) + " %"
 //            conditionCode = model.weather.first!.id
-            systemNameString = model.daily.first!.weather.first!.systemNameString
-        }
-    }
+            //systemNameString = model.daily.first!.weather.first!.systemNameString
+        
+    
 }
