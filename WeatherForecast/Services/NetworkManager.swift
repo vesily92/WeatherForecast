@@ -40,6 +40,10 @@ class NetworkManager {
             do {
                 let forecastData = try JSONDecoder().decode(ForecastData.self, from: data)
                 switch sectionType {
+                case .alert:
+                    DispatchQueue.main.async {
+                        completion(forecastData.alerts)
+                    }
                 case .hourly:
                     DispatchQueue.main.async {
                         completion(forecastData.hourly)
@@ -48,6 +52,10 @@ class NetworkManager {
                     DispatchQueue.main.async {
                         completion(forecastData.daily)
                     }
+//                case .grid:
+//                    DispatchQueue.main.async {
+//                        completion(forecastData.current)
+//                    }
                 }
             } catch let error {
                 print(error)
