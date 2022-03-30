@@ -24,16 +24,16 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        weekdayLabel.font = .systemFont(ofSize: 18, weight: .bold)
+        weekdayLabel.font = .systemFont(ofSize: 18, weight: .semibold)
         weekdayLabel.textColor = .white
         
-        highestTemperatureLabel.font = .systemFont(ofSize: 18, weight: .bold)
+        highestTemperatureLabel.font = .systemFont(ofSize: 18, weight: .semibold)
         highestTemperatureLabel.textColor = .white
         
-        lowestTemperatureLabel.font = .systemFont(ofSize: 18, weight: .bold)
+        lowestTemperatureLabel.font = .systemFont(ofSize: 18, weight: .semibold)
         lowestTemperatureLabel.alpha = 0.3
         
-        probabilityOfPrecipitationLabel.font = .systemFont(ofSize: 12, weight: .bold)
+        probabilityOfPrecipitationLabel.font = .systemFont(ofSize: 12, weight: .semibold)
         probabilityOfPrecipitationLabel.textColor = .systemCyan
         
         weatherIconView.preferredSymbolConfiguration = .preferringMulticolor()
@@ -74,21 +74,26 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     func configure(with forecast: AnyHashable) {
         guard let model = forecast as? Daily else { return }
 
-        let time = model.dt
-        let maxTemp = model.temperature.max
-        let minTemp = model.temperature.min
-        let pop = model.pop
-        let icon = model.weather.first!.systemNameString
-        
-        var isNow: Bool {
-            return DateFormatter.verify(.day, from: time)
+        var isToday: Bool {
+            return DateFormatter.compare(.day, with: model.dt)
         }
-
-        weekdayLabel.text = isNow ? "Today" : DateFormatter.format(unixTime: time, to: .weekday)
-        highestTemperatureLabel.text = format(input: maxTemp, modifier: true)
-        lowestTemperatureLabel.text = format(input: minTemp, modifier: true)
-        probabilityOfPrecipitationLabel.text = format(input: pop)
-        weatherIconView.image = UIImage(systemName: icon, withConfiguration: symbolConfig)
+        var systemNameString: String {
+            switch model.weather.first!.id {
+            case 200...232: return "cloud.bolt.rain.fill" //"11d"
+            case 300...321: return "cloud.drizzle.fill" //"09d"
+            case 500...531: return "cloud.heavyrain.fill" //"10d"
+            case 600...622: return "snowflake" //"13d"
+            case 700...781: return "cloud.fog.fill" //"50d"
+            case 800: return "sun.max.fill" //"01d"
+            case 801...804: return "cloud.sun.fill" //"04d"
+            default: return "nosign"
+            }
+        }
+        weekdayLabel.text = isToday ? "Today" : DateFormatter.format(unixTime: model.dt, to: .weekday)
+        highestTemperatureLabel.text = format(input: model.temperature.max, modifier: true)
+        lowestTemperatureLabel.text = format(input: model.temperature.min, modifier: true)
+        probabilityOfPrecipitationLabel.text = format(input: model.pop)
+        weatherIconView.image = UIImage(systemName: systemNameString, withConfiguration: symbolConfig)
     }
  
     fileprivate func setupConstraints(for uiView: UIView) {
