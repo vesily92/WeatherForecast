@@ -9,9 +9,6 @@ import UIKit
 
 class ViewController: UIViewController {
 
-//    var hourlyWeather = Bundle.main.decode([Hourly].self, from: "HourlyJSON.json")
-//    var dailyWeather = Bundle.main.decode([Daily].self, from: "DailyJSON.json")
-//
     typealias DataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>
     
@@ -20,6 +17,8 @@ class ViewController: UIViewController {
             dataSource?.apply(makeSnapshot(), animatingDifferences: true)
         }
     }
+    
+    let alerts = Bundle.main.decode([Alert].self, from: "AlertJSON.json")
 
     private var dataSource: DataSource?
     
@@ -73,6 +72,10 @@ class ViewController: UIViewController {
             withReuseIdentifier: SectionHeader.reuseIdentifier
         )
         forecastCollectionView.register(
+            AlertCell.self,
+            forCellWithReuseIdentifier: AlertCell.reuseIdentifier
+        )
+        forecastCollectionView.register(
             HourlyForecastCell.self,
             forCellWithReuseIdentifier: HourlyForecastCell.reuseIdentifier
         )
@@ -80,6 +83,10 @@ class ViewController: UIViewController {
             DailyForecastCell.self,
             forCellWithReuseIdentifier: DailyForecastCell.reuseIdentifier
         )
+//        forecastCollectionView.register(
+//            GridLayoutCell.self,
+//            forCellWithReuseIdentifier: GridLayoutCell.reuseIdentifier
+//        )
         
         print("cellRegister")
     }
@@ -103,10 +110,14 @@ class ViewController: UIViewController {
             }
             
             switch section {
+            case .alert:
+                return self.createAlertSection(using: section)
             case .hourly:
                 return self.createHourlySection(using: section)
-            default:
-                return self.createDailyListSection(using: section, and: layoutEnvironment)
+            case .daily:
+                return self.createDailySection(using: section, and: layoutEnvironment)
+//            case .grid:
+//                return self.createGridSection(using: section)
             }
         }
         
@@ -144,10 +155,14 @@ extension ViewController {
             }
             
             switch section {
+            case .alert:
+                return self.configure(AlertCell.self, with: forecast, for: indexPath)
             case .hourly:
                 return self.configure(HourlyForecastCell.self, with: forecast, for: indexPath)
             case .daily:
                 return self.configure(DailyForecastCell.self, with: forecast, for: indexPath)
+//            case .grid:
+//                return self.configure(GridLayoutCell.self, with: forecast, for: indexPath)
             }
         })
         
@@ -174,6 +189,8 @@ extension ViewController {
                     return nil
                 }
                 switch section {
+                case .alert:
+                    return nil
                 case .hourly:
                     sectionHeader.symbolView.image = UIImage(
                         systemName: section.headerIcon,
@@ -184,6 +201,8 @@ extension ViewController {
                         systemName: section.headerIcon,
                         withConfiguration: self.symbolConfig)
                     sectionHeader.titleLabel.text = section.headerTitle.uppercased()
+//                case .grid:
+//                    return nil
                 }
                 return sectionHeader
             }
@@ -192,22 +211,11 @@ extension ViewController {
         print("createDataSource")
     }
     
-    
-//    private func makeSnapshot() {
-//        var snapshot = NSDiffableDataSourceSnapshot<Section,AnyHashable>()
-//        snapshot.appendSections([.hourly, .daily])
-//
-//        snapshot.appendItems(hourlyWeather, toSection: .hourly)
-//        snapshot.appendItems(dailyWeather, toSection: .daily)
-//
-//        dataSource?.apply(snapshot, animatingDifferences: true)
-//
-//        print("makeSnapshot")
-//    }
     private func makeSnapshot() -> NSDiffableDataSourceSnapshot<Section, AnyHashable> {
         var snapshot = Snapshot()
-        snapshot.appendSections([.hourly, .daily])
+        snapshot.appendSections([.alert, .hourly, .daily])
         if let forecastData = forecastData {
+            snapshot.appendItems(alerts, toSection: .alert)
             snapshot.appendItems(forecastData.hourly, toSection: .hourly)
             snapshot.appendItems(forecastData.daily, toSection: .daily)
         }
@@ -217,16 +225,39 @@ extension ViewController {
 
 // - MARK: Sections
 extension ViewController {
+    private func createAlertSection(using: Section) -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(100)
+        )
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
+        let section = NSCollectionLayoutSection(group: group)
+        
+        let backgroundView = createBackgroundView()
+        section.decorationItems = [backgroundView]
+        
+        return section
+    }
+    
     private func createHourlySection(using: Section) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1),
-            heightDimension: .fractionalHeight(1)
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .estimated(60),
-            heightDimension: .estimated(100)
+            heightDimension: .estimated(110)
         )
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: groupSize,
@@ -238,7 +269,7 @@ extension ViewController {
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
         
-        let sectionHeader = createSectionHeader()
+        let sectionHeader = createHeader()
         section.boundarySupplementaryItems = [sectionHeader]
         section.supplementariesFollowContentInsets = false
 //        section.visibleItemsInvalidationHandler = { (items, offset, environment) in
@@ -248,7 +279,7 @@ extension ViewController {
         return section
     }
     
-    private func createDailyListSection(using: Section, and layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
+    private func createDailySection(using: Section, and layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         var configuration = UICollectionLayoutListConfiguration(appearance: .sidebar)
         configuration.separatorConfiguration.bottomSeparatorInsets.leading = 0
         configuration.separatorConfiguration.topSeparatorVisibility = .visible
@@ -262,17 +293,41 @@ extension ViewController {
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
         
-        let sectionHeader = createSectionHeader()
+        let sectionHeader = createHeader()
         section.boundarySupplementaryItems = [sectionHeader]
         section.supplementariesFollowContentInsets = false
         
         return section
-    
     }
     
-    private func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
+    private func createGridSection(using: Section) -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.5),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let itemHeader = createHeader()
+        
+        let item = NSCollectionLayoutItem(layoutSize: itemSize, supplementaryItems: [itemHeader])
+//        item.contentInsets =
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(0.5)
+        )
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
+        let section = NSCollectionLayoutSection(group: group)
+        let backgroundView = createBackgroundView()
+        section.decorationItems = [backgroundView]
+        
+        return section
+    }
+    
+    private func createHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
         let headerSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1),
+            widthDimension: .fractionalWidth(1.0),
             heightDimension: .estimated(32)
         )
         let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
@@ -286,7 +341,7 @@ extension ViewController {
     
     private func createGlobalHeader(withKind headerKind: String) -> NSCollectionLayoutBoundarySupplementaryItem {
         let globalHeaderSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1),
+            widthDimension: .fractionalWidth(1.0),
             heightDimension: .estimated(250)
         )
         let globalHeader = NSCollectionLayoutBoundarySupplementaryItem(
