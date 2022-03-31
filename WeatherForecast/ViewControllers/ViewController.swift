@@ -12,20 +12,20 @@ class ViewController: UIViewController {
     typealias DataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>
     
+    private var forecastCollectionView: UICollectionView!
+    private var dataSource: DataSource?
     private var forecastData: ForecastData? {
         didSet {
-            dataSource?.apply(makeSnapshot(), animatingDifferences: true)
+            dataSource?.apply(makeSnapshot(), animatingDifferences: false)
         }
     }
     
-    let alerts = Bundle.main.decode([Alert].self, from: "AlertJSON.json")
+    //let alerts = Bundle.main.decode([ForecastData].self, from: "AlertJSON.json")
+    //let alerts = Bundle.main.decode([ForecastData]?.self, from: "NilJSON.json")
+    //let alerts = Bundle.main.decode([ForecastData].self, from: "HourlyJSON.json")
 
-    private var dataSource: DataSource?
-    
-    private var forecastCollectionView: UICollectionView!
-    
-    private let sectionInsetY: CGFloat = 4
-    private let sectionInsetX: CGFloat = 16
+//    private let sectionInsetY: CGFloat = 4
+//    private let sectionInsetX: CGFloat = 16
     private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 14))
     
     override func viewDidLoad() {
@@ -51,7 +51,7 @@ class ViewController: UIViewController {
         view.addSubview(forecastCollectionView)
         
         NSLayoutConstraint.activate([
-            forecastCollectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            forecastCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             forecastCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             forecastCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             forecastCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
@@ -83,6 +83,10 @@ class ViewController: UIViewController {
             DailyForecastCell.self,
             forCellWithReuseIdentifier: DailyForecastCell.reuseIdentifier
         )
+        forecastCollectionView.register(
+            EmptyCell.self,
+            forCellWithReuseIdentifier: EmptyCell.reuseIdentifier
+        )
 //        forecastCollectionView.register(
 //            GridLayoutCell.self,
 //            forCellWithReuseIdentifier: GridLayoutCell.reuseIdentifier
@@ -108,13 +112,22 @@ class ViewController: UIViewController {
             guard let section = Section(rawValue: sectionIndex) else {
                 fatalError("Unknown section kind")
             }
-            
+
             switch section {
             case .alert:
-                return self.createAlertSection(using: section)
+                if let forecastData = self.forecastData {
+                    if forecastData.alerts != nil {
+                        print("Alert section created")
+                        return self.createAlertSection(using: section)
+                    }
+                }
+                print("Empty section created")
+                return self.createEmptySection(using: section)
             case .hourly:
+                print("Hourly section created")
                 return self.createHourlySection(using: section)
             case .daily:
+                print("Daily section created")
                 return self.createDailySection(using: section, and: layoutEnvironment)
 //            case .grid:
 //                return self.createGridSection(using: section)
@@ -156,10 +169,19 @@ extension ViewController {
             
             switch section {
             case .alert:
-                return self.configure(AlertCell.self, with: forecast, for: indexPath)
+                if let forecastData = self.forecastData {
+                    if forecastData.alerts != nil {
+                        print("Alert cell configured")
+                        return self.configure(AlertCell.self, with: forecast, for: indexPath)
+                    }
+                }
+                print("Empty cell configured")
+                return self.configure(EmptyCell.self, with: forecast, for: indexPath)
             case .hourly:
+                print("Hourly cell configured")
                 return self.configure(HourlyForecastCell.self, with: forecast, for: indexPath)
             case .daily:
+                print("Daily cell configured")
                 return self.configure(DailyForecastCell.self, with: forecast, for: indexPath)
 //            case .grid:
 //                return self.configure(GridLayoutCell.self, with: forecast, for: indexPath)
@@ -207,15 +229,33 @@ extension ViewController {
                 return sectionHeader
             }
         }
-        dataSource?.apply(makeSnapshot(), animatingDifferences: false)
+        //dataSource?.apply(makeSnapshot(), animatingDifferences: false)
         print("createDataSource")
     }
     
     private func makeSnapshot() -> NSDiffableDataSourceSnapshot<Section, AnyHashable> {
         var snapshot = Snapshot()
-        snapshot.appendSections([.alert, .hourly, .daily])
+        
+//        if let forecastData = forecastData {
+//            if forecastData.alerts != nil {
+//                let forecasts = Array(repeating: forecastData, count: 1)
+//                print("Alert SNAPSHOT")
+//                snapshot.appendSections([.alert, .hourly, .daily])
+//                snapshot.appendItems(forecasts, toSection: .alert)
+//                snapshot.appendItems(forecastData.hourly, toSection: .hourly)
+//                snapshot.appendItems(forecastData.daily, toSection: .daily)
+//            } else {
+//                print("NO Alert SNAPSHOT")
+//                snapshot.appendSections([.hourly, .daily])
+//                snapshot.appendItems(forecastData.hourly, toSection: .hourly)
+//                snapshot.appendItems(forecastData.daily, toSection: .daily)
+//            }
+//        }
         if let forecastData = forecastData {
-            snapshot.appendItems(alerts, toSection: .alert)
+            let forecasts = Array(repeating: forecastData, count: 1)
+            
+            snapshot.appendSections([.alert, .hourly, .daily])
+            snapshot.appendItems(forecasts, toSection: .alert)
             snapshot.appendItems(forecastData.hourly, toSection: .hourly)
             snapshot.appendItems(forecastData.daily, toSection: .daily)
         }
@@ -225,6 +265,27 @@ extension ViewController {
 
 // - MARK: Sections
 extension ViewController {
+    
+    private func createEmptySection(using: Section) -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .absolute(0.1),
+            heightDimension: .absolute(0.1)
+            )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .estimated(0.1),
+            heightDimension: .estimated(0.1)
+        )
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
+        let section = NSCollectionLayoutSection(group: group)
+        
+        return section
+    }
+    
     private func createAlertSection(using: Section) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
