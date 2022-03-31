@@ -68,25 +68,47 @@ class AlertCell: UICollectionViewCell, SelfConfiguringCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+//    func configure(with forecast: AnyHashable) {
+//        guard let model = forecast as? Alert else { return }
+//
+//        var alertsCount: Int {
+//
+//            return 1
+//        }
+//
+//        var descriptionString: String {
+//            let tags = model.tags
+//            let string = tags.joined(separator: ", ")
+//            return string
+//        }
+//
+//        eventLabel.text = model.event
+//        iconView.image = UIImage(systemName: "exclamationmark.triangle.fill")
+//
+//        descriptionLabel.text = model.senderName + ": " + descriptionString
+//
+//    }
     func configure(with forecast: AnyHashable) {
-        guard let model = forecast as? Alert else { return }
-        
-        var alertsCount: Int {
-            
-            return 1
-        }
-        
-        var descriptionString: String {
-            let tags = model.tags
-            let string = tags.joined(separator: ", ")
-            return string
-        }
-        
-        eventLabel.text = model.event
+        guard let model = forecast as? ForecastData else { return }
+
+        guard let alerts = model.alerts?.count,
+              let event = model.alerts?.first?.event,
+              let senderName = model.alerts?.first?.senderName,
+              let tags = model.alerts?.first?.tags else {
+                  return
+              }
+
+
+//        var descriptionString: String {
+//            let string = tags.joined(separator: ", ")
+//            return string
+//        }
+
+        eventLabel.text = "\(event) & \(alerts - 1) More"
         iconView.image = UIImage(systemName: "exclamationmark.triangle.fill")
-        
-        descriptionLabel.text = model.senderName + ": " + descriptionString
-        
+
+        descriptionLabel.text = senderName + ": " + tags.joined(separator: ", ")
+
     }
     
     
