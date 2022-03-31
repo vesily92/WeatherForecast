@@ -12,8 +12,8 @@ class CurrentWeatherHeader: UICollectionReusableView {
     static let reuseIdentifier = "CurrentWeatherHeader"
     
     lazy private var temperatureLabel = UILabel()
-    lazy private var weatherDescriptionLabel = UILabel()
-    lazy private var temperatureFeelsLikeLabel = UILabel()
+    lazy private var descriptionLabel = UILabel()
+    lazy private var feelsLikeLabel = UILabel()
     lazy private var weatherIconView = UIImageView()
     
     override init(frame: CGRect) {
@@ -23,11 +23,11 @@ class CurrentWeatherHeader: UICollectionReusableView {
         temperatureLabel.font = .boldSystemFont(ofSize: 50)
         temperatureLabel.textColor = .white
         
-        weatherDescriptionLabel.font = .systemFont(ofSize: 16)
-        weatherDescriptionLabel.textColor = .white
+        descriptionLabel.font = .systemFont(ofSize: 16)
+        descriptionLabel.textColor = .white
         
-        temperatureFeelsLikeLabel.font = .systemFont(ofSize: 16)
-        temperatureFeelsLikeLabel.textColor = .white
+        feelsLikeLabel.font = .systemFont(ofSize: 16)
+        feelsLikeLabel.textColor = .white
         
         weatherIconView.contentMode = .scaleAspectFit
         weatherIconView.preferredSymbolConfiguration = .preferringMulticolor()
@@ -42,14 +42,16 @@ class CurrentWeatherHeader: UICollectionReusableView {
         
         let mainStackView = UIStackView(arrangedSubviews: [
             subStackView,
-            weatherDescriptionLabel,
-            temperatureFeelsLikeLabel
+            descriptionLabel,
+            feelsLikeLabel
         ])
         mainStackView.axis = .vertical
         mainStackView.spacing = 10
         mainStackView.alignment = .center
         mainStackView.distribution = .fill
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(mainStackView)
         
         setupConstraints(for: mainStackView)
     }
@@ -59,38 +61,32 @@ class CurrentWeatherHeader: UICollectionReusableView {
     }
     
     func configure(with model: Current) {
-        
-        DispatchQueue.main.async {
-            self.temperatureLabel.text = String(format: "%.0f", model.temp.rounded(.toNearestOrAwayFromZero)) + "°"
-            self.weatherDescriptionLabel.text = model.weather.first?.description.capitalized ?? ""
-            self.temperatureFeelsLikeLabel.text = "Feels like: " + String(format: "%.0f", model.feelsLike.rounded(.toNearestOrAwayFromZero)) + "°"
-            self.weatherIconView.image = UIImage(systemName: model.weather.first?.systemNameString ?? "")
+        var sunIsUp: Bool {
+            let hour = DateFormatter.getHour(from: model.dt)
+            switch hour {
+            case 7...21: return true
+            default: return false
+            }
         }
+        var systemNameString: String {
+            switch model.weather.first!.id {
+            case 200...232: return "cloud.bolt.rain.fill"
+            case 300...321: return "cloud.drizzle.fill"
+            case 500...531: return "cloud.heavyrain.fill"
+            case 600...622: return "snowflake"
+            case 700...781: return "cloud.fog.fill"
+            case 800: return sunIsUp ? "sun.max.fill" : "moon.stars.fill"
+            case 801...804: return sunIsUp ? "cloud.sun.fill" : "cloud.moon.fill"
+            default: return "nosign"
+            }
+        }
+        temperatureLabel.text = String(format: "%.0f", model.temp.rounded(.toNearestOrAwayFromZero)) + "°"
+        descriptionLabel.text = model.weather.first?.description.capitalized ?? ""
+        feelsLikeLabel.text = "Feels like: " + String(format: "%.0f", model.feelsLike.rounded(.toNearestOrAwayFromZero)) + "°"
+        weatherIconView.image = UIImage(systemName: systemNameString)
     }
-//----------------------------------------------------------------------------------------
-//    func configure(with forecast: ForecastData.CurrentData) {
-////        guard let forecast = forecast as? ForecastData.CurrentData else { return }
-//        DispatchQueue.main.async {
-//            self.temperatureLabel.text = forecast.temperature
-//            self.weatherDescriptionLabel.text = forecast.description
-//            self.temperatureFeelsLikeLabel.text = forecast.feelsLike
-//            self.weatherIconView.image = UIImage(systemName: forecast.systemNameString)
-//        }
-//    }
-//----------------------------------------------------------------------------------------
-//    func configure(with model: AnyHashable) {
-//        guard let forecast = model as? CurrentWeather else { return }
-//        DispatchQueue.main.async {
-//            self.temperatureLabel.text = forecast.temperatureString
-//            self.weatherDescriptionLabel.text = forecast.description
-//            self.temperatureFeelsLikeLabel.text = forecast.feelsLikeString
-//            self.weatherIconView.image = UIImage(systemName: forecast.systemNameString)
-//        }
-//    }
     
     fileprivate func setupConstraints(for uiView: UIView) {
-        addSubview(uiView)
-        
         NSLayoutConstraint.activate([
             uiView.topAnchor.constraint(equalTo: topAnchor, constant: 40),
             uiView.centerXAnchor.constraint(equalTo: centerXAnchor)
