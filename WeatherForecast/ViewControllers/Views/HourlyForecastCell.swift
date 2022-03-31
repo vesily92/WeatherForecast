@@ -56,36 +56,42 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     }
   
     func configure(with forecast: AnyHashable) {
-        guard let model = forecast as? Hourly else { return }
+        guard let forecast = forecast as? ForecastData else { return }
 
-        var sunIsUp: Bool {
-            let hour = DateFormatter.getHour(from: model.dt)
-            switch hour {
-            case 7...21: return true
-            default: return false
-            }
-        }
-        var isNow: Bool {
-            return DateFormatter.compare(.hour, with: model.dt)
-        }
-        var systemNameString: String {
-            switch model.weather.first!.id {
-            case 200...232: return "cloud.bolt.rain.fill"
-            case 300...321: return "cloud.drizzle.fill"
-            case 500...531: return "cloud.heavyrain.fill"
-            case 600...622: return "snowflake"
-            case 700...781: return "cloud.fog.fill"
-            case 800: return sunIsUp ? "sun.max.fill" : "moon.stars.fill"
-            case 801...804: return sunIsUp ? "cloud.sun.fill" : "cloud.moon.fill"
-            default: return "nosign"
-            }
-        }
-        
-        timeLabel.text = isNow ? "Now" : DateFormatter.format(unixTime: model.dt, to: .time)
-        probabilityOfPrecipitationLabel.text = format(input: model.pop)
-        temperatureLabel.text = format(input: model.temp, modifier: true)
-        weatherIconView.image = UIImage(systemName: systemNameString, withConfiguration: symbolConfig)
+        // Configure cell with hourly forecast and sunrise/sunset data
     }
+    
+//    func configure(with forecast: AnyHashable) {
+//        guard let model = forecast as? Hourly else { return }
+//
+//        var sunIsUp: Bool {
+//            let hour = DateFormatter.getHour(from: model.dt)
+//            switch hour {
+//            case 7...21: return true
+//            default: return false
+//            }
+//        }
+//        var isNow: Bool {
+//            return DateFormatter.compare(.hour, with: model.dt)
+//        }
+//        var systemNameString: String {
+//            switch model.weather.first!.id {
+//            case 200...232: return "cloud.bolt.rain.fill"
+//            case 300...321: return "cloud.drizzle.fill"
+//            case 500...531: return "cloud.heavyrain.fill"
+//            case 600...622: return "snowflake"
+//            case 700...781: return "cloud.fog.fill"
+//            case 800: return sunIsUp ? "sun.max.fill" : "moon.stars.fill"
+//            case 801...804: return sunIsUp ? "cloud.sun.fill" : "cloud.moon.fill"
+//            default: return "nosign"
+//            }
+//        }
+//
+//        timeLabel.text = isNow ? "Now" : DateFormatter.format(unixTime: model.dt, to: .time)
+//        probabilityOfPrecipitationLabel.text = format(input: model.pop)
+//        temperatureLabel.text = format(input: model.temp, modifier: true)
+//        weatherIconView.image = UIImage(systemName: systemNameString, withConfiguration: symbolConfig)
+//    }
     
     fileprivate func setupConstraints(for uiView: UIView) {
         NSLayoutConstraint.activate([
