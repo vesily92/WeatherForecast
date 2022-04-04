@@ -1152,3 +1152,64 @@
     "pop": 0.06
   }
 ]
+
+
+ if let forecastData = self.forecastData {
+     var hourlyTime: [Int] = []
+     forecastData.hourly.forEach { hourly in
+         hourlyTime.append(hourly.dt)
+     }
+     var dailySunrise: [Int] = []
+     var dailySunset: [Int] = []
+     forecastData.daily.forEach { time in
+         dailySunrise.append(time.sunrise)
+         dailySunset.append(time.sunset)
+     }
+     
+     let sunrise = dailySunrise.prefix(2)
+     let sunset = dailySunset.prefix(2)
+     
+     let sunriseFirst = sunrise.first ?? 0
+     let sunriseSecond = sunrise.last ?? 0
+     
+//                    let firstSunset = sunset.first ?? 0
+//                    let secondSunset = sunset.last ?? 0
+     
+     hourlyTime.append(contentsOf: sunrise)
+     hourlyTime.append(contentsOf: sunset)
+     
+     let hourly = Array(hourlyTime.sorted(by: <).prefix(26))
+     
+     //let hourlyFirst = hourly.first ?? 0
+
+//                    if hourlyFirst == sunriseFirst {
+//                        print("Hourly cell configured")
+//                        return self.configure(HourlyForecastCell.self, with: forecast, for: indexPath)
+//                    }
+     
+     
+     var isSunrise = false
+     hourly.forEach { element in
+         if element == sunriseFirst || element == sunriseSecond {
+             isSunrise = true
+         } else {
+             isSunrise = false
+         }
+     }
+     
+     if isSunrise {
+         print("Sunrise cell configured")
+         var snapshot: Snapshot = .init()
+         snapshot.appendSections([.hourly])
+         snapshot.appendItems(forecastData.daily, toSection: .hourly)
+         
+         return self.configure(SunriseCell.self, with: forecast, for: indexPath)
+     } else {
+         print("Hourly cell configured")
+         var snapshot: Snapshot = .init()
+         snapshot.appendSections([.hourly])
+         snapshot.appendItems(forecastData.hourly, toSection: .hourly)
+         
+         return self.configure(HourlyForecastCell.self, with: forecast, for: indexPath)
+     }
+ }

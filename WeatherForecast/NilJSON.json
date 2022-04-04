@@ -1,0 +1,22 @@
+[
+    {
+        "sender_name": "NWS Shreveport (Shreveport)",
+        "event": "Wind Advisory",
+        "start": 1648628880,
+        "end": 1648663200,
+        "description": "...WIND ADVISORY REMAINS IN EFFECT UNTIL 1 PM CDT THIS\nAFTERNOON...\n* WHAT...South winds 20 to 25 mph with gusts up to 50 mph\nexpected.\n* WHERE...Portions of north central and northwest Louisiana,\nsouth central and southwest Arkansas and east and northeast\nTexas.\n* WHEN...Through 1 PM CDT this afternoon.\n* IMPACTS...Driving conditions will be hazardous for high\nprofile vehicles and weakly rooted trees and rotted branches\ncould be downed. In addition, strong winds and rough waves on\narea lakes will create hazardous conditions for small craft.",
+        "tags": [
+            "Wind"
+        ]
+    },
+    {
+        "sender_name": "NWS Storm Prediction Center (Storm Prediction Center - Norman, Oklahoma)",
+        "event": "Tornado Watch",
+        "start": 1648635900,
+        "end": 1648663200,
+        "description": "TORNADO WATCH 75 IS IN EFFECT UNTIL 100 PM CDT FOR THE\nFOLLOWING LOCATIONS\nAR\n.    ARKANSAS COUNTIES INCLUDED ARE\nARKANSAS             BAXTER              BOONE\nBRADLEY              CALHOUN             CLARK\nCLEBURNE             CLEVELAND           COLUMBIA\nCONWAY               DALLAS              DESHA\nDREW                 FAULKNER            FULTON\nGARLAND              GRANT               HEMPSTEAD\nHOT SPRING           HOWARD              INDEPENDENCE\nIZARD                JACKSON             JEFFERSON\nJOHNSON              LAFAYETTE           LAWRENCE\nLINCOLN              LITTLE RIVER        LOGAN\nLONOKE               MARION              MILLER\nMONROE               MONTGOMERY          NEVADA\nNEWTON               OUACHITA            PERRY\nPIKE                 POLK                POPE\nPRAIRIE              PULASKI             RANDOLPH\nSALINE               SCOTT               SEARCY\nSEVIER               SHARP               STONE\nUNION                VAN BUREN           WHITE\nWOODRUFF             YELL",
+        "tags": [
+            "Tornado"
+        ]
+    }
+]
