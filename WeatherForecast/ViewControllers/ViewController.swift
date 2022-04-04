@@ -12,7 +12,7 @@ class ViewController: UIViewController {
     typealias DataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>
     
-    private var forecastCollectionView: UICollectionView!
+    private var weatherCollectionView: UICollectionView!
     private var dataSource: DataSource?
     private var forecastData: ForecastData? {
         didSet {
@@ -20,83 +20,82 @@ class ViewController: UIViewController {
         }
     }
     
-    //let alerts = Bundle.main.decode([ForecastData].self, from: "AlertJSON.json")
-    //let alerts = Bundle.main.decode([ForecastData]?.self, from: "NilJSON.json")
-    //let alerts = Bundle.main.decode([ForecastData].self, from: "HourlyJSON.json")
-
-//    private let sectionInsetY: CGFloat = 4
-//    private let sectionInsetX: CGFloat = 16
-    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 14))
+    private var offcetY: CGFloat? {
+        didSet {
+            
+        }
+    }
+    
+    let alertsForHeader = Bundle.main.decode(ForecastData.self, from: "AlertJSON.json")
+    let alertsForSection = Bundle.main.decode([Alert].self, from: "NilJSON.json")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray4
         
         fetchData()
-        setupForecastCollectionView()
+        setupCollectionView()
         cellRegister()
         createDataSource()
-        //makeSnapshot()
     }
     
-    private func setupForecastCollectionView() {
-        forecastCollectionView = UICollectionView(
+    private func setupCollectionView() {
+        weatherCollectionView = UICollectionView(
             frame: view.bounds,
             collectionViewLayout: createCompositionalLayout()
         )
-        forecastCollectionView.backgroundColor = .systemGray4
-        forecastCollectionView.showsVerticalScrollIndicator = false
-        forecastCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        weatherCollectionView.backgroundColor = .systemGray4
+        weatherCollectionView.showsVerticalScrollIndicator = false
+        weatherCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(forecastCollectionView)
+        view.addSubview(weatherCollectionView)
         
         NSLayoutConstraint.activate([
-            forecastCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            forecastCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            forecastCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            forecastCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            weatherCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            weatherCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            weatherCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            weatherCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
         
         print("setupForecastCollectionView")
     }
     
     private func cellRegister() {
-        forecastCollectionView.register(
+        weatherCollectionView.register(
             CurrentWeatherHeader.self,
             forSupplementaryViewOfKind: CurrentWeatherHeader.reuseIdentifier,
             withReuseIdentifier: CurrentWeatherHeader.reuseIdentifier
         )
-        forecastCollectionView.register(
+        weatherCollectionView.register(
             SectionHeader.self,
             forSupplementaryViewOfKind: SectionHeader.reuseIdentifier,
             withReuseIdentifier: SectionHeader.reuseIdentifier
         )
-        forecastCollectionView.register(
+        weatherCollectionView.register(
             AlertCell.self,
             forCellWithReuseIdentifier: AlertCell.reuseIdentifier
         )
-        forecastCollectionView.register(
+        weatherCollectionView.register(
             HourlyForecastCell.self,
             forCellWithReuseIdentifier: HourlyForecastCell.reuseIdentifier
         )
-        forecastCollectionView.register(
+        weatherCollectionView.register(
+            SunriseCell.self,
+            forCellWithReuseIdentifier: SunriseCell.reuseIdentifier
+        )
+        weatherCollectionView.register(
             DailyForecastCell.self,
             forCellWithReuseIdentifier: DailyForecastCell.reuseIdentifier
         )
-        forecastCollectionView.register(
+        weatherCollectionView.register(
             EmptyCell.self,
             forCellWithReuseIdentifier: EmptyCell.reuseIdentifier
         )
-//        forecastCollectionView.register(
-//            GridLayoutCell.self,
-//            forCellWithReuseIdentifier: GridLayoutCell.reuseIdentifier
-//        )
-        
         print("cellRegister")
     }
 
     private func configure<T: SelfConfiguringCell>(_ cellType: T.Type, with model: AnyHashable, for indexPath: IndexPath) -> T {
-        guard let cell = forecastCollectionView.dequeueReusableCell(
+        guard let cell = weatherCollectionView.dequeueReusableCell(
             withReuseIdentifier: cellType.reuseIdentifier,
             for: indexPath
         ) as? T else {
@@ -115,12 +114,18 @@ class ViewController: UIViewController {
 
             switch section {
             case .alert:
-                if let forecastData = self.forecastData {
-                    if forecastData.alerts != nil {
-                        print("Alert section created")
-                        return self.createAlertSection(using: section)
-                    }
+//                mockup:
+                if self.alertsForSection != nil {
+                    print("Alert section created")
+//                    return self.createAlertSection(using: section)
+                    return self.createAlertSection(using: section, and: layoutEnvironment)
                 }
+//                if let forecastData = self.forecastData {
+//                    if forecastData.alerts != nil {
+//                        print("Alert section created")
+//                        return self.createAlertSection(using: section)
+//                    }
+//                }
                 print("Empty section created")
                 return self.createEmptySection(using: section)
             case .hourly:
@@ -129,8 +134,6 @@ class ViewController: UIViewController {
             case .daily:
                 print("Daily section created")
                 return self.createDailySection(using: section, and: layoutEnvironment)
-//            case .grid:
-//                return self.createGridSection(using: section)
             }
         }
         
@@ -162,19 +165,24 @@ class ViewController: UIViewController {
 extension ViewController {
     
     private func createDataSource() {
-        dataSource = DataSource(collectionView: forecastCollectionView, cellProvider: { collectionView, indexPath, forecast in
+        dataSource = DataSource(collectionView: weatherCollectionView, cellProvider: { collectionView, indexPath, forecast in
             guard let section = Section(rawValue: indexPath.section) else {
                 fatalError("Unknown section kind")
             }
             
             switch section {
             case .alert:
-                if let forecastData = self.forecastData {
-                    if forecastData.alerts != nil {
-                        print("Alert cell configured")
-                        return self.configure(AlertCell.self, with: forecast, for: indexPath)
-                    }
+//            mockup:
+                if self.alertsForSection != nil {
+                    print("Alert cell configured")
+                    return self.configure(AlertCell.self, with: forecast, for: indexPath)
                 }
+//                if let forecastData = self.forecastData {
+//                    if forecastData.alerts != nil {
+//                        print("Alert cell configured")
+//                        return self.configure(AlertCell.self, with: forecast, for: indexPath)
+//                    }
+//                }
                 print("Empty cell configured")
                 return self.configure(EmptyCell.self, with: forecast, for: indexPath)
             case .hourly:
@@ -183,8 +191,6 @@ extension ViewController {
             case .daily:
                 print("Daily cell configured")
                 return self.configure(DailyForecastCell.self, with: forecast, for: indexPath)
-//            case .grid:
-//                return self.configure(GridLayoutCell.self, with: forecast, for: indexPath)
             }
         })
         
@@ -194,7 +200,8 @@ extension ViewController {
                 guard let currentWeatherHeader = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: CurrentWeatherHeader.reuseIdentifier, withReuseIdentifier: CurrentWeatherHeader.reuseIdentifier, for: indexPath) as? CurrentWeatherHeader else {
                     fatalError("Unknown header kind")
                 }
-                NetworkManager.shared.fetchCurrentData { current in
+
+                if let current = self.forecastData?.current {
                     currentWeatherHeader.configure(with: current)
                 }
                 return currentWeatherHeader
@@ -210,55 +217,68 @@ extension ViewController {
                 guard let section = Section(rawValue: indexPath.section) else {
                     return nil
                 }
+                
                 switch section {
                 case .alert:
-                    return nil
+//                mockup:
+                    if let alertsForHeader = self.alertsForHeader {
+                        print("Section Header For Alert Section Created")
+                        sectionHeader.configureForAlertSection(with: alertsForHeader)
+                    }
+//                    if let forecastData = self.forecastData {
+//                        if forecastData.alerts != nil {
+//                            print("Section Header For Alert Section Created")
+//                            sectionHeader.configureForAlertSection(with: forecastData)
+//                        }
+//                    }
                 case .hourly:
-                    sectionHeader.symbolView.image = UIImage(
-                        systemName: section.headerIcon,
-                        withConfiguration: self.symbolConfig)
-                    sectionHeader.titleLabel.text = section.headerTitle.uppercased()
+                    print("Section Header For Hourly Section Created")
+                    sectionHeader.configure(with: section)
                 case .daily:
-                    sectionHeader.symbolView.image = UIImage(
-                        systemName: section.headerIcon,
-                        withConfiguration: self.symbolConfig)
-                    sectionHeader.titleLabel.text = section.headerTitle.uppercased()
-//                case .grid:
-//                    return nil
+                    print("Section Header For Daily Section Created")
+                    sectionHeader.configure(with: section)
                 }
                 return sectionHeader
             }
         }
-        //dataSource?.apply(makeSnapshot(), animatingDifferences: false)
         print("createDataSource")
     }
     
     private func makeSnapshot() -> NSDiffableDataSourceSnapshot<Section, AnyHashable> {
         var snapshot = Snapshot()
-        
+//        mockup
+        if let forecastData = forecastData {
+            if let alert = alertsForSection?.first {
+                let alerts = Array(repeating: alert, count: 1)
+                snapshot.appendSections(Section.allCases)
+                print("snapshot sections")
+                snapshot.appendItems(alerts, toSection: .alert)
+                print("snapshot alert items")
+                snapshot.appendItems(forecastData.hourly, toSection: .hourly)
+                print("snapshot hourly items")
+                snapshot.appendItems(forecastData.daily, toSection: .daily)
+                print("snapshot daily items")
+            }
+        }
 //        if let forecastData = forecastData {
-//            if forecastData.alerts != nil {
-//                let forecasts = Array(repeating: forecastData, count: 1)
-//                print("Alert SNAPSHOT")
-//                snapshot.appendSections([.alert, .hourly, .daily])
-//                snapshot.appendItems(forecasts, toSection: .alert)
+//            if let alerts = forecastData.alerts {
+//                snapshot.appendSections(Section.allCases)
+//                print("snapshot sections")
+//                snapshot.appendItems(alerts, toSection: .alert)
+//                print("snapshot alert items")
 //                snapshot.appendItems(forecastData.hourly, toSection: .hourly)
+//                print("snapshot hourly items")
 //                snapshot.appendItems(forecastData.daily, toSection: .daily)
+//                print("snapshot daily items")
 //            } else {
-//                print("NO Alert SNAPSHOT")
-//                snapshot.appendSections([.hourly, .daily])
+//                snapshot.appendSections(Section.allCases)
+//                print("snapshot sections")
 //                snapshot.appendItems(forecastData.hourly, toSection: .hourly)
+//                print("snapshot hourly items")
 //                snapshot.appendItems(forecastData.daily, toSection: .daily)
+//                print("snapshot daily items")
 //            }
 //        }
-        if let forecastData = forecastData {
-            let forecasts = Array(repeating: forecastData, count: 1)
-            
-            snapshot.appendSections([.alert, .hourly, .daily])
-            snapshot.appendItems(forecasts, toSection: .alert)
-            snapshot.appendItems(forecastData.hourly, toSection: .hourly)
-            snapshot.appendItems(forecastData.daily, toSection: .daily)
-        }
         return snapshot
     }
 }
@@ -286,25 +306,49 @@ extension ViewController {
         return section
     }
     
-    private func createAlertSection(using: Section) -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalHeight(1.0)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+//    private func createAlertSection(using: Section) -> NSCollectionLayoutSection {
+//        let itemSize = NSCollectionLayoutSize(
+//            widthDimension: .fractionalWidth(1.0),
+//            heightDimension: .fractionalHeight(1.0)
+//        )
+//        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+//
+//        let groupSize = NSCollectionLayoutSize(
+//            widthDimension: .fractionalWidth(1.0),
+//            heightDimension: .estimated(200)
+//        )
+//        let group = NSCollectionLayoutGroup.vertical(
+//            layoutSize: groupSize,
+//            subitem: item,
+//            count: 1
+//        )
+//        let section = NSCollectionLayoutSection(group: group)
+//
+//        let backgroundView = createBackgroundView()
+//        section.decorationItems = [backgroundView]
+//
+//        let sectionHeader = createHeader()
+//        section.boundarySupplementaryItems = [sectionHeader]
+//        section.supplementariesFollowContentInsets = false
+//
+//        return section
+//    }
+    
+    private func createAlertSection(using: Section, and layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
+        let configuration = UICollectionLayoutListConfiguration(appearance: .sidebar)
+//        configuration.separatorConfiguration.color = .systemGray4
         
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(100)
+        let section = NSCollectionLayoutSection.list(
+            using: configuration,
+            layoutEnvironment: layoutEnvironment
         )
-        let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: groupSize,
-            subitems: [item]
-        )
-        let section = NSCollectionLayoutSection(group: group)
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
+        
+        let sectionHeader = createHeader()
+        section.boundarySupplementaryItems = [sectionHeader]
+        section.supplementariesFollowContentInsets = false
         
         return section
     }
@@ -369,7 +413,6 @@ extension ViewController {
         let itemHeader = createHeader()
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize, supplementaryItems: [itemHeader])
-//        item.contentInsets =
         
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
@@ -413,6 +456,20 @@ extension ViewController {
         globalHeader.pinToVisibleBounds = true
         return globalHeader
     }
+//
+//    private func createSmallGlobalHeader(withKind headerKind: String) -> NSCollectionLayoutBoundarySupplementaryItem {
+//        let globalHeaderSize = NSCollectionLayoutSize(
+//            widthDimension: .fractionalWidth(1.0),
+//            heightDimension: .estimated(70)
+//        )
+//        let globalHeader = NSCollectionLayoutBoundarySupplementaryItem(
+//            layoutSize: globalHeaderSize,
+//            elementKind: headerKind,
+//            alignment: .top
+//        )
+//        globalHeader.pinToVisibleBounds = true
+//        return globalHeader
+//    }
     
     private func createBackgroundView() -> NSCollectionLayoutDecorationItem {
         let topBottomInset: CGFloat = 8
@@ -450,3 +507,12 @@ struct ViewControllerProvider: PreviewProvider {
     }
 }
 
+extension ViewController: UICollectionViewDelegate {
+//    func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
+//
+//    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print(weatherCollectionView.contentOffset.y)
+    }
+}

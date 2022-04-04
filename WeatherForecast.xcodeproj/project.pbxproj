@@ -15,7 +15,6 @@
 		7B241A3027B0F74E00F07F52 /* WeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A2F27B0F74E00F07F52 /* WeatherData.swift */; };
 		7B241A3227B1027D00F07F52 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A3127B1027D00F07F52 /* NetworkManager.swift */; };
 		7B241A3427B1078700F07F52 /* CurrentWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A3327B1078700F07F52 /* CurrentWeather.swift */; };
-		7B241A3D27B3AD1300F07F52 /* DateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A3C27B3AD1300F07F52 /* DateManager.swift */; };
 		7B241A4027B3EDFF00F07F52 /* CurrentWeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A3F27B3EDFF00F07F52 /* CurrentWeatherCell.swift */; };
 		7B241A4227B3F57100F07F52 /* HourlyForecastCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A4127B3F57100F07F52 /* HourlyForecastCell.swift */; };
 		7B241A4427B3F62900F07F52 /* DailyForecastCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B241A4327B3F62900F07F52 /* DailyForecastCell.swift */; };
@@ -37,9 +36,8 @@
 		7B6BF66F27EF1DF8005A13E4 /* WeatherCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B6BF66E27EF1DF7005A13E4 /* WeatherCollectionViewController.swift */; };
 		7B9CD3F427F44C0B00D33DBC /* GridLayoutCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9CD3F327F44C0B00D33DBC /* GridLayoutCell.swift */; };
 		7B9CD3F627F5F55700D33DBC /* EmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9CD3F527F5F55700D33DBC /* EmptyCell.swift */; };
-		7B9CD3F827F6EF5900D33DBC /* SunRiseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9CD3F727F6EF5900D33DBC /* SunRiseCell.swift */; };
+		7B9CD3F827F6EF5900D33DBC /* SunriseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9CD3F727F6EF5900D33DBC /* SunriseCell.swift */; };
 		7BB7659127F3202A0049C6A1 /* DateFormatter + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BB7659027F3202A0049C6A1 /* DateFormatter + Extension.swift */; };
-		7BB7659327F338ED0049C6A1 /* ForecastData + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BB7659227F338ED0049C6A1 /* ForecastData + Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,7 +51,6 @@
 		7B241A2F27B0F74E00F07F52 /* WeatherData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherData.swift; sourceTree = "<group>"; };
 		7B241A3127B1027D00F07F52 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		7B241A3327B1078700F07F52 /* CurrentWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeather.swift; sourceTree = "<group>"; };
-		7B241A3C27B3AD1300F07F52 /* DateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManager.swift; sourceTree = "<group>"; };
 		7B241A3F27B3EDFF00F07F52 /* CurrentWeatherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWeatherCell.swift; sourceTree = "<group>"; };
 		7B241A4127B3F57100F07F52 /* HourlyForecastCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyForecastCell.swift; sourceTree = "<group>"; };
 		7B241A4327B3F62900F07F52 /* DailyForecastCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyForecastCell.swift; sourceTree = "<group>"; };
@@ -75,9 +72,8 @@
 		7B6BF66E27EF1DF7005A13E4 /* WeatherCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCollectionViewController.swift; sourceTree = "<group>"; };
 		7B9CD3F327F44C0B00D33DBC /* GridLayoutCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridLayoutCell.swift; sourceTree = "<group>"; };
 		7B9CD3F527F5F55700D33DBC /* EmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCell.swift; sourceTree = "<group>"; };
-		7B9CD3F727F6EF5900D33DBC /* SunRiseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunRiseCell.swift; sourceTree = "<group>"; };
+		7B9CD3F727F6EF5900D33DBC /* SunriseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunriseCell.swift; sourceTree = "<group>"; };
 		7BB7659027F3202A0049C6A1 /* DateFormatter + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter + Extension.swift"; sourceTree = "<group>"; };
-		7BB7659227F338ED0049C6A1 /* ForecastData + Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ForecastData + Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,7 +134,6 @@
 			isa = PBXGroup;
 			children = (
 				7B241A3127B1027D00F07F52 /* NetworkManager.swift */,
-				7B241A3C27B3AD1300F07F52 /* DateManager.swift */,
 				7B241A4F27B6774B00F07F52 /* Bundle + Decodable.swift */,
 				7BB7659027F3202A0049C6A1 /* DateFormatter + Extension.swift */,
 			);
@@ -149,7 +144,6 @@
 			isa = PBXGroup;
 			children = (
 				7B241A2F27B0F74E00F07F52 /* WeatherData.swift */,
-				7BB7659227F338ED0049C6A1 /* ForecastData + Extensions.swift */,
 				7B6BF66C27EE0CCA005A13E4 /* Weather.swift */,
 				7B241A5227B6879800F07F52 /* Current + Extension.swift */,
 				7B42473F27BAA8E3009DDADE /* Hourly + Extension.swift */,
@@ -195,7 +189,7 @@
 				7B241A4327B3F62900F07F52 /* DailyForecastCell.swift */,
 				7B9CD3F327F44C0B00D33DBC /* GridLayoutCell.swift */,
 				7B9CD3F527F5F55700D33DBC /* EmptyCell.swift */,
-				7B9CD3F727F6EF5900D33DBC /* SunRiseCell.swift */,
+				7B9CD3F727F6EF5900D33DBC /* SunriseCell.swift */,
 				7B241A4527B4F2AB00F07F52 /* SelfConfiguringCell.swift */,
 				7B42474127BBC396009DDADE /* BackgroundSupplementaryView.swift */,
 				7B42474327BBE114009DDADE /* SectionHeader.swift */,
@@ -288,12 +282,11 @@
 			files = (
 				7B42474027BAA8E3009DDADE /* Hourly + Extension.swift in Sources */,
 				7B241A3227B1027D00F07F52 /* NetworkManager.swift in Sources */,
-				7B9CD3F827F6EF5900D33DBC /* SunRiseCell.swift in Sources */,
+				7B9CD3F827F6EF5900D33DBC /* SunriseCell.swift in Sources */,
 				7B241A5327B6879800F07F52 /* Current + Extension.swift in Sources */,
 				7B241A4027B3EDFF00F07F52 /* CurrentWeatherCell.swift in Sources */,
 				7B42474227BBC396009DDADE /* BackgroundSupplementaryView.swift in Sources */,
 				7B241A1427AC1D8800F07F52 /* AppDelegate.swift in Sources */,
-				7BB7659327F338ED0049C6A1 /* ForecastData + Extensions.swift in Sources */,
 				7B241A4227B3F57100F07F52 /* HourlyForecastCell.swift in Sources */,
 				7B241A4627B4F2AC00F07F52 /* SelfConfiguringCell.swift in Sources */,
 				7BB7659127F3202A0049C6A1 /* DateFormatter + Extension.swift in Sources */,
@@ -309,7 +302,6 @@
 				7B9CD3F627F5F55700D33DBC /* EmptyCell.swift in Sources */,
 				7B42474427BBE114009DDADE /* SectionHeader.swift in Sources */,
 				7B241A4427B3F62900F07F52 /* DailyForecastCell.swift in Sources */,
-				7B241A3D27B3AD1300F07F52 /* DateManager.swift in Sources */,
 				7B42475027BFCDBB009DDADE /* AlertCell.swift in Sources */,
 				7B241A2E27AC1FBC00F07F52 /* Constants.swift in Sources */,
 				7B9CD3F427F44C0B00D33DBC /* GridLayoutCell.swift in Sources */,
