@@ -10,21 +10,18 @@ import UIKit
 final class SectionHeader: UICollectionReusableView {
     static let reuseIdentifier = "SectionHeader"
     
-    let titleLabel = UILabel()
-    let symbolView = UIImageView()
-    let backgroundView = UIImageView()
-    let supportingBackgroundView = UIImageView()
+    lazy private var titleLabel = UILabel()
+    lazy private var iconView = UIImageView()
+    lazy private var backgroundView = UIImageView()
+    lazy private var supportingBackgroundView = UIImageView()
+    
+    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 14))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        
-        titleLabel.font = .systemFont(ofSize: 12)
-        titleLabel.textColor = .systemGray4
-        
-        symbolView.contentMode = .scaleAspectFit
-        symbolView.tintColor = .systemGray4
-        
+
+        iconView.contentMode = .scaleAspectFit
+
         backgroundView.backgroundColor = .systemGray2
         backgroundView.layer.cornerRadius = 12
 //        backgroundView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -34,7 +31,7 @@ final class SectionHeader: UICollectionReusableView {
         supportingBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         
         let headerTitleStackView = UIStackView(arrangedSubviews: [
-            symbolView,
+            iconView,
             titleLabel
         ])
         headerTitleStackView.axis = .horizontal
@@ -58,11 +55,6 @@ final class SectionHeader: UICollectionReusableView {
             backgroundView.topAnchor.constraint(equalTo: supportingBackgroundView.topAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-//            backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
-//            backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
-//            backgroundView.topAnchor.constraint(equalTo: topAnchor),
-//            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
-
             headerTitleStackView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 16),
             headerTitleStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 50),
             headerTitleStackView.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 12),
@@ -72,6 +64,35 @@ final class SectionHeader: UICollectionReusableView {
     
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         
+    }
+    
+    func configureForAlertSection(with forecast: ForecastData) {
+        guard let alerts = forecast.alerts?.count,
+              let event = forecast.alerts?.first?.event else {
+                  return
+              }
+
+        var areFew: Bool {
+            return alerts > 1 ? true : false
+        }
+        
+        titleLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        titleLabel.textColor = .white
+        
+        iconView.tintColor = .white
+        
+        titleLabel.text = areFew ? "\(event) & \(alerts - 1) More" : event
+        iconView.image = UIImage(systemName: "exclamationmark.triangle.fill")
+    }
+    
+    func configure(with section: Section) {
+        titleLabel.font = .systemFont(ofSize: 12)
+        titleLabel.textColor = .systemGray4
+        
+        iconView.tintColor = .systemGray4
+        
+        titleLabel.text = section.headerTitle.uppercased()
+        iconView.image = UIImage(systemName: section.headerIcon, withConfiguration: symbolConfig)
     }
     
     required init?(coder: NSCoder) {
