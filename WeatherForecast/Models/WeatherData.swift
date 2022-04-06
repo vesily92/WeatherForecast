@@ -12,16 +12,16 @@ enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
         return ""
     }
     
+    case current
     case alert
-    //case current
     case hourly
     case daily
 //    case grid
     
     var headerTitle: String {
         switch self {
-        case .alert: return ""
-        //case .current: return ""
+        case .current: return ""
+        case .alert: return "Severe weather"
         case .hourly: return "Hourly forecast"
         case .daily: return "7-day forecast"
 //        case .grid: return ""
@@ -29,7 +29,8 @@ enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
     }
     var headerIcon: String {
         switch self {
-        case .alert: return ""
+        case .current: return ""
+        case .alert: return "exclamationmark.triangle.fill"
         case .hourly: return "clock"
         case .daily: return "calendar"
 //        case .grid: return ""
@@ -65,6 +66,14 @@ struct ForecastData: Codable, Hashable {
     }
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+        hasher.combine(lat)
+        hasher.combine(lon)
+        hasher.combine(timezone)
+        hasher.combine(timezoneOffset)
+        hasher.combine(current)
+        hasher.combine(hourly)
+        hasher.combine(daily)
+        hasher.combine(alerts)
     }
 }
 
@@ -102,6 +111,17 @@ struct Current: Codable, Hashable {
     }
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+        hasher.combine(dt)
+        hasher.combine(sunrise)
+        hasher.combine(sunset)
+        hasher.combine(temp)
+        hasher.combine(feelsLike)
+        hasher.combine(pressure)
+        hasher.combine(humidity)
+        hasher.combine(uvi)
+        hasher.combine(visibility)
+        hasher.combine(windSpeed)
+        hasher.combine(weather)
     }
 }
 
@@ -127,6 +147,11 @@ struct Hourly: Codable, Hashable {
     }
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+        hasher.combine(dt)
+        hasher.combine(temp)
+        hasher.combine(feelsLike)
+        hasher.combine(weather)
+        hasher.combine(pop)
     }
 }
 
@@ -162,6 +187,16 @@ struct Daily: Codable, Hashable {
     }
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+        hasher.combine(dt)
+        hasher.combine(sunrise)
+        hasher.combine(sunset)
+        hasher.combine(temperature)
+        hasher.combine(pressure)
+        hasher.combine(humidity)
+        hasher.combine(windSpeed)
+        hasher.combine(weather)
+        hasher.combine(pop)
+        hasher.combine(uvi)
     }
 }
 
@@ -184,23 +219,72 @@ struct Alert: Codable, Hashable {
     let alertDescription: String
     let tags: [String]
     
+    static var mockup: [Alert] {
+        let alert1 = Alert(
+            senderName: "NWS Shreveport (Shreveport)",
+            event: "Wind Advisory",
+            start: 1648628880,
+            end: 1648663200,
+            alertDescription: "...WIND ADVISORY REMAINS IN EFFECT UNTIL 1 PM CDT THIS\nAFTERNOON...\n* WHAT...South winds 20 to 25 mph with gusts up to 50 mph\nexpected.\n* WHERE...Portions of north central and northwest Louisiana,\nsouth central and southwest Arkansas and east and northeast\nTexas.\n* WHEN...Through 1 PM CDT this afternoon.\n* IMPACTS...Driving conditions will be hazardous for high\nprofile vehicles and weakly rooted trees and rotted branches\ncould be downed. In addition, strong winds and rough waves on\narea lakes will create hazardous conditions for small craft.",
+            tags: [
+                "Wind"
+            ]
+        )
+        
+        let alert2 = Alert(
+            senderName: "NWS Storm Prediction Center (Storm Prediction Center - Norman, Oklahoma)",
+            event: "Tornado Watch",
+            start: 1648635900,
+            end: 1648663200,
+            alertDescription: "TORNADO WATCH 75 IS IN EFFECT UNTIL 100 PM CDT FOR THE\nFOLLOWING LOCATIONS\nAR\n.    ARKANSAS COUNTIES INCLUDED ARE\nARKANSAS             BAXTER              BOONE\nBRADLEY              CALHOUN             CLARK\nCLEBURNE             CLEVELAND           COLUMBIA\nCONWAY               DALLAS              DESHA\nDREW                 FAULKNER            FULTON\nGARLAND              GRANT               HEMPSTEAD\nHOT SPRING           HOWARD              INDEPENDENCE\nIZARD                JACKSON             JEFFERSON\nJOHNSON              LAFAYETTE           LAWRENCE\nLINCOLN              LITTLE RIVER        LOGAN\nLONOKE               MARION              MILLER\nMONROE               MONTGOMERY          NEVADA\nNEWTON               OUACHITA            PERRY\nPIKE                 POLK                POPE\nPRAIRIE              PULASKI             RANDOLPH\nSALINE               SCOTT               SEARCY\nSEVIER               SHARP               STONE\nUNION                VAN BUREN           WHITE\nWOODRUFF             YELL",
+            tags: [
+                "Tornado"
+            ]
+        )
+        return [alert1, alert2]
+    }
+    
     static func == (lhs: Alert, rhs: Alert) -> Bool {
         return lhs.id == rhs.id
     }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+        hasher.combine(senderName)
+        hasher.combine(event)
+        hasher.combine(start)
+        hasher.combine(end)
+        hasher.combine(alertDescription)
+        hasher.combine(tags)
     }
 }
 
-struct Temperature: Codable {
+struct Temperature: Codable, Hashable {
+    let id = UUID()
+    
     let min: Double
     let max: Double
     
+    static func == (lhs: Temperature, rhs: Temperature) -> Bool {
+        return lhs.id == rhs.id
+    }
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(min)
+        hasher.combine(max)
+    }
 }
 
-struct Weather: Codable {
+struct Weather: Codable, Hashable {
     let id: Int
     let description: String
+    
+    static func == (lhs: Weather, rhs: Weather) -> Bool {
+        return lhs.id == rhs.id
+    }
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(description)
+    }
 }
 
