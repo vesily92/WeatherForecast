@@ -12,9 +12,9 @@ class CurrentWeatherCell: UICollectionViewCell, SelfConfiguringCell {
     static let reuseIdentifier = "CurrentWeatherCell"
     
     lazy private var temperatureLabel = UILabel()
-    lazy private var weatherDescriptionLabel = UILabel()
-    lazy private var temperatureFeelsLikeLabel = UILabel()
-    lazy private var weatherIconView = UIImageView()
+    lazy private var descriptionLabel = UILabel()
+    lazy private var feelsLikeLabel = UILabel()
+    lazy private var symbolView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -22,35 +22,37 @@ class CurrentWeatherCell: UICollectionViewCell, SelfConfiguringCell {
         temperatureLabel.font = .boldSystemFont(ofSize: 50)
         temperatureLabel.textColor = .white
         
-        weatherDescriptionLabel.font = .systemFont(ofSize: 16)
-        weatherDescriptionLabel.textColor = .white
+        descriptionLabel.font = .systemFont(ofSize: 16)
+        descriptionLabel.textColor = .white
         
-        temperatureFeelsLikeLabel.font = .systemFont(ofSize: 16)
-        temperatureFeelsLikeLabel.textColor = .white
+        feelsLikeLabel.font = .systemFont(ofSize: 16)
+        feelsLikeLabel.textColor = .white
         
-        weatherIconView.contentMode = .scaleAspectFit
-        weatherIconView.preferredSymbolConfiguration = .preferringMulticolor()
+        symbolView.contentMode = .scaleAspectFit
+        symbolView.preferredSymbolConfiguration = .preferringMulticolor()
         
-        let subStackView = UIStackView(arrangedSubviews: [
+        let innerStackView = UIStackView(arrangedSubviews: [
             temperatureLabel,
-            weatherIconView
+            symbolView
         ])
-        subStackView.axis = .horizontal
-        subStackView.alignment = .fill
-        subStackView.distribution = .fillEqually
+        innerStackView.axis = .horizontal
+        innerStackView.alignment = .fill
+        innerStackView.distribution = .fillEqually
         
-        let mainStackView = UIStackView(arrangedSubviews: [
-            subStackView,
-            weatherDescriptionLabel,
-            temperatureFeelsLikeLabel
+        let outerStackView = UIStackView(arrangedSubviews: [
+            innerStackView,
+            descriptionLabel,
+            feelsLikeLabel
         ])
-        mainStackView.axis = .vertical
-        mainStackView.spacing = 10
-        mainStackView.alignment = .center
-        mainStackView.distribution = .fill
-        mainStackView.translatesAutoresizingMaskIntoConstraints = false
+        outerStackView.axis = .vertical
+        outerStackView.spacing = 10
+        outerStackView.alignment = .center
+        outerStackView.distribution = .fill
+        outerStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        setupConstraints(for: mainStackView)
+        contentView.addSubview(outerStackView)
+        
+        setupConstraints(for: outerStackView)
     }
     
     required init?(coder: NSCoder) {
@@ -58,49 +60,37 @@ class CurrentWeatherCell: UICollectionViewCell, SelfConfiguringCell {
     }
     
     func configure(with forecast: AnyHashable) {
-        guard let model = forecast as? Current.Diffable else { return }
-        DispatchQueue.main.async {
-            self.temperatureLabel.text = model.temperature
-            self.weatherDescriptionLabel.text = model.description
-            self.temperatureFeelsLikeLabel.text = model.feelsLike
-            self.weatherIconView.image = UIImage(systemName: model.systemNameString)
+        guard let forecast = forecast as? Current else { return }
+        
+        var sunIsUp: Bool {
+            let hour = DateFormatter.getHour(from: forecast.dt)
+            switch hour {
+            case 7...21: return true
+            default: return false
+            }
         }
+        var systemNameString: String {
+            switch forecast.weather.first!.id {
+            case 200...232: return "cloud.bolt.rain.fill"
+            case 300...321: return "cloud.drizzle.fill"
+            case 500...531: return "cloud.heavyrain.fill"
+            case 600...622: return "snowflake"
+            case 700...781: return "cloud.fog.fill"
+            case 800: return sunIsUp ? "sun.max.fill" : "moon.stars.fill"
+            case 801...804: return sunIsUp ? "cloud.sun.fill" : "cloud.moon.fill"
+            default: return "nosign"
+            }
+        }
+        temperatureLabel.text = forecast.temp.displayTemp()
+        descriptionLabel.text = forecast.weather.first?.description.capitalized ?? ""
+        feelsLikeLabel.text = "Feels like: " + forecast.feelsLike.displayTemp()
+        symbolView.image = UIImage(systemName: systemNameString)
     }
     
-//    func configure(with forecast: AnyHashable) {
-//        guard let model = forecast as? Current else { return }
-//        
-//        guard let temp = model.temp,
-//              let description = model.weather?.first?.description,
-//              let feelsLike = model.feelsLike,
-//              let icon = model.weather?.first?.systemNameString else {
-//                  return
-//              }
-//        
-//        self.temperatureLabel.text = format(input: temp, modifier: true)
-//        self.weatherDescriptionLabel.text = description.capitalized
-//        self.temperatureFeelsLikeLabel.text = format(input: feelsLike, modifier: true)
-//        self.weatherIconView.image = UIImage(systemName: icon)
-//        
-//    }
-    
     fileprivate func setupConstraints(for uiView: UIView) {
-        contentView.addSubview(uiView)
-        
         NSLayoutConstraint.activate([
             uiView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 40),
             uiView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)
         ])
-    }
-    
-    fileprivate func format(input: Double, modifier: Bool = false) -> String? {
-        
-        if modifier {
-            return String(format: "%.0f", input.rounded(.toNearestOrAwayFromZero)) + "°"
-        } else if input > 0.2 && !modifier {
-            return String(format: "%.0f", input * 100) + " %"
-        } else {
-            return nil
-        }
     }
 }
