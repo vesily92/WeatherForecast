@@ -2,7 +2,7 @@
 //  SunriseCell.swift
 //  WeatherForecast
 //
-//  Created by Василий Пронин on 01.04.2022.
+//  Created by Василий Пронин on 05.04.2022.
 //
 
 import Foundation
