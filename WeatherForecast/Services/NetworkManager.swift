@@ -40,6 +40,10 @@ class NetworkManager {
             do {
                 let forecastData = try JSONDecoder().decode(ForecastData.self, from: data)
                 switch sectionType {
+                case .current:
+                    DispatchQueue.main.async {
+                        completion(forecastData.current)
+                    }
                 case .alert:
                     DispatchQueue.main.async {
                         completion(forecastData.alerts)
