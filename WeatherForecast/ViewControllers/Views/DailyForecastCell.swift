@@ -15,7 +15,7 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     lazy private var highestTemperatureLabel = UILabel()
     lazy private var lowestTemperatureLabel = UILabel()
     lazy private var probabilityOfPrecipitationLabel = UILabel()
-    lazy private var weatherIconView = UIImageView()
+    lazy private var symbolView = UIImageView()
     
     var collectionView: UICollectionView!
     
@@ -36,11 +36,11 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         probabilityOfPrecipitationLabel.font = .systemFont(ofSize: 12, weight: .semibold)
         probabilityOfPrecipitationLabel.textColor = .systemCyan
         
-        weatherIconView.preferredSymbolConfiguration = .preferringMulticolor()
-        weatherIconView.contentMode = .scaleAspectFit
+        symbolView.preferredSymbolConfiguration = .preferringMulticolor()
+        symbolView.contentMode = .scaleAspectFit
 
         let weatherIconStackView = UIStackView(arrangedSubviews: [
-            weatherIconView,
+            symbolView,
             probabilityOfPrecipitationLabel
         ])
         weatherIconStackView.axis = .vertical
@@ -72,13 +72,13 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     }
     
     func configure(with forecast: AnyHashable) {
-        guard let model = forecast as? Daily else { return }
+        guard let forecast = forecast as? Daily else { return }
 
         var isToday: Bool {
-            return DateFormatter.compare(.day, with: model.dt)
+            return DateFormatter.compare(.day, with: forecast.dt)
         }
         var systemNameString: String {
-            switch model.weather.first!.id {
+            switch forecast.weather.first!.id {
             case 200...232: return "cloud.bolt.rain.fill" //"11d"
             case 300...321: return "cloud.drizzle.fill" //"09d"
             case 500...531: return "cloud.heavyrain.fill" //"10d"
@@ -89,11 +89,11 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
             default: return "nosign"
             }
         }
-        weekdayLabel.text = isToday ? "Today" : DateFormatter.format(unixTime: model.dt, to: .weekday)
-        highestTemperatureLabel.text = format(input: model.temperature.max, modifier: true)
-        lowestTemperatureLabel.text = format(input: model.temperature.min, modifier: true)
-        probabilityOfPrecipitationLabel.text = format(input: model.pop)
-        weatherIconView.image = UIImage(systemName: systemNameString, withConfiguration: symbolConfig)
+        weekdayLabel.text = isToday ? "Today" : DateFormatter.format(unixTime: forecast.dt, to: .weekday)
+        highestTemperatureLabel.text = forecast.temperature.max.displayTemp()
+        lowestTemperatureLabel.text = forecast.temperature.min.displayTemp()
+        probabilityOfPrecipitationLabel.text = forecast.pop.displayPop()
+        symbolView.image = UIImage(systemName: systemNameString, withConfiguration: symbolConfig)
     }
  
     fileprivate func setupConstraints(for uiView: UIView) {
@@ -102,16 +102,5 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
             uiView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             uiView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
-    }
-    
-    fileprivate func format(input: Double, modifier: Bool = false) -> String? {
-        
-        if modifier {
-            return String(format: "%.0f", input.rounded(.toNearestOrAwayFromZero)) + "°"
-        } else if input > 0.2 && !modifier {
-            return String(format: "%.0f", input * 100) + " %"
-        } else {
-            return nil
-        }
     }
 }
