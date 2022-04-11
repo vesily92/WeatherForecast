@@ -12,7 +12,7 @@ enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
         return ""
     }
     
-    case current
+//    case current
     case alert
     case hourly
     case daily
@@ -20,7 +20,7 @@ enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
     
     var headerTitle: String {
         switch self {
-        case .current: return ""
+//        case .current: return ""
         case .alert: return "Severe weather"
         case .hourly: return "Hourly forecast"
         case .daily: return "7-day forecast"
@@ -29,7 +29,7 @@ enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
     }
     var headerIcon: String {
         switch self {
-        case .current: return ""
+//        case .current: return ""
         case .alert: return "exclamationmark.triangle.fill"
         case .hourly: return "clock"
         case .daily: return "calendar"
