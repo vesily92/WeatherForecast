@@ -22,14 +22,14 @@ final class SectionHeader: UICollectionReusableView {
 
         iconView.contentMode = .scaleAspectFit
 
-        backgroundView.backgroundColor = .systemGray2
-        backgroundView.layer.cornerRadius = 12
-//        backgroundView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        
-        supportingBackgroundView.backgroundColor = .systemGray4
-        supportingBackgroundView.translatesAutoresizingMaskIntoConstraints = false
-        
+//        backgroundView.backgroundColor = .systemGray2
+//        backgroundView.layer.cornerRadius = 12
+////        backgroundView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+//        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+//
+//        supportingBackgroundView.backgroundColor = .systemGray4
+//        supportingBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+//
         let headerTitleStackView = UIStackView(arrangedSubviews: [
             iconView,
             titleLabel
@@ -40,31 +40,42 @@ final class SectionHeader: UICollectionReusableView {
         headerTitleStackView.spacing = 4
         headerTitleStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        addSubview(supportingBackgroundView)
-        addSubview(backgroundView)
+//        addSubview(supportingBackgroundView)
+//        addSubview(backgroundView)
         addSubview(headerTitleStackView)
         
         NSLayoutConstraint.activate([
-            supportingBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            supportingBackgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            supportingBackgroundView.topAnchor.constraint(equalTo: topAnchor),
-            supportingBackgroundView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
-
-            backgroundView.leadingAnchor.constraint(equalTo: supportingBackgroundView.leadingAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: supportingBackgroundView.trailingAnchor),
-            backgroundView.topAnchor.constraint(equalTo: supportingBackgroundView.topAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            
-            headerTitleStackView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 16),
+//            supportingBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
+//            supportingBackgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
+//            supportingBackgroundView.topAnchor.constraint(equalTo: topAnchor),
+//            supportingBackgroundView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+//
+//            backgroundView.leadingAnchor.constraint(equalTo: supportingBackgroundView.leadingAnchor),
+//            backgroundView.trailingAnchor.constraint(equalTo: supportingBackgroundView.trailingAnchor),
+//            backgroundView.topAnchor.constraint(equalTo: supportingBackgroundView.topAnchor),
+//            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
+//            
+//            headerTitleStackView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 16),
+//            headerTitleStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 50),
+//            headerTitleStackView.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 12),
+//            headerTitleStackView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -12)
+//            
+            headerTitleStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             headerTitleStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 50),
-            headerTitleStackView.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 12),
-            headerTitleStackView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -12)
+            headerTitleStackView.topAnchor.constraint(equalTo: topAnchor, constant: 12)
+            
         ])
     }
     
     override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
         
     }
+    
+    func isHeaderReachedTopEdge(for staticYPosition: CGFloat) -> Bool {
+        return self.frame.origin.y > staticYPosition
+    }
+    
+    
     
     func configureForAlertSection(with forecast: ForecastData) {
         guard let alerts = forecast.alerts?.count,
