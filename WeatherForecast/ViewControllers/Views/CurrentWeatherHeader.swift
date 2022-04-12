@@ -60,16 +60,16 @@ class CurrentWeatherHeader: UICollectionReusableView {
         
     }
     
-    func configure(with model: Current) {
+    func configure(with forecast: Current) {
         var sunIsUp: Bool {
-            let hour = DateFormatter.getHour(from: model.dt)
+            let hour = DateFormatter.getHour(from: forecast.dt)
             switch hour {
             case 7...21: return true
             default: return false
             }
         }
         var systemNameString: String {
-            switch model.weather.first!.id {
+            switch forecast.weather.first!.id {
             case 200...232: return "cloud.bolt.rain.fill"
             case 300...321: return "cloud.drizzle.fill"
             case 500...531: return "cloud.heavyrain.fill"
@@ -80,9 +80,9 @@ class CurrentWeatherHeader: UICollectionReusableView {
             default: return "nosign"
             }
         }
-        temperatureLabel.text = String(format: "%.0f", model.temp.rounded(.toNearestOrAwayFromZero)) + "°"
-        descriptionLabel.text = model.weather.first?.description.capitalized ?? ""
-        feelsLikeLabel.text = "Feels like: " + String(format: "%.0f", model.feelsLike.rounded(.toNearestOrAwayFromZero)) + "°"
+        temperatureLabel.text = forecast.temp.displayTemp()
+        descriptionLabel.text = forecast.weather.first?.description.capitalized ?? ""
+        feelsLikeLabel.text = "Feels like: " + forecast.feelsLike.displayTemp()
         weatherIconView.image = UIImage(systemName: systemNameString)
     }
     
@@ -91,17 +91,6 @@ class CurrentWeatherHeader: UICollectionReusableView {
             uiView.topAnchor.constraint(equalTo: topAnchor, constant: 40),
             uiView.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
-    }
-    
-    fileprivate func format(input: Double, modifier: Bool = false) -> String? {
-        
-        if modifier {
-            return String(format: "%.0f", input.rounded(.toNearestOrAwayFromZero)) + "°"
-        } else if input > 0.2 && !modifier {
-            return String(format: "%.0f", input * 100) + " %"
-        } else {
-            return nil
-        }
     }
     
     required init?(coder: NSCoder) {
