@@ -18,12 +18,12 @@ class ViewController: UIViewController {
         didSet {
             print("forecast data fetched")
             dataSource?.apply(makeSnapshot(), animatingDifferences: false)
-            if let current = forecastData?.current {
-                currentWeatherView.configure(with: current)
-            }
+//            if let current = forecastData?.current {
+//                currentWeatherView.configure(with: current)
+//            }
         }
     }
-    private var currentWeatherView = CurrentWeatherView()
+//    private var currentWeatherView = CurrentWeatherView()
     
 //    private var offsetY: CGFloat {
 //        let offset = weatherCollectionView.contentOffset.y + 100
@@ -43,24 +43,24 @@ class ViewController: UIViewController {
         createDataSource()
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        
-        currentWeatherView.updatePosition()
-    }
+//    override func viewWillLayoutSubviews() {
+//        super.viewWillLayoutSubviews()
+//
+//        currentWeatherView.updatePosition()
+//    }
     
-    override func viewSafeAreaInsetsDidChange() {
-        super.viewSafeAreaInsetsDidChange()
-        
-        weatherCollectionView.contentInset = UIEdgeInsets(
-            top: 250 + weatherCollectionView.safeAreaInsets.top,
-            left: 0,
-            bottom: 0,
-            right: 0
-        )
-        
-        currentWeatherView.updatePosition()
-    }
+//    override func viewSafeAreaInsetsDidChange() {
+//        super.viewSafeAreaInsetsDidChange()
+//
+////        weatherCollectionView.contentInset = UIEdgeInsets(
+////            top: 250 + weatherCollectionView.safeAreaInsets.top,
+////            left: 0,
+////            bottom: 0,
+////            right: 0
+////        )
+//
+//        currentWeatherView.updatePosition()
+//    }
     
     
     
@@ -75,7 +75,7 @@ class ViewController: UIViewController {
         
 //        weatherCollectionView.scrollToItem(at: <#T##IndexPath#>, at: <#T##UICollectionView.ScrollPosition#>, animated: <#T##Bool#>)
 //        weatherCollectionView.isScrollEnabled
-//        weatherCollectionView.scrollRectToVisible(<#T##rect: CGRect##CGRect#>, animated: <#T##Bool#>)
+//        weatherCollectionView.scrollRectToVisible(CGRect(x: 0, y: 250, width: view.frame.width, height: 250), animated: true)
 //        weatherCollectionView.verticalScrollIndicatorInsets
 //        weatherCollectionView.scrollsToTop
         
@@ -87,17 +87,20 @@ class ViewController: UIViewController {
         
         view.addSubview(weatherCollectionView)
         
-        currentWeatherView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        currentWeatherView.frame = CGRect(x: 0, y: 0, width: view.frame.size.width, height: 250)
-        weatherCollectionView.backgroundView = UIView()
-        weatherCollectionView.backgroundView?.addSubview(currentWeatherView)
-        print("header configure")
-        weatherCollectionView.contentInset = UIEdgeInsets(
-            top: 250,
-            left: 0,
-            bottom: 0,
-            right: 0
-        )
+        
+//        currentWeatherView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        currentWeatherView.frame = CGRect(x: 0, y: 0, width: view.frame.size.width, height: 250)
+//        weatherCollectionView.backgroundView = UIView()
+//        weatherCollectionView.backgroundView?.addSubview(currentWeatherView)
+//        print("header configure")
+//        weatherCollectionView.contentInset = UIEdgeInsets(
+//            top: 250,
+//            left: 0,
+//            bottom: 0,
+//            right: 0
+//        )
+        
+        
         
         NSLayoutConstraint.activate([
             weatherCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -115,6 +118,11 @@ class ViewController: UIViewController {
             forSupplementaryViewOfKind: CurrentWeatherHeader.reuseIdentifier,
             withReuseIdentifier: CurrentWeatherHeader.reuseIdentifier
         )
+//        weatherCollectionView.register(
+//            CurrentWeatherView.self,
+//            forSupplementaryViewOfKind: CurrentWeatherView.reuseIdentifier,
+//            withReuseIdentifier: CurrentWeatherView.reuseIdentifier
+//        )
         weatherCollectionView.register(
             SectionHeader.self,
             forSupplementaryViewOfKind: SectionHeader.reuseIdentifier,
@@ -194,10 +202,14 @@ class ViewController: UIViewController {
         let currentWeatherHeader = createGlobalHeader(
             withKind: CurrentWeatherHeader.reuseIdentifier
         )
+//        let currentWeatherHeader = createGlobalHeader(
+//            withKind: CurrentWeatherView.reuseIdentifier
+//        )
         let config = UICollectionViewCompositionalLayoutConfiguration()
         config.boundarySupplementaryItems = [currentWeatherHeader]
-
+        config.interSectionSpacing = 20
         layout.configuration = config
+        
        
         layout.register(
             BackgroundSupplementaryView.self,
@@ -260,7 +272,15 @@ extension ViewController {
                     currentWeatherHeader.configure(with: current)
                 }
                 return currentWeatherHeader
-
+//            case CurrentWeatherView.reuseIdentifier:
+//                guard let currentWeatherHeader = weatherCollectionView.dequeueReusableSupplementaryView(ofKind: CurrentWeatherView.reuseIdentifier, withReuseIdentifier: CurrentWeatherView.reuseIdentifier, for: indexPath) as? CurrentWeatherView else {
+//                    fatalError("Unknown header kind")
+//                }
+//
+//                if let current = self.forecastData?.current {
+//                    currentWeatherHeader.configure(with: current)
+//                }
+//                return currentWeatherHeader
             default:
                 guard let sectionHeader = weatherCollectionView.dequeueReusableSupplementaryView(
                     ofKind: SectionHeader.reuseIdentifier,
@@ -455,38 +475,28 @@ extension ViewController {
         section.boundarySupplementaryItems = [sectionHeader]
         section.supplementariesFollowContentInsets = false
         
-//        section.visibleItemsInvalidationHandler = { items, offset, environment in
-//            print("Alert Section offset \(offset.y)")
+        section.visibleItemsInvalidationHandler = { items, offset, environment in
+            print("Alert Section offset \(offset.y)")
             
             
-//            guard let headerIndexPath = self.weatherCollectionView.indexPathsForVisibleSupplementaryElements(ofKind: SectionHeader.reuseIdentifier).first else { return }
-////            let h = self.weatherCollectionView.indexPathForItem(at: <#T##CGPoint#>)
-            
-//            items.forEach { item in
-//                guard let cell = self.weatherCollectionView.cellForItem(at: item.indexPath) as? HourlyForecastCell else { return }
-//                guard let header = self.weatherCollectionView.supplementaryView(forElementKind: SectionHeader.reuseIdentifier, at: headerIndexPath) else { return }
-                
-                //            if offset.y > 360 {
-                //
-                //                //                    header.alpha = 0
-                //                items.transform = .init(scaleX: 0.5, y: 0.5)
-                //                //                    item.alpha = 0
-                //            }
-//            }
-////
-//            let headers = self.weatherCollectionView.visibleSupplementaryViews(ofKind: SectionHeader.reuseIdentifier)
-//
-////
-////            let headerIndexPath = self.weatherCollectionView.indexPathsForVisibleSupplementaryElements(ofKind: SectionHeader.reuseIdentifier)
-//
-//            guard let indexPath = self.weatherCollectionView.indexPathForItem(at: CGPoint(x: self.view.bounds.midX, y: 90)) else { return }
-//
-//            guard let theHeader = self.weatherCollectionView.supplementaryView(forElementKind: SectionHeader.reuseIdentifier, at: indexPath) as? SectionHeader else { return }
-//
-//
-//
-//
-//        }
+            items.forEach { item in
+                guard let cell = self.weatherCollectionView.cellForItem(at: item.indexPath) as? AlertCell else { return }
+                guard let header = self.weatherCollectionView.supplementaryView(forElementKind: SectionHeader.reuseIdentifier, at: item.indexPath) as? SectionHeader else { return }
+                print(header.isHeaderReachedTopEdge(for: 200))
+                if offset.y > 100 {
+                    cell.isHidden = true
+                    item.alpha = 0
+                    header.isHidden = true
+                     
+                } else {
+                    cell.isHidden = false
+                    item.alpha = 1
+                    header.isHidden = false
+                }
+                item.transform = CGAffineTransform(translationX: 0, y: 0)
+            }
+             
+        }
         
         return section
     }
@@ -516,7 +526,18 @@ extension ViewController {
         section.boundarySupplementaryItems = [sectionHeader]
         section.supplementariesFollowContentInsets = false
 //        section.visibleItemsInvalidationHandler = { (items, offset, environment) in
-//            print("Hourly Section offset \(offset.y)")
+//
+//            items.forEach { item in
+//                guard let cell = self.weatherCollectionView.cellForItem(at: item.indexPath) else { return }
+//                if offset.y > 250 {
+//                    cell.isHidden = true
+//                    item.alpha = 0
+//                } else {
+//                    cell.isHidden = false
+//                    item.alpha = 1
+//                }
+//                item.transform = CGAffineTransform(translationX: 0, y: 0)
+//            }
 //        }
         
         return section
@@ -646,11 +667,14 @@ struct ViewControllerProvider: PreviewProvider {
     }
 }
 
-extension ViewController: UIScrollViewDelegate {
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        currentWeatherView.updatePosition()
-    }
+//extension ViewController: UIScrollViewDelegate {
+//
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        guard let scrollView = weatherCollectionView else { return }
+////        guard let header = weatherCollectionView.visibleSupplementaryViews(ofKind: CurrentWeatherView.reuseIdentifier).first as? CurrentWeatherView else { return }
+////        header.scrollViewDidScroll(scrollView: scrollView)
+//        print(scrollView.contentOffset.y)
+//    }
 //    func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
 //
 //    }
@@ -673,4 +697,4 @@ extension ViewController: UIScrollViewDelegate {
 //            }
 //        }
 //    }
-}
+//}
