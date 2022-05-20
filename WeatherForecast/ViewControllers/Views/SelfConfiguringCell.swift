@@ -10,5 +10,5 @@ import Foundation
 protocol SelfConfiguringCell {
     static var reuseIdentifier: String { get }
 
-    func configure(with forecast: AnyHashable)
+    func configure(with model: AnyHashable, andTimezoneOffset offset: Int)
 }
