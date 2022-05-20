@@ -14,16 +14,16 @@ enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
     
 //    case current
     case alert
-    case hourly
+    case hourlyCollection
     case daily
 //    case grid
     
     var headerTitle: String {
         switch self {
 //        case .current: return ""
-        case .alert: return "Severe weather"
-        case .hourly: return "Hourly forecast"
-        case .daily: return "7-day forecast"
+        case .alert: return "😱 Severe Weather"
+        case .hourlyCollection: return "⏱ Hourly Forecast"
+        case .daily: return "🗓 7-Day Forecast"
 //        case .grid: return ""
         }
     }
@@ -31,11 +31,57 @@ enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
         switch self {
 //        case .current: return ""
         case .alert: return "exclamationmark.triangle.fill"
-        case .hourly: return "clock"
+        case .hourlyCollection: return "clock"
         case .daily: return "calendar"
 //        case .grid: return ""
         }
     }
+}
+
+struct CurrentWeatherData: Codable {
+    let name: String
+    let dt: Int
+    let weather: [Weather]
+    let main: Main
+    let visibility: Int
+//    let wind: Wind
+    let clouds: Clouds
+    let sys: Sys
+    let timezone: Int
+}
+
+struct Main: Codable {
+    let temp: Double
+    let feelsLike: Double
+    let tempMin: Double
+    let tempMax: Double
+    let pressure: Int
+    let humidity: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case temp
+        case feelsLike = "feels_like"
+        case tempMin = "temp_min"
+        case tempMax = "temp_max"
+        case pressure
+        case humidity
+    }
+}
+
+struct Wind: Codable {
+    let speed, deg: Int?
+}
+
+struct Clouds: Codable {
+    let all: Int
+}
+
+struct Sys: Codable {
+    let type: Int
+    let id: Int
+    let country: String
+    let sunrise: Int
+    let sunset: Int
 }
 
 struct ForecastData: Codable, Hashable {
@@ -260,6 +306,9 @@ struct Alert: Codable, Hashable {
 }
 
 struct Temperature: Codable, Hashable {
+    enum CodingKeys: CodingKey {
+        case id, min, max
+    }
     let id = UUID()
     
     let min: Double
@@ -278,6 +327,27 @@ struct Temperature: Codable, Hashable {
 struct Weather: Codable, Hashable {
     let id: Int
     let description: String
+    let icon: String
+    
+    var sunIsUp: Bool {
+        if icon.hasSuffix("d") {
+            return true
+        }
+        return false
+    }
+    
+    var systemNameString: String {
+        switch id {
+        case 200...232: return "cloud.bolt.rain.fill"
+        case 300...321: return "cloud.drizzle.fill"
+        case 500...531: return "cloud.heavyrain.fill"
+        case 600...622: return "snowflake"
+        case 700...781: return "cloud.fog.fill"
+        case 800: return sunIsUp ? "sun.max.fill" : "moon.stars.fill"
+        case 801...804: return sunIsUp ? "cloud.sun.fill" : "cloud.moon.fill"
+        default: return "nosign"
+        }
+    }
     
     static func == (lhs: Weather, rhs: Weather) -> Bool {
         return lhs.id == rhs.id
@@ -285,6 +355,7 @@ struct Weather: Codable, Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
         hasher.combine(description)
+        hasher.combine(icon)
     }
 }
 
