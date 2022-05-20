@@ -19,7 +19,7 @@ class ViewController: UIViewController {
     private var forecastData: ForecastData? {
         didSet {
             print("forecast data fetched")
-            print(forecastData?.alerts)
+//            print(forecastData?.alerts)
             dataSource?.apply(makeSnapshot(), animatingDifferences: false)
         }
     }
@@ -270,17 +270,12 @@ extension ViewController {
             let alerts = Array(repeating: alert, count: 1)
             snapshot.appendSections(Section.allCases)
             snapshot.appendItems(alerts, toSection: .alert)
-            print("alert")
             snapshot.appendItems(forecasts, toSection: .hourlyCollection)
-            print("hourly")
             snapshot.appendItems(forecastData.daily, toSection: .daily)
-            print("daily")
         } else {
             snapshot.appendSections([.hourlyCollection, .daily])
             snapshot.appendItems(forecasts, toSection: .hourlyCollection)
-            print("hourly")
             snapshot.appendItems(forecastData.daily, toSection: .daily)
-            print("daily")
         }
         
         
@@ -530,18 +525,18 @@ extension ViewController {
         return sectionHeader
     }
     
-    private func createFooter() -> NSCollectionLayoutBoundarySupplementaryItem {
-        let footerSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(50)
-        )
-        let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: footerSize,
-            elementKind: SectionFooter.reuseIdentifier,
-            alignment: .bottom
-        )
-        return sectionFooter
-    }
+//    private func createFooter() -> NSCollectionLayoutBoundarySupplementaryItem {
+//        let footerSize = NSCollectionLayoutSize(
+//            widthDimension: .fractionalWidth(1.0),
+//            heightDimension: .estimated(50)
+//        )
+//        let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(
+//            layoutSize: footerSize,
+//            elementKind: SectionFooter.reuseIdentifier,
+//            alignment: .bottom
+//        )
+//        return sectionFooter
+//    }
     
     private func createGlobalHeader(withKind headerKind: String) -> NSCollectionLayoutBoundarySupplementaryItem {
         let globalHeaderSize = NSCollectionLayoutSize(
