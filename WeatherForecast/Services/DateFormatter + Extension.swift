@@ -8,7 +8,8 @@
 import Foundation
 
 enum PreferableFormat {
-    case time
+    case detailed
+    case hour
     case weekday
     case date
     case sunrise
@@ -20,16 +21,19 @@ enum DateFormat {
 }
 
 extension DateFormatter {
-    static func format(unixTime: Int, to dateFormat: PreferableFormat) -> String {
+    
+    static func format(_ unixTime: Int, to dateFormat: PreferableFormat, withTimeZoneOffset offset: Int) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(unixTime))
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US")
+        dateFormatter.timeZone = TimeZone.init(secondsFromGMT: offset)
         
         switch dateFormat {
-        case .time: dateFormatter.dateFormat = "HH"
-        case .weekday: dateFormatter.dateFormat = "EE"
+        case .detailed: dateFormatter.dateFormat = "MMM d, HH:MM"
+        case .hour: dateFormatter.dateFormat = "HH"
+        case .weekday: dateFormatter.dateFormat = "EEEE"
         case .date: dateFormatter.dateFormat = "d MMMM"
-        case .sunrise: dateFormatter.dateFormat = "HH MM"
+        case .sunrise: dateFormatter.dateFormat = "HH:MM"
         }
         
         return dateFormatter.string(from: date)
@@ -59,6 +63,7 @@ extension DateFormatter {
                 return false
             }
         }
+        
         switch dateFormat {
         case .hour:
             return isNow ? true : false
