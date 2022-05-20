@@ -8,99 +8,109 @@
 import UIKit
 
 class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
-    
     static let reuseIdentifier = "DailyForecastCell"
     
     lazy private var weekdayLabel = UILabel()
-    lazy private var highestTemperatureLabel = UILabel()
-    lazy private var lowestTemperatureLabel = UILabel()
-    lazy private var probabilityOfPrecipitationLabel = UILabel()
-    lazy private var symbolView = UIImageView()
-    
-    var collectionView: UICollectionView!
+    lazy private var dateLabel = UILabel()
+    lazy private var highestTempLabel = UILabel()
+    lazy private var lowestTempLabel = UILabel()
+    lazy private var popLabel = UILabel()
+    lazy private var iconView = UIImageView()
     
     private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 18))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         weekdayLabel.font = .systemFont(ofSize: 18, weight: .semibold)
         weekdayLabel.textColor = .white
         
-        highestTemperatureLabel.font = .systemFont(ofSize: 18, weight: .semibold)
-        highestTemperatureLabel.textColor = .white
+        dateLabel.font = .systemFont(ofSize: 12)
+        dateLabel.alpha = 0.3
         
-        lowestTemperatureLabel.font = .systemFont(ofSize: 18, weight: .semibold)
-        lowestTemperatureLabel.alpha = 0.3
+        highestTempLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        highestTempLabel.textColor = .white
         
-        probabilityOfPrecipitationLabel.font = .systemFont(ofSize: 12, weight: .semibold)
-        probabilityOfPrecipitationLabel.textColor = .systemCyan
+        lowestTempLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        lowestTempLabel.alpha = 0.3
         
-        symbolView.preferredSymbolConfiguration = .preferringMulticolor()
-        symbolView.contentMode = .scaleAspectFit
-
-        let weatherIconStackView = UIStackView(arrangedSubviews: [
-            symbolView,
-            probabilityOfPrecipitationLabel
-        ])
-        weatherIconStackView.axis = .vertical
+        popLabel.font = .systemFont(ofSize: 10, weight: .semibold)
+        popLabel.textColor = .systemCyan
         
-        let temperatureStackView = UIStackView(arrangedSubviews: [
-            highestTemperatureLabel,
-            lowestTemperatureLabel
-        ])
-        temperatureStackView.axis = .horizontal
-        temperatureStackView.distribution = .equalCentering
-        temperatureStackView.spacing = 10
+        iconView.preferredSymbolConfiguration = .preferringMulticolor()
+        iconView.contentMode = .scaleAspectFit
         
-        let mainStackView = UIStackView(arrangedSubviews: [
+        let dateStackView = UIStackView(arrangedSubviews: [
             weekdayLabel,
-            weatherIconStackView,
-            temperatureStackView
+            dateLabel
         ])
-        mainStackView.distribution = .equalCentering
-        mainStackView.axis = .horizontal
-        mainStackView.translatesAutoresizingMaskIntoConstraints = false
+        dateStackView.axis = .vertical
+        dateStackView.translatesAutoresizingMaskIntoConstraints = false
+
+        let iconStackView = UIStackView(arrangedSubviews: [
+            iconView,
+            popLabel
+        ])
+        iconStackView.axis = .vertical
+        iconStackView.distribution = .equalCentering
+        iconStackView.alignment = .center
+        iconStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        contentView.addSubview(mainStackView)
+        let tempStackView = UIStackView(arrangedSubviews: [
+            highestTempLabel,
+            lowestTempLabel
+        ])
+        tempStackView.axis = .horizontal
+        tempStackView.distribution = .equalCentering
+        tempStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        setupConstraints(for: mainStackView)
+        contentView.addSubview(dateStackView)
+        contentView.addSubview(iconStackView)
+        contentView.addSubview(tempStackView)
+        
+        NSLayoutConstraint.activate([
+            
+            dateStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            dateStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            dateStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: contentView.bounds.width / 3),
+            
+            iconStackView.trailingAnchor.constraint(equalTo: tempStackView.leadingAnchor),
+            iconStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            iconStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: contentView.bounds.width / 5),
+            
+            tempStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            tempStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            tempStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: contentView.bounds.width / 5)
+        ])
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with forecast: AnyHashable) {
+    func configure(with forecast: AnyHashable, andTimezoneOffset offset: Int) {
         guard let forecast = forecast as? Daily else { return }
 
         var isToday: Bool {
             return DateFormatter.compare(.day, with: forecast.dt)
         }
-        var systemNameString: String {
-            switch forecast.weather.first!.id {
-            case 200...232: return "cloud.bolt.rain.fill" //"11d"
-            case 300...321: return "cloud.drizzle.fill" //"09d"
-            case 500...531: return "cloud.heavyrain.fill" //"10d"
-            case 600...622: return "snowflake" //"13d"
-            case 700...781: return "cloud.fog.fill" //"50d"
-            case 800: return "sun.max.fill" //"01d"
-            case 801...804: return "cloud.sun.fill" //"04d"
-            default: return "nosign"
-            }
-        }
-        weekdayLabel.text = isToday ? "Today" : DateFormatter.format(unixTime: forecast.dt, to: .weekday)
-        highestTemperatureLabel.text = forecast.temperature.max.displayTemp()
-        lowestTemperatureLabel.text = forecast.temperature.min.displayTemp()
-        probabilityOfPrecipitationLabel.text = forecast.pop.displayPop()
-        symbolView.image = UIImage(systemName: systemNameString, withConfiguration: symbolConfig)
-    }
- 
-    fileprivate func setupConstraints(for uiView: UIView) {
-        NSLayoutConstraint.activate([
-            uiView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            uiView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            uiView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
-        ])
+        
+        dateLabel.text = DateFormatter.format(
+            forecast.dt,
+            to: .date,
+            withTimeZoneOffset: offset
+        )
+        weekdayLabel.text = isToday ? "Today" : DateFormatter.format(
+            forecast.dt,
+            to: .weekday,
+            withTimeZoneOffset: offset
+        )
+        highestTempLabel.text = forecast.temperature.max.displayTemp()
+        lowestTempLabel.text = forecast.temperature.min.displayTemp()
+        popLabel.text = forecast.pop.displayPop()
+        iconView.image = UIImage(
+            systemName: forecast.weather.first!.systemNameString,
+            withConfiguration: symbolConfig
+        )
     }
 }
