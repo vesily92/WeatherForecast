@@ -77,7 +77,12 @@ class AlertCell: UICollectionViewCell, SelfConfiguringCell {
     
     func configure(with forecast: AnyHashable, andTimezoneOffset offset: Int) {
         guard let forecast = forecast as? Alert else { return }
+        
+        if !forecast.senderName.isEmpty {
+            descriptionLabel.text = forecast.senderName + ": " + forecast.event
+        } else {
+            descriptionLabel.text = forecast.event
+        }
 
-        descriptionLabel.text = forecast.senderName + ": " + forecast.event
     }
 }
