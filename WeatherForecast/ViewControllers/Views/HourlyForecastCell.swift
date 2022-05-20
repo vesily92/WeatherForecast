@@ -11,7 +11,7 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     
     static let reuseIdentifier = "HourlyForecastCell"
     
-    lazy var sunIsUp: Bool = true
+    lazy var isSunrise: Bool = true
     
     lazy private var timeLabel = UILabel()
     lazy private var probabilityOfPrecipitationLabel = UILabel()
@@ -22,8 +22,6 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-//        print("HOURLY CELL")
 
         timeLabel.font = .systemFont(ofSize: 16, weight: .semibold)
         timeLabel.textColor = .white
@@ -59,34 +57,43 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         setupConstraints(for: stackView)
     }
     
-    func configure(with forecast: AnyHashable) {
-        guard let forecast = forecast as? Hourly else { return }
-
-//        var sunIsUp: Bool {
-//            let hour = DateFormatter.getHour(from: forecast.dt)
-//            switch hour {
-//            case 7...21: return true
-//            default: return false
-//            }
-//        }
-        
-        var systemNameString: String {
-            switch forecast.weather.first!.id {
-            case 200...232: return "cloud.bolt.rain.fill"
-            case 300...321: return "cloud.drizzle.fill"
-            case 500...531: return "cloud.heavyrain.fill"
-            case 600...622: return "snowflake"
-            case 700...781: return "cloud.fog.fill"
-            case 800: return sunIsUp ? "sun.max.fill" : "moon.stars.fill"
-            case 801...804: return sunIsUp ? "cloud.sun.fill" : "cloud.moon.fill"
-            default: return "nosign"
-            }
+    func configure(with forecast: AnyHashable, andTimezoneOffset offset: Int) {
+        if let forecast = forecast as? Hourly {
+            timeLabel.text = DateFormatter.format(forecast.dt, to: .hour, withTimeZoneOffset: offset)
+            probabilityOfPrecipitationLabel.text = forecast.pop.displayPop()
+            temperatureLabel.text = forecast.temp.displayTemp()
+            symbolView.image = UIImage(
+                systemName: forecast.weather.first!.systemNameString,
+                withConfiguration: symbolConfig
+            )
         }
-
-        timeLabel.text = DateFormatter.format(forecast.dt, to: .time)
-        probabilityOfPrecipitationLabel.text = forecast.pop.displayPop()
-        temperatureLabel.text = forecast.temp.displayTemp()
-        symbolView.image = UIImage(systemName: systemNameString, withConfiguration: symbolConfig)
+        
+        if let forecast = forecast as? Current {
+            timeLabel.text = "Now"
+            probabilityOfPrecipitationLabel.text = nil
+            temperatureLabel.text = forecast.temp.displayTemp()
+            symbolView.image = UIImage(
+                systemName: forecast.weather.first!.systemNameString,
+                withConfiguration: symbolConfig
+            )
+        }
+        
+        if let forecast = forecast as? Daily {
+            timeLabel.text = DateFormatter.format(
+                isSunrise
+                ? forecast.sunrise
+                : forecast.sunset,
+                to: .sunrise,
+                withTimeZoneOffset: offset
+            )
+            probabilityOfPrecipitationLabel.text = nil
+            temperatureLabel.text = isSunrise ? "Sunrise" : "Sunset"
+            symbolView.image = UIImage(
+                systemName: isSunrise
+                ? "sunrise.fill"
+                : "sunset.fill"
+            )
+        }
     }
     
     fileprivate func setupConstraints(for uiView: UIView) {
