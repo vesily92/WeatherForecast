@@ -16,8 +16,8 @@ class AlertCell: UICollectionViewCell, SelfConfiguringCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        backgroundColor = .systemPink
-        layer.cornerRadius = 12
+//        backgroundColor = .systemPink
+//        layer.cornerRadius = 12
         
         descriptionLabel.font = .systemFont(ofSize: 16, weight: .semibold)
         descriptionLabel.textColor = .white
@@ -39,6 +39,7 @@ class AlertCell: UICollectionViewCell, SelfConfiguringCell {
         
         let separator = UIView(frame: .zero)
         separator.backgroundColor = .white
+        separator.alpha = 0.7
         separator.translatesAutoresizingMaskIntoConstraints = false
         
         let buttonStackView = UIStackView(arrangedSubviews: [
@@ -59,7 +60,7 @@ class AlertCell: UICollectionViewCell, SelfConfiguringCell {
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            separator.heightAnchor.constraint(equalToConstant: 1),
+            separator.heightAnchor.constraint(equalToConstant: 0.5),
             separator.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 8),
             separator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             separator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
