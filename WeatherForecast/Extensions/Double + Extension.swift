@@ -16,10 +16,12 @@ extension Double {
         return NSDecimalNumber(decimal: result).doubleValue
     }
     
-    func displayPop() -> String? {
+    func displayPop(if needed: Bool) -> String? {
         let doubleValue = Double(self)
         
-        if doubleValue <= 0.3 {
+        if !needed {
+            return nil
+        } else if doubleValue <= 0.1 {
             return nil
         } else {
             let roundedValue = doubleValue.roundDecimal(1)
