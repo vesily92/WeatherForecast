@@ -1,0 +1,76 @@
+//
+//  GlobalFooter.swift
+//  WeatherForecast
+//
+//  Created by Василий Пронин on 16.06.2022.
+//
+
+import UIKit
+
+class GlobalFooter: UICollectionReusableView {
+    static let reuseIdentifier = "GlobalFooter"
+    
+    private lazy var titleLabel = UILabel()
+    private lazy var subtitleLabel = UILabel()
+    private lazy var openWeatherLogoView = UIImageView()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        let separator = UIView(frame: .zero)
+        separator.backgroundColor = .white
+        separator.alpha = 0.7
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        
+        titleLabel.font = .systemFont(ofSize: 16)
+        titleLabel.textColor = .white
+        
+        subtitleLabel.font = .systemFont(ofSize: 12)
+        subtitleLabel.alpha = 0.3
+        
+        openWeatherLogoView.contentMode = .scaleAspectFit
+        
+        let innerStackView = UIStackView(arrangedSubviews: [
+            titleLabel,
+            subtitleLabel
+        ])
+        innerStackView.axis = .vertical
+        innerStackView.distribution = .equalCentering
+        innerStackView.alignment = .center
+//        innerStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let outerStackView = UIStackView(arrangedSubviews: [
+            innerStackView,
+            openWeatherLogoView
+        ])
+        outerStackView.axis = .vertical
+        outerStackView.spacing = 20
+        outerStackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(separator)
+        addSubview(outerStackView)
+        
+        NSLayoutConstraint.activate([
+            separator.heightAnchor.constraint(equalToConstant: 0.5),
+            separator.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            separator.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 32),
+            separator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -32),
+            
+            outerStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            outerStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            outerStackView.topAnchor.constraint(equalTo: separator.topAnchor, constant: 30)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(with model: CurrentWeather) {
+        DispatchQueue.main.async {
+            self.titleLabel.text = "Weather for " + model.cityName
+            self.subtitleLabel.text = "Provided by OpenWeather"
+            self.openWeatherLogoView.image = UIImage(named: "OpenWeatherLogo")
+        }
+    }
+}
