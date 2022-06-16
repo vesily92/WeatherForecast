@@ -6,34 +6,24 @@
 //
 import Foundation
 
-enum Section: Int, Hashable, CaseIterable, CustomStringConvertible {
+enum Section: Int, Hashable, CaseIterable {
    
-    var description: String {
-        return ""
-    }
-    
-//    case current
     case alert
     case hourlyCollection
     case daily
-//    case grid
     
     var headerTitle: String {
         switch self {
-//        case .current: return ""
-        case .alert: return "😱 Severe Weather"
-        case .hourlyCollection: return "⏱ Hourly Forecast"
-        case .daily: return "🗓 7-Day Forecast"
-//        case .grid: return ""
+        case .alert: return "Weather Alert"
+        case .hourlyCollection: return "Hourly Forecast"
+        case .daily: return "7-Day Forecast"
         }
     }
     var headerIcon: String {
         switch self {
-//        case .current: return ""
         case .alert: return "exclamationmark.triangle.fill"
         case .hourlyCollection: return "clock"
         case .daily: return "calendar"
-//        case .grid: return ""
         }
     }
 }
@@ -349,6 +339,16 @@ struct Weather: Codable, Hashable {
         }
     }
     
+    var isPopNeeded: Bool {
+        switch id {
+        case 200...232: return true
+        case 300...321: return true
+        case 500...531: return true
+        case 600...622: return true
+        default: return false
+        }
+    }
+    
     static func == (lhs: Weather, rhs: Weather) -> Bool {
         return lhs.id == rhs.id
     }
@@ -358,4 +358,3 @@ struct Weather: Codable, Hashable {
         hasher.combine(icon)
     }
 }
-
