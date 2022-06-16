@@ -11,12 +11,10 @@ class CurrentWeatherHeader: UICollectionReusableView {
     static let reuseIdentifier = "CurrentWeatherHeader"
     
     lazy private var cityNameLabel = UILabel()
-    lazy private var temperatureLabel = UILabel()
+    lazy private var tempLabel = UILabel()
     lazy private var descriptionLabel = UILabel()
     lazy private var feelsLikeLabel = UILabel()
-    
-    lazy private var timeLabel = UILabel()
-    
+    lazy private var subheadlineLabel = UILabel()
     lazy private var iconView = UIImageView()
     lazy private var backgroundView = UIImageView()
     
@@ -24,14 +22,25 @@ class CurrentWeatherHeader: UICollectionReusableView {
         super.init(frame: frame)
         layer.zPosition = 2
         
-        backgroundView.backgroundColor = .systemBlue
+        let blurEffect = UIBlurEffect(style: .systemUltraThinMaterialLight)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.translatesAutoresizingMaskIntoConstraints = false
+        
+        backgroundView.backgroundColor = .clear
+        backgroundView.alpha = 0
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundView.insertSubview(blurView, at: 0)
         
         cityNameLabel.font = .preferredFont(forTextStyle: .largeTitle)
         cityNameLabel.textColor = .white
         
-        temperatureLabel.font = .boldSystemFont(ofSize: 50)
-        temperatureLabel.textColor = .white
+        subheadlineLabel.font = .preferredFont(forTextStyle: .headline)
+        subheadlineLabel.textColor = .white
+        subheadlineLabel.alpha = 0
+        subheadlineLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        tempLabel.font = .boldSystemFont(ofSize: 50)
+        tempLabel.textColor = .white
         
         descriptionLabel.font = .systemFont(ofSize: 16)
         descriptionLabel.textColor = .white
@@ -42,12 +51,8 @@ class CurrentWeatherHeader: UICollectionReusableView {
         iconView.contentMode = .scaleAspectFit
         iconView.preferredSymbolConfiguration = .preferringMulticolor()
         
-        
-        timeLabel.font = .systemFont(ofSize: 16)
-        timeLabel.textColor = .white
-        
         let subStackView = UIStackView(arrangedSubviews: [
-            temperatureLabel,
+            tempLabel,
             iconView
         ])
         subStackView.axis = .horizontal
@@ -59,8 +64,6 @@ class CurrentWeatherHeader: UICollectionReusableView {
             subStackView,
             descriptionLabel,
             feelsLikeLabel,
-            
-            timeLabel
         ])
         mainStackView.axis = .vertical
         mainStackView.spacing = 10
@@ -70,45 +73,60 @@ class CurrentWeatherHeader: UICollectionReusableView {
         
         addSubview(backgroundView)
         addSubview(mainStackView)
+        addSubview(subheadlineLabel)
         
         NSLayoutConstraint.activate([
             backgroundView.topAnchor.constraint(equalTo: topAnchor),
             backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
             backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            backgroundView.heightAnchor.constraint(lessThanOrEqualToConstant: 250),
+            backgroundView.heightAnchor.constraint(lessThanOrEqualToConstant: 140),
             
-            mainStackView.topAnchor.constraint(equalTo: topAnchor, constant: 40),
-            mainStackView.centerXAnchor.constraint(equalTo: centerXAnchor)
+            blurView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor),
+            blurView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor),
+            blurView.topAnchor.constraint(equalTo: backgroundView.topAnchor),
+            blurView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor),
+            
+            mainStackView.topAnchor.constraint(equalTo: topAnchor, constant: 60),
+            mainStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            
+            subheadlineLabel.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 100),
+            subheadlineLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
     }
-    
-//    func configure(with forecast: Current) {
-//        cityNameLabel.text = "Saint Petersburg"
-//        temperatureLabel.text = forecast.temp.displayTemp()
-//        descriptionLabel.text = forecast.weather.first?.description.capitalized ?? ""
-//        feelsLikeLabel.text = "Feels like: " + forecast.feelsLike.displayTemp()
-//        iconView.image = UIImage(systemName: forecast.weather.first!.systemNameString)
-//    }
-    
+
     func configure(with forecast: CurrentWeather) {
         DispatchQueue.main.async {
             self.cityNameLabel.text = forecast.cityName
-            self.temperatureLabel.text = forecast.tempString
+            self.tempLabel.text = forecast.tempString
             self.descriptionLabel.text = forecast.descriptionString
             self.feelsLikeLabel.text = forecast.feelsLikeString
             self.iconView.image = UIImage(systemName: forecast.systemNameString)
             
-            self.timeLabel.text = forecast.timeString
+            self.subheadlineLabel.text = forecast.tempString + " " + "|" + " " + forecast.descriptionString
         }
     }
-//    
-//    func setAlphaValue(with offset: CGFloat) {
-//        temperatureLabel.alpha = offset
-//        descriptionLabel.alpha = offset
-//        feelsLikeLabel.alpha = offset
-//        iconView.alpha = offset
-//    }
-//    
+   
+    func setAlphaForMainLabels(with offset: CGFloat) {
+        tempLabel.alpha = offset
+        descriptionLabel.alpha = offset
+        feelsLikeLabel.alpha = offset
+        iconView.alpha = offset
+    }
+    
+    
+    func setAlphaForSubheadline(with offset: CGFloat) {
+        subheadlineLabel.alpha = offset
+        backgroundView.alpha = offset
+    }
+    
+    func reduceZIndex() {
+        layer.zPosition = -2
+    }
+    
+    func restoreZIndex() {
+        layer.zPosition = 2
+    }
+   
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
