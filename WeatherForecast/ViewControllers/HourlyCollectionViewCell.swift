@@ -35,7 +35,16 @@ class HourlyCollectionViewCell: UICollectionViewCell, SelfConfiguringCell {
         )
 
         hourlyCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+//        hourlyCollectionView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(hourlyCollectionView)
+        
+//        NSLayoutConstraint.activate([
+//            hourlyCollectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
+//            hourlyCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+//            hourlyCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+//            hourlyCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
+//        ])
     }
     
     required init?(coder: NSCoder) {
@@ -59,33 +68,29 @@ extension HourlyCollectionViewCell: UICollectionViewDelegate, UICollectionViewDa
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let forecastData = forecastData else {
-            fatalError("No data")
-        }
-        
-        let hourlyIndices = getIndices(for: .hourly)
-        let sunriseIndices = getIndices(for: .sunrise)
-        let sunsetIndices = getIndices(for: .sunset)
-        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyForecastCell.reuseIdentifier, for: indexPath) as? HourlyForecastCell else {
             fatalError("Unable to dequeue cell")
         }
         
-        let item = indexPath.item
+        guard let forecastData = forecastData else {
+            return cell
+        }
         
-        var index = indexPath.item
+//        let hourlyIndices = getIndices(for: .hourly)
+        let sunriseIndices = getIndices(for: .sunrise)
+        let sunsetIndices = getIndices(for: .sunset)
         
-        let difference = hourlyIndices[item] - item
+//        let difference = hourlyIndices[indexPath.item] - indexPath.item
         
-        if item == 0 {
+        if indexPath.item == 0 {
             let currentData = forecastData.current
             cell.configure(with: currentData, andTimezoneOffset: forecastData.timezoneOffset)
             return cell
             
-        } else if sunriseIndices.contains(item) {
+        } else if sunriseIndices.contains(indexPath.item) {
             cell.isSunrise = true
             
-            if sunriseIndices.first == item {
+            if sunriseIndices.first == indexPath.item {
                 let dailyData = forecastData.daily[0]
                 cell.configure(with: dailyData, andTimezoneOffset: forecastData.timezoneOffset)
                 
@@ -95,10 +100,10 @@ extension HourlyCollectionViewCell: UICollectionViewDelegate, UICollectionViewDa
             }
             return cell
             
-        } else if sunsetIndices.contains(item) {
+        } else if sunsetIndices.contains(indexPath.item) {
             cell.isSunrise = false
             
-            if sunsetIndices.first == item {
+            if sunsetIndices.first == indexPath.item {
                 let dailyData = forecastData.daily[0]
                 cell.configure(with: dailyData, andTimezoneOffset: forecastData.timezoneOffset)
                 
@@ -109,9 +114,8 @@ extension HourlyCollectionViewCell: UICollectionViewDelegate, UICollectionViewDa
             return cell
             
         } else {
-            let hourlyData = forecastData.hourly[item]
+            let hourlyData = forecastData.hourly[indexPath.item]
             cell.configure(with: hourlyData, andTimezoneOffset: forecastData.timezoneOffset)
-            print(index)
             return cell
         }
     }
@@ -125,24 +129,35 @@ extension HourlyCollectionViewCell {
         case sunset
     }
     
-    private func getIndices(for cellType: CellType) -> [Int] {
-        
-        let currentTime = forecastData?.current.dt
-        
-        var hourlyTime: [Int] = []
-        var sunriseTime: [Int] = []
-        var sunsetTime: [Int] = []
-        
-        forecastData?.hourly.forEach { hourly in
-            hourlyTime.append(hourly.dt)
+    private func getTimeArray(for cellType: CellType) -> [Int] {
+        switch cellType {
+        case .hourly:
+            var hourlyTime: [Int] = []
+            forecastData?.hourly.forEach { hourly in
+                hourlyTime.append(hourly.dt)
+            }
+            return hourlyTime
+        case .sunrise:
+            var sunriseTime: [Int] = []
+            forecastData?.daily.forEach { daily in
+                sunriseTime.append(daily.sunrise)
+            }
+            return sunriseTime
+        case .sunset:
+            var sunsetTime: [Int] = []
+            forecastData?.daily.forEach { daily in
+                sunsetTime.append(daily.sunset)
+            }
+            return sunsetTime
         }
-        
-        forecastData?.daily.forEach { daily in
-            sunriseTime.append(daily.sunrise)
-            sunsetTime.append(daily.sunset)
-        }
-        
+    }
+    
+    private func getTotalTimeArray() -> [Int] {
+        let hourlyTime = getTimeArray(for: .hourly)
+        let sunriseTime = getTimeArray(for: .sunrise)
+        let sunsetTime = getTimeArray(for: .sunset)
         var time: [Int] = []
+        
         time.append(contentsOf: hourlyTime)
         
         if sunriseTime.first! <= hourlyTime.first! {
@@ -150,38 +165,44 @@ extension HourlyCollectionViewCell {
         } else {
             time.append(contentsOf: sunriseTime.prefix(2))
         }
-
         if sunsetTime.first! <= hourlyTime.first! {
             time.append(contentsOf: sunsetTime.prefix(2).dropFirst())
         } else {
             time.append(contentsOf: sunsetTime.prefix(2))
         }
-        
-        var sortedTime = time.sorted(by: <)
+        return time.sorted(by: <)
+    }
+    
+    private func getSortedTimeArray(with sunriseTime: [Int], _ sunsetTime: [Int]) -> [Int] {
+        let currentTime = forecastData?.current.dt
+        var sortedTime = getTotalTimeArray()
         var offset = 0
-        sortedTime.forEach { time in
-            
 
+        sortedTime.forEach { time in
             let index = sortedTime.firstIndex(where: { $0 == time }) ?? 0
-            
             if time <= currentTime! {
                 sortedTime.remove(at: index)
             }
-//
-//            if sunriseTime.contains(time) {
-//                sortedTime.swapAt(index, index - offset)
-//                offset += 1
-//            }
-//
-//            if sunsetTime.contains(time) {
-//                sortedTime.swapAt(index, index - offset)
-//                offset += 1
-//            }
+            if sunriseTime.contains(time) {
+                sortedTime.swapAt(index, index - offset)
+                offset += 1
+            }
+            if sunsetTime.contains(time) {
+                sortedTime.swapAt(index, index - offset)
+                offset += 1
+            }
         }
+        return sortedTime
+    }
+    
+    private func getIndices(for cellType: CellType) -> [Int] {
+        let hourlyTime = getTimeArray(for: .hourly)
+        let sunriseTime = getTimeArray(for: .sunrise)
+        let sunsetTime = getTimeArray(for: .sunset)
+        let sortedTime = getSortedTimeArray(with: sunriseTime, sunsetTime)
 
         switch cellType {
         case .hourly:
-//            return hourlyTime.sorted().enumerated().map { $0.offset }
             return sortedTime.enumerated().filter { hourlyTime.contains($0.element)}.map { $0.offset }
         case .sunrise:
             return sortedTime.enumerated().filter { sunriseTime.contains($0.element)}.map { $0.offset }
