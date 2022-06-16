@@ -107,7 +107,9 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         )
         highestTempLabel.text = forecast.temperature.max.displayTemp()
         lowestTempLabel.text = forecast.temperature.min.displayTemp()
-        popLabel.text = forecast.pop.displayPop()
+        popLabel.text = forecast.pop.displayPop(
+            if: forecast.weather.first!.isPopNeeded
+        )
         iconView.image = UIImage(
             systemName: forecast.weather.first!.systemNameString,
             withConfiguration: symbolConfig
