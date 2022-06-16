@@ -11,7 +11,7 @@ final class SectionHeader: UICollectionReusableView {
     static let reuseIdentifier = "SectionHeader"
     
     private lazy var titleLabel = UILabel()
-//    lazy private var iconView = UIImageView()
+    lazy private var iconView = UIImageView()
     
 //    lazy private var supportingBackgroundView = UIImageView()
     
@@ -20,7 +20,9 @@ final class SectionHeader: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-//        iconView.contentMode = .scaleAspectFit
+        iconView.contentMode = .scaleAspectFit
+        iconView.tintColor = .black
+        iconView.alpha = 0.3
         
 //        let backgroundView = UIImageView()
 //        backgroundView.backgroundColor = .systemGray2
@@ -32,7 +34,7 @@ final class SectionHeader: UICollectionReusableView {
 //        supportingBackgroundView.translatesAutoresizingMaskIntoConstraints = false
 
         let headerTitleStackView = UIStackView(arrangedSubviews: [
-//            iconView,
+            iconView,
             titleLabel
         ])
         headerTitleStackView.axis = .horizontal
@@ -44,6 +46,8 @@ final class SectionHeader: UICollectionReusableView {
 //        addSubview(supportingBackgroundView)
 //        addSubview(backgroundView)
         addSubview(headerTitleStackView)
+        
+        
         
         NSLayoutConstraint.activate([
 //            supportingBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -61,10 +65,10 @@ final class SectionHeader: UICollectionReusableView {
 //            backgroundView.topAnchor.constraint(equalTo: topAnchor),
 //            backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
-            headerTitleStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            headerTitleStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             headerTitleStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 50),
-            headerTitleStackView.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            headerTitleStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
+            headerTitleStackView.topAnchor.constraint(equalTo: topAnchor, constant: 12)
+//            headerTitleStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
 //
 //            headerTitleStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
 //            headerTitleStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 50),
@@ -82,24 +86,42 @@ final class SectionHeader: UICollectionReusableView {
         var areFew: Bool {
             return alerts > 1 ? true : false
         }
-        
-        titleLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+
+        titleLabel.font = .systemFont(ofSize: 12, weight: .semibold)
         titleLabel.textColor = .black
-        
+
 //        iconView.tintColor = .white
-        
+
         titleLabel.text = areFew ? "😱 \(event) & \(alerts - 1) More" : "😱 \(event)"
 //        iconView.image = UIImage(systemName: "exclamationmark.triangle.fill")
     }
+//    func configureForAlertSection(with forecast: ForecastData.Diffable) {
+//        guard let alerts = forecast.alerts?.count,
+//              let event = forecast.alerts?.first?.event else {
+//                  return
+//              }
+//
+//        var areFew: Bool {
+//            return alerts > 1 ? true : false
+//        }
+//
+//        titleLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+//        titleLabel.textColor = .black
+//
+////        iconView.tintColor = .white
+//
+//        titleLabel.text = areFew ? "😱 \(event) & \(alerts - 1) More" : "😱 \(event)"
+////        iconView.image = UIImage(systemName: "exclamationmark.triangle.fill")
+//    }
     
     func configure(with section: Section) {
-        titleLabel.font = .systemFont(ofSize: 18, weight: .semibold)
-        titleLabel.textColor = .black
+        titleLabel.font = .systemFont(ofSize: 16, weight: .semibold)
+        titleLabel.alpha = 0.3
         
 //        iconView.tintColor = .white
         
         titleLabel.text = section.headerTitle
-//        iconView.image = UIImage(systemName: section.headerIcon)
+        iconView.image = UIImage(systemName: section.headerIcon)
     }
     
     required init?(coder: NSCoder) {
