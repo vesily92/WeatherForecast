@@ -54,13 +54,15 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         
         contentView.addSubview(stackView)
 
-        setupConstraints(for: stackView)
+        setupConstraints(stackView)
     }
     
     func configure(with forecast: AnyHashable, andTimezoneOffset offset: Int) {
         if let forecast = forecast as? Hourly {
             timeLabel.text = DateFormatter.format(forecast.dt, to: .hour, withTimeZoneOffset: offset)
-            probabilityOfPrecipitationLabel.text = forecast.pop.displayPop()
+            probabilityOfPrecipitationLabel.text = forecast.pop.displayPop(
+                if: forecast.weather.first!.isPopNeeded
+            )
             temperatureLabel.text = forecast.temp.displayTemp()
             symbolView.image = UIImage(
                 systemName: forecast.weather.first!.systemNameString,
@@ -96,12 +98,12 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         }
     }
     
-    fileprivate func setupConstraints(for uiView: UIView) {
+    fileprivate func setupConstraints(_ uiView: UIView) {
         NSLayoutConstraint.activate([
             uiView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             uiView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
             uiView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            uiView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
+            uiView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }
     
