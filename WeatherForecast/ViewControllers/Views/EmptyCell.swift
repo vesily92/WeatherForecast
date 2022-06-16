@@ -12,7 +12,7 @@ class EmptyCell: UICollectionViewCell, SelfConfiguringCell {
     static let reuseIdentifier = "EmptyCell"
     
     func configure(with forecast: AnyHashable, andTimezoneOffset offset: Int) {
-        
+        //
     }
     
     
