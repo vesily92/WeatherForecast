@@ -10,11 +10,11 @@ import UIKit
 class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     static let reuseIdentifier = "DailyForecastCell"
     
-    lazy private var weekdayLabel = UILabel()
-    lazy private var dateLabel = UILabel()
-    lazy private var highestTempLabel = UILabel()
-    lazy private var lowestTempLabel = UILabel()
-    lazy private var popLabel = UILabel()
+    lazy private var weekdayLabel = UILabel(fontSize: 20)
+    lazy private var dateLabel = UILabel(fontSize: 12, weight: .regular, color: .black, alpha: 0.3)
+    lazy private var highestTempLabel = UILabel(fontSize: 20)
+    lazy private var lowestTempLabel = UILabel(fontSize: 20, color: .black, alpha: 0.3)
+    lazy private var popLabel = UILabel(fontSize: 12, color: .systemCyan)
     lazy private var iconView = UIImageView()
     
     private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 18))
@@ -22,21 +22,6 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        weekdayLabel.font = .systemFont(ofSize: 18, weight: .semibold)
-        weekdayLabel.textColor = .white
-        
-        dateLabel.font = .systemFont(ofSize: 12)
-        dateLabel.alpha = 0.3
-        
-        highestTempLabel.font = .systemFont(ofSize: 18, weight: .semibold)
-        highestTempLabel.textColor = .white
-        
-        lowestTempLabel.font = .systemFont(ofSize: 18, weight: .semibold)
-        lowestTempLabel.alpha = 0.3
-        
-        popLabel.font = .systemFont(ofSize: 10, weight: .semibold)
-        popLabel.textColor = .systemCyan
-        
         iconView.preferredSymbolConfiguration = .preferringMulticolor()
         iconView.contentMode = .scaleAspectFit
         
