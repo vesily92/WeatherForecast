@@ -10,11 +10,11 @@ import UIKit
 class CurrentWeatherHeader: UICollectionReusableView {
     static let reuseIdentifier = "CurrentWeatherHeader"
     
-    lazy private var cityNameLabel = UILabel()
-    lazy private var tempLabel = UILabel()
-    lazy private var descriptionLabel = UILabel()
-    lazy private var feelsLikeLabel = UILabel()
-    lazy private var subheadlineLabel = UILabel()
+    lazy private var cityNameLabel = UILabel(fontSize: 36, weight: .medium)
+    lazy private var tempLabel = UILabel(fontSize: 54)
+    lazy private var descriptionLabel = UILabel(fontSize: 20, weight: .medium)
+    lazy private var feelsLikeLabel = UILabel(fontSize: 20, weight: .medium)
+    lazy private var subheadlineLabel = UILabel(fontSize: 20, weight: .medium, alpha: 0)
     lazy private var iconView = UIImageView()
     lazy private var backgroundView = UIImageView()
     
@@ -31,22 +31,7 @@ class CurrentWeatherHeader: UICollectionReusableView {
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         backgroundView.insertSubview(blurView, at: 0)
         
-        cityNameLabel.font = .preferredFont(forTextStyle: .largeTitle)
-        cityNameLabel.textColor = .white
-        
-        subheadlineLabel.font = .preferredFont(forTextStyle: .headline)
-        subheadlineLabel.textColor = .white
-        subheadlineLabel.alpha = 0
         subheadlineLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        tempLabel.font = .boldSystemFont(ofSize: 50)
-        tempLabel.textColor = .white
-        
-        descriptionLabel.font = .systemFont(ofSize: 16)
-        descriptionLabel.textColor = .white
-        
-        feelsLikeLabel.font = .systemFont(ofSize: 16)
-        feelsLikeLabel.textColor = .white
         
         iconView.contentMode = .scaleAspectFit
         iconView.preferredSymbolConfiguration = .preferringMulticolor()
