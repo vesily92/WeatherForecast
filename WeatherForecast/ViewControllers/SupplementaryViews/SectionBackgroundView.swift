@@ -15,7 +15,6 @@ class SectionBackgroundView: UICollectionReusableView {
         
         layer.cornerRadius = 12
         backgroundColor = .systemGray2
-//        backgroundColor = UIColor(red: 0.5, green: 0.6, blue: 0.9, alpha: 0.5)
     }
     
     func configure(with color: UIColor) {
