@@ -19,7 +19,7 @@ class ViewController: UIViewController {
     private var forecastData: ForecastData? {
         didSet {
             print("forecast data fetched")
-//            print(forecastData?.alerts)
+            print(forecastData?.alerts)
             dataSource?.apply(makeSnapshot(), animatingDifferences: false)
         }
     }
@@ -90,6 +90,11 @@ class ViewController: UIViewController {
             SectionHeader.self,
             forSupplementaryViewOfKind: SectionHeader.reuseIdentifier,
             withReuseIdentifier: SectionHeader.reuseIdentifier
+        )
+        weatherCollectionView.register(
+            SectionFooterButton.self,
+            forSupplementaryViewOfKind: SectionFooterButton.reuseIdentifier,
+            withReuseIdentifier: SectionFooterButton.reuseIdentifier
         )
     }
 
@@ -206,10 +211,6 @@ extension ViewController {
                 }
                 print("supplementaryViewProvider")
 
-//                NetworkManager.shared.onCompletion = { currentWeather in
-//                    currentWeatherHeader.configure(with: currentWeather)
-//                    print("fetch")
-//                }
                 if let currentWeather = self.currentWeather {
                     currentWeatherHeader.configure(with: currentWeather)
                 }
@@ -221,13 +222,22 @@ extension ViewController {
                     withReuseIdentifier: GlobalFooter.reuseIdentifier,
                     for: indexPath
                 ) as? GlobalFooter else {
-                    fatalError("Unknown footer kind")
+                    fatalError("Unknown global footer kind")
                 }
                 if let currentWeather = self.currentWeather {
                     globalFooter.configure(with: currentWeather)
                 }
                 return globalFooter
                 
+            case SectionFooterButton.reuseIdentifier:
+                guard let sectionFooterButton = weatherCollectionView.dequeueReusableSupplementaryView(
+                    ofKind: SectionFooterButton.reuseIdentifier,
+                    withReuseIdentifier: SectionFooterButton.reuseIdentifier,
+                    for: indexPath
+                ) as? SectionFooterButton else {
+                    fatalError("Unknown footer kind")
+                }
+                return sectionFooterButton
             default:
                 guard let sectionHeader = weatherCollectionView.dequeueReusableSupplementaryView(
                     ofKind: SectionHeader.reuseIdentifier,
@@ -242,7 +252,9 @@ extension ViewController {
                 
                 switch section {
                 case .alert:
-                    sectionHeader.configure(with: section)
+                    if let forecastData = self.forecastData {
+                        sectionHeader.configureForAlertSection(with: forecastData)
+                    }
                 case .hourlyCollection:
                     sectionHeader.configure(with: section)
                 case .daily:
@@ -279,6 +291,7 @@ extension ViewController {
 
 // - MARK: Sections
 extension ViewController {
+    
     private func createEmptySection(using: Section) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .absolute(0.1),
@@ -308,7 +321,7 @@ extension ViewController {
 
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(90)
+            heightDimension: .estimated(40)
         )
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: groupSize,
@@ -319,7 +332,8 @@ extension ViewController {
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
 
         let sectionHeader = createSectionHeader()
-        section.boundarySupplementaryItems = [sectionHeader]
+        let sectionFooterButton = createSectionFooterButton()
+        section.boundarySupplementaryItems = [sectionHeader, sectionFooterButton]
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
@@ -439,7 +453,12 @@ extension ViewController {
         let section = NSCollectionLayoutSection(group: group)
         
 //        ????????????????????????????????????????????????????
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: 0,
+            leading: 16,
+            bottom: 0,
+            trailing: 16
+        )
 //        ????????????????????????????????????????????????????
         section.orthogonalScrollingBehavior = .continuous
         
@@ -454,16 +473,20 @@ extension ViewController {
             
             guard let globalHeader = self.weatherCollectionView.visibleSupplementaryViews(ofKind: CurrentWeatherHeader.reuseIdentifier).first as? CurrentWeatherHeader else { return }
             
-            if offset.y > 0 {
-                globalHeader.setAlphaForMainLabels(with: 1 - (offset.y / 100))
+            if offset.y < 0 {
+                globalHeader.setAlphaForMainLabels(with: 1)
+            }
+            
+            if offset.y > 50 {
+                globalHeader.setAlphaForMainLabels(with: 1 - ((offset.y - 50) / 100))
                 globalHeader.reduceZIndex()
             }
             
-            if offset.y > 100 {
-                globalHeader.setAlphaForSubheadline(with: 0 + ((offset.y - 100) / 14))
+            if offset.y > 150 {
+                globalHeader.setAlphaForSubheadline(with: 0 + ((offset.y - 150) / 14))
                 globalHeader.restoreZIndex()
             } else {
-                globalHeader.setAlphaForSubheadline(with: 0 + ((offset.y - 100) / 100))
+                globalHeader.setAlphaForSubheadline(with: 0 + ((offset.y - 150) / 100))
             }
         }
 
@@ -490,29 +513,12 @@ extension ViewController {
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
         
         let sectionHeader = createSectionHeader()
+//        let sectionFooterButton = createSectionFooterButton()
         section.boundarySupplementaryItems = [sectionHeader]
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
         
-        return section
-    }
-    
-    private func createFooterSection(using: Section) -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .fractionalHeight(1.0)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(200)
-        )
-        let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: groupSize,
-            subitems: [item]
-        )
-        let section = NSCollectionLayoutSection(group: group)
         return section
     }
     
@@ -531,10 +537,23 @@ extension ViewController {
         return sectionHeader
     }
     
+    private func createSectionFooterButton() -> NSCollectionLayoutBoundarySupplementaryItem {
+        let footerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(20)
+        )
+        let sectionFooterButton = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: footerSize,
+            elementKind: SectionFooterButton.reuseIdentifier,
+            alignment: .bottomLeading)
+        
+        return sectionFooterButton
+    }
+    
     private func createGlobalHeader(withKind headerKind: String) -> NSCollectionLayoutBoundarySupplementaryItem {
         let globalHeaderSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(250)
+            heightDimension: .estimated(300)
         )
         let globalHeader = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: globalHeaderSize,
@@ -570,7 +589,7 @@ extension ViewController {
         backgroundItem.contentInsets = NSDirectionalEdgeInsets(
             top: topInset,
             leading: sideInset,
-            bottom: 0,
+            bottom: topInset,
             trailing: sideInset
         )
         return backgroundItem
