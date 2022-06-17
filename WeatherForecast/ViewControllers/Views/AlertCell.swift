@@ -10,26 +10,18 @@ import UIKit
 class AlertCell: UICollectionViewCell, SelfConfiguringCell {
     static let reuseIdentifier = "AlertCell"
     
-    private lazy var descriptionLabel = UILabel()
+    private lazy var descriptionLabel = UILabel(fontSize: 16)
     private lazy var iconView = UIImageView()
+    private lazy var seeMoreButton = UIButton(.seeMoreButton)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-//        backgroundColor = .systemPink
-//        layer.cornerRadius = 12
-        
-        descriptionLabel.font = .systemFont(ofSize: 16, weight: .semibold)
-        descriptionLabel.textColor = .white
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.numberOfLines = 0
         
-        let seeMoreButton = UIButton()
-        seeMoreButton.setTitle("See More", for: .normal)
-        seeMoreButton.setTitleColor(.white, for: .normal)
-        seeMoreButton.titleLabel?.font = .systemFont(ofSize: 16)
         seeMoreButton.translatesAutoresizingMaskIntoConstraints = false
-
+        
         let imageView = UIImageView()
         imageView.image = UIImage(
             systemName: "chevron.right",
@@ -52,23 +44,12 @@ class AlertCell: UICollectionViewCell, SelfConfiguringCell {
         buttonStackView.translatesAutoresizingMaskIntoConstraints = false
         
         contentView.addSubview(descriptionLabel)
-        contentView.addSubview(separator)
-        contentView.addSubview(buttonStackView)
         
         NSLayoutConstraint.activate([
-            descriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            descriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             descriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
-            separator.heightAnchor.constraint(equalToConstant: 0.5),
-            separator.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 8),
-            separator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            separator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            
-            buttonStackView.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 10),
-            buttonStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            buttonStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            buttonStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
+            descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
     
@@ -79,8 +60,12 @@ class AlertCell: UICollectionViewCell, SelfConfiguringCell {
     func configure(with forecast: AnyHashable, andTimezoneOffset offset: Int) {
         guard let forecast = forecast as? Alert else { return }
         
-        if !forecast.senderName.isEmpty {
-            descriptionLabel.text = forecast.senderName + ": " + forecast.event
+        if !forecast.senderName.isEmpty && !forecast.alertDescription.isEmpty {
+            descriptionLabel.text = "\(forecast.senderName): \(forecast.event)\n\(forecast.alertDescription)"
+        } else if !forecast.senderName.isEmpty {
+            descriptionLabel.text = "\(forecast.senderName): \(forecast.event)"
+        } else if !forecast.alertDescription.isEmpty {
+            descriptionLabel.text = "\(forecast.event)\n\(forecast.alertDescription)"
         } else {
             descriptionLabel.text = forecast.event
         }
