@@ -13,31 +13,22 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     
     lazy var isSunrise: Bool = true
     
-    lazy private var timeLabel = UILabel()
-    lazy private var probabilityOfPrecipitationLabel = UILabel()
-    lazy private var temperatureLabel = UILabel()
+    lazy private var timeLabel = UILabel(fontSize: 16)
+    lazy private var popLabel = UILabel(fontSize: 12, color: .systemCyan)
+    lazy private var temperatureLabel = UILabel(fontSize: 20)
     lazy private var symbolView = UIImageView()
     
     private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 18))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-
-        timeLabel.font = .systemFont(ofSize: 16, weight: .semibold)
-        timeLabel.textColor = .white
-        
-        probabilityOfPrecipitationLabel.textColor = .systemCyan
-        probabilityOfPrecipitationLabel.font = .systemFont(ofSize: 12, weight: .semibold)
-        
-        temperatureLabel.font = .systemFont(ofSize: 18, weight: .semibold)
-        temperatureLabel.textColor = .white
         
         symbolView.preferredSymbolConfiguration = .preferringMulticolor()
         symbolView.contentMode = .scaleAspectFit
 
         let iconPopStackView = UIStackView(arrangedSubviews: [
             symbolView,
-            probabilityOfPrecipitationLabel
+            popLabel
         ])
         iconPopStackView.axis = .vertical
         iconPopStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -60,7 +51,7 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     func configure(with forecast: AnyHashable, andTimezoneOffset offset: Int) {
         if let forecast = forecast as? Hourly {
             timeLabel.text = DateFormatter.format(forecast.dt, to: .hour, withTimeZoneOffset: offset)
-            probabilityOfPrecipitationLabel.text = forecast.pop.displayPop(
+            popLabel.text = forecast.pop.displayPop(
                 if: forecast.weather.first!.isPopNeeded
             )
             temperatureLabel.text = forecast.temp.displayTemp()
@@ -72,7 +63,7 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         
         if let forecast = forecast as? Current {
             timeLabel.text = "Now"
-            probabilityOfPrecipitationLabel.text = nil
+            popLabel.text = nil
             temperatureLabel.text = forecast.temp.displayTemp()
             symbolView.image = UIImage(
                 systemName: forecast.weather.first!.systemNameString,
@@ -88,7 +79,7 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
                 to: .sunrise,
                 withTimeZoneOffset: offset
             )
-            probabilityOfPrecipitationLabel.text = nil
+            popLabel.text = nil
             temperatureLabel.text = isSunrise ? "Sunrise" : "Sunset"
             symbolView.image = UIImage(
                 systemName: isSunrise
