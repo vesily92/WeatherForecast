@@ -10,8 +10,8 @@ import UIKit
 class GlobalFooter: UICollectionReusableView {
     static let reuseIdentifier = "GlobalFooter"
     
-    private lazy var titleLabel = UILabel()
-    private lazy var subtitleLabel = UILabel()
+    private lazy var titleLabel = UILabel(fontSize: 16, weight: .regular)
+    private lazy var subtitleLabel = UILabel(fontSize: 12, weight: .regular, alpha: 0.3)
     private lazy var openWeatherLogoView = UIImageView()
     
     override init(frame: CGRect) {
@@ -22,12 +22,6 @@ class GlobalFooter: UICollectionReusableView {
         separator.alpha = 0.7
         separator.translatesAutoresizingMaskIntoConstraints = false
         
-        titleLabel.font = .systemFont(ofSize: 16)
-        titleLabel.textColor = .white
-        
-        subtitleLabel.font = .systemFont(ofSize: 12)
-        subtitleLabel.alpha = 0.3
-        
         openWeatherLogoView.contentMode = .scaleAspectFit
         
         let innerStackView = UIStackView(arrangedSubviews: [
@@ -37,8 +31,7 @@ class GlobalFooter: UICollectionReusableView {
         innerStackView.axis = .vertical
         innerStackView.distribution = .equalCentering
         innerStackView.alignment = .center
-//        innerStackView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         let outerStackView = UIStackView(arrangedSubviews: [
             innerStackView,
             openWeatherLogoView
