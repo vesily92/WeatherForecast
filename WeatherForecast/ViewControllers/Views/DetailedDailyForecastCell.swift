@@ -19,10 +19,9 @@ class DetailedDailyForecastCell: UICollectionViewCell {
     }
     
     static let reuseIdentifier = "DetailedDailyForecastCell"
+//    
+//    lazy var isSunrise: Bool = true
     
-    lazy var isSunrise: Bool = true
-    
-//    private lazy var headerLabel = UILabel(fontSize: 16, color: .black, alpha: 0.3)
     private lazy var headerLabel = UILabel(.heading16semiboldBlack)
     private lazy var titleLabel = UILabel(.main26semiboldWhite)
     private lazy var secondaryLabel = UILabel(.main20semiboldWhite)
@@ -32,21 +31,7 @@ class DetailedDailyForecastCell: UICollectionViewCell {
     
     private lazy var headerIcon = UIImageView()
     private lazy var infoIcon = UIImageView()
-    
-//    private lazy var stackView: UIStackView = {
-//        let stack = UIStackView()
-//        stack.axis = .vertical
-//        stack.alignment = .leading
-//        stack.translatesAutoresizingMaskIntoConstraints = false
-//
-//        [self.titleLabel,
-//         self.secondaryLabel,
-//         self.infoIcon,
-//         self.subtitleLabel].forEach { stack.addArrangedSubview($0) }
-//
-//        return stack
-//    }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -90,27 +75,6 @@ class DetailedDailyForecastCell: UICollectionViewCell {
             headerLabel.leadingAnchor.constraint(equalTo: headerIcon.trailingAnchor, constant: 5),
             headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12)
         ])
-        
-//        contentView.addSubview(tempLabel)
-//        contentView.addSubview(containerView)
-//        contentView.addSubview(secondaryLabel)
-//        contentView.addSubview(stackView)
-        
-//        NSLayoutConstraint.activate([
-//            headerIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            headerIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-//
-//            headerLabel.leadingAnchor.constraint(equalTo: headerIcon.trailingAnchor, constant: 5),
-//            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-//
-//            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-//            containerView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 16),
-//
-////            tempLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-////            tempLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 16),
-////            tempLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
-//        ])
     }
     
     required init?(coder: NSCoder) {
@@ -200,17 +164,11 @@ class DetailedDailyForecastCell: UICollectionViewCell {
         contentView.addSubview(secondaryLabel)
         
         NSLayoutConstraint.activate([
-//            headerIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            headerIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-//
-//            headerLabel.leadingAnchor.constraint(equalTo: headerIcon.trailingAnchor, constant: 5),
-//            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            
+  
             secondaryLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             secondaryLabel.topAnchor.constraint(equalTo: headerIcon.topAnchor, constant: 10),
             secondaryLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
-//            secondaryLabel.trailingAnchor.constraint(equalTo: tempLabel.leadingAnchor, constant: -16),
-            
+
             tempLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             tempLabel.topAnchor.constraint(equalTo: headerLabel.topAnchor, constant: 10),
             tempLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12)
@@ -229,12 +187,6 @@ class DetailedDailyForecastCell: UICollectionViewCell {
         contentView.addSubview(stack)
         
         NSLayoutConstraint.activate([
-//            headerIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            headerIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-//
-//            headerLabel.leadingAnchor.constraint(equalTo: headerIcon.trailingAnchor, constant: 5),
-//            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             stack.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10)
@@ -246,12 +198,6 @@ class DetailedDailyForecastCell: UICollectionViewCell {
         contentView.addSubview(subtitleLabel)
         
         NSLayoutConstraint.activate([
-//            headerIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            headerIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-//
-//            headerLabel.leadingAnchor.constraint(equalTo: headerIcon.trailingAnchor, constant: 5),
-//            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             titleLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10),
             
@@ -265,21 +211,9 @@ class DetailedDailyForecastCell: UICollectionViewCell {
         contentView.addSubview(subtitleLabel)
         
         NSLayoutConstraint.activate([
-//            headerIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            headerIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-//
-//            headerLabel.leadingAnchor.constraint(equalTo: headerIcon.trailingAnchor, constant: 5),
-//            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             titleLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10),
-//
-//            infoIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            infoIcon.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
-//
-//            secondaryLabel.leadingAnchor.constraint(equalTo: infoIcon.trailingAnchor, constant: 5),
-//            secondaryLabel.centerYAnchor.constraint(equalTo: infoIcon.centerYAnchor)
-            
+
             infoIcon.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             infoIcon.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
 
