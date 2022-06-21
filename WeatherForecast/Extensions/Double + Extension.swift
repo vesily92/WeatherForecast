@@ -16,7 +16,7 @@ extension Double {
         return NSDecimalNumber(decimal: result).doubleValue
     }
     
-    func displayPop(if needed: Bool) -> String? {
+    func displayPop(if needed: Bool = true) -> String? {
         let doubleValue = Double(self)
         
         if !needed {
