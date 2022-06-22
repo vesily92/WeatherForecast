@@ -11,14 +11,14 @@ extension UILabel {
     
     enum LabelType {
         case heading16semiboldBlack
-        case main26semiboldWhite
-        case main20semiboldWhite
-        case main20semiboldBlack
-        case main20mediumWhite
-        case secondary16semiboldWhite
-        case secondary16regularWhite
-        case description12semiboldTeal
-        case description12regularBlack
+        case sf26semiboldWhite
+        case sf20semiboldWhite
+        case sf20semiboldBlack
+        case sf20mediumWhite
+        case sf16semiboldWhite
+        case sf16regularWhite
+        case sf12semiboldTeal
+        case sf12regularBlack
     }
     
     convenience init(_ labelType: LabelType, alpha: CGFloat = 1) {
@@ -29,35 +29,35 @@ extension UILabel {
             self.font = .systemFont(ofSize: 16, weight: .semibold)
             self.textColor = .black
             self.alpha = 0.3
-        case .main26semiboldWhite:
+        case .sf26semiboldWhite:
             self.font = .systemFont(ofSize: 26, weight: .semibold)
             self.textColor = .white
             self.alpha = alpha
-        case .main20semiboldWhite:
+        case .sf20semiboldWhite:
             self.font = .systemFont(ofSize: 20, weight: .semibold)
             self.textColor = .white
             self.alpha = alpha
-        case .main20semiboldBlack:
+        case .sf20semiboldBlack:
             self.font = .systemFont(ofSize: 20, weight: .semibold)
             self.textColor = .black
             self.alpha = 0.3
-        case .main20mediumWhite:
+        case .sf20mediumWhite:
             self.font = .systemFont(ofSize: 20, weight: .medium)
             self.textColor = .white
             self.alpha = alpha
-        case .secondary16semiboldWhite:
+        case .sf16semiboldWhite:
             self.font = .systemFont(ofSize: 16, weight: .semibold)
             self.textColor = .white
             self.alpha = alpha
-        case .secondary16regularWhite:
+        case .sf16regularWhite:
             self.font = .systemFont(ofSize: 16, weight: .regular)
             self.textColor = .white
             self.alpha = alpha
-        case .description12semiboldTeal:
+        case .sf12semiboldTeal:
             self.font = .systemFont(ofSize: 12, weight: .semibold)
             self.textColor = .systemTeal
             self.alpha = alpha
-        case .description12regularBlack:
+        case .sf12regularBlack:
             self.font = .systemFont(ofSize: 12)
             self.textColor = .black
             self.alpha = 0.3
