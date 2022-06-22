@@ -13,9 +13,12 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     
     lazy var isSunrise: Bool = true
     
-    lazy private var timeLabel = UILabel(fontSize: 16)
-    lazy private var popLabel = UILabel(fontSize: 12, color: .systemCyan)
-    lazy private var temperatureLabel = UILabel(fontSize: 20)
+//    lazy private var timeLabel = UILabel(fontSize: 16)
+    lazy private var timeLabel = UILabel(.sf16semiboldWhite)
+//    lazy private var popLabel = UILabel(fontSize: 12, color: .systemCyan)
+    lazy private var popLabel = UILabel(.sf12semiboldTeal)
+//    lazy private var temperatureLabel = UILabel(fontSize: 20)
+    lazy private var temperatureLabel = UILabel(.sf20semiboldWhite)
     lazy private var symbolView = UIImageView()
     
     private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 18))
