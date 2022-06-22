@@ -17,10 +17,6 @@ class SectionBackgroundView: UICollectionReusableView {
         backgroundColor = .systemGray2
     }
     
-    func configure(with color: UIColor) {
-        backgroundColor = color
-    }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
