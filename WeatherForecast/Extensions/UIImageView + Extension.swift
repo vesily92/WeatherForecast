@@ -11,6 +11,7 @@ extension UIImageView {
     enum SymbolType {
         case headingSymbol
         case weatherSymbol
+        case infoSymbol
     }
     
     convenience init(_ symbolType: SymbolType) {
@@ -22,9 +23,13 @@ extension UIImageView {
             self.tintColor = .black
             self.alpha = 0.3
         case .weatherSymbol:
-            self.preferredSymbolConfiguration = .preferringMulticolor()
             self.contentMode = .scaleAspectFit
+            self.preferredSymbolConfiguration = .preferringMulticolor()
             self.preferredSymbolConfiguration = .init(font: .systemFont(ofSize: 18))
+        case .infoSymbol:
+            self.contentMode = .scaleAspectFit
+            self.tintColor = .white
+            self.preferredSymbolConfiguration = .init(font: .systemFont(ofSize: 40))
         }
     }
 }
