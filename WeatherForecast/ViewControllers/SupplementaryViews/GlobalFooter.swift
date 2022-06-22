@@ -11,7 +11,7 @@ class GlobalFooter: UICollectionReusableView {
     static let reuseIdentifier = "GlobalFooter"
     
     private lazy var titleLabel = UILabel(fontSize: 16, weight: .regular)
-    private lazy var subtitleLabel = UILabel(fontSize: 12, weight: .regular, alpha: 0.3)
+    private lazy var subtitleLabel = UILabel(fontSize: 12, weight: .regular, color: .black, alpha: 0.3)
     private lazy var openWeatherLogoView = UIImageView()
     
     override init(frame: CGRect) {
