@@ -1,13 +1,19 @@
 //
-//  DetailedDailyForecastCell.swift
+//  MeteoConditionsCell.swift
 //  WeatherForecast
 //
 //  Created by Василий Пронин on 20.06.2022.
 //
 
 import UIKit
+import SwiftUI
 
-class DetailedDailyForecastCell: UICollectionViewCell {
+
+
+// Создать кастомные модели для каждой ячейки и секции
+
+
+class MeteoConditionsCell: UICollectionViewCell {
     enum DetailedInfoType {
 //        case sunrise
         case temp
@@ -19,51 +25,26 @@ class DetailedDailyForecastCell: UICollectionViewCell {
     }
     
     static let reuseIdentifier = "DetailedDailyForecastCell"
-//    
+//
 //    lazy var isSunrise: Bool = true
     
     private lazy var headerLabel = UILabel(.heading16semiboldBlack)
-    private lazy var titleLabel = UILabel(.main26semiboldWhite)
-    private lazy var secondaryLabel = UILabel(.main20semiboldWhite)
-    private lazy var subtitleLabel = UILabel(.secondary16regularWhite)
+    private lazy var titleLabel = UILabel(.sf26semiboldWhite)
+    private lazy var secondaryLabel = UILabel(.sf20semiboldWhite)
+    private lazy var subtitleLabel = UILabel(.sf16regularWhite)
+    private lazy var tempLabel = UILabel(.sf20semiboldWhite)
     
-    private lazy var tempLabel = UILabel(.main20semiboldWhite)
-    
-    private lazy var headerIcon = UIImageView()
-    private lazy var infoIcon = UIImageView()
+    private lazy var headerIcon = UIImageView(.headingSymbol)
+    private lazy var infoIcon = UIImageView(.infoSymbol)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-
-        subtitleLabel.numberOfLines = 0
-        secondaryLabel.numberOfLines = 0
-        
-        tempLabel.numberOfLines = 0
-        tempLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        headerIcon.contentMode = .scaleAspectFit
-        headerIcon.tintColor = .black
-        headerIcon.alpha = 0.3
-        headerIcon.translatesAutoresizingMaskIntoConstraints = false
-        
-        headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        infoIcon.contentMode = .scaleAspectFit
-        infoIcon.tintColor = .white
-        infoIcon.preferredSymbolConfiguration = .init(font: .systemFont(ofSize: 40))
         
 //        contentView.backgroundColor = .systemGray2
         contentView.layer.cornerRadius = 12
         
-        let containerView = UIStackView(arrangedSubviews: [
-            titleLabel,
-            secondaryLabel,
-            infoIcon,
-            subtitleLabel
-        ])
-        containerView.axis = .vertical
-        containerView.alignment = .leading
-        containerView.translatesAutoresizingMaskIntoConstraints = false
+        headerLabel.translatesAutoresizingMaskIntoConstraints = false
+        headerIcon.translatesAutoresizingMaskIntoConstraints = false
 
         contentView.addSubview(headerIcon)
         contentView.addSubview(headerLabel)
@@ -82,6 +63,7 @@ class DetailedDailyForecastCell: UICollectionViewCell {
     }
     
     func configure(for infoType: DetailedInfoType, with model: Daily) {
+        
         switch infoType {
         case .temp:
 //            secondaryLabel.text = "Temperature:"
@@ -144,27 +126,28 @@ class DetailedDailyForecastCell: UICollectionViewCell {
     
     fileprivate func setupConstraintsFor(_ infoType: DetailedInfoType) {
         switch infoType {
-        case .temp:
-            setupTempConstraints()
-        case .feelsLike:
-            setupTempConstraints()
+        case .temp, .feelsLike:
+            setupTempAndFeelsLike()
         case .pressure:
-            setupPressureConstraints()
-        case .humidity:
-            setupPressureConstraints()
+            setupHumidityAndUVI()
+        case .humidity, .uvi:
+            setupHumidityAndUVI()
         case .wind:
             setupWindConstraints()
-        case .uvi:
-            setupPressureConstraints()
         }
     }
     
-    fileprivate func setupTempConstraints() {
+    fileprivate func setupTempAndFeelsLike() {
+        tempLabel.numberOfLines = 0
+        tempLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        secondaryLabel.numberOfLines = 0
+        secondaryLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         contentView.addSubview(tempLabel)
         contentView.addSubview(secondaryLabel)
         
         NSLayoutConstraint.activate([
-  
             secondaryLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             secondaryLabel.topAnchor.constraint(equalTo: headerIcon.topAnchor, constant: 10),
             secondaryLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
@@ -175,27 +158,39 @@ class DetailedDailyForecastCell: UICollectionViewCell {
         ])
     }
     
-    fileprivate func setupPressureConstraints() {
+    fileprivate func setupHumidityAndUVI() {
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         let stack = UIStackView(arrangedSubviews: [
             titleLabel,
             secondaryLabel,
-            subtitleLabel
         ])
         stack.axis = .vertical
         stack.alignment = .leading
+        
         stack.translatesAutoresizingMaskIntoConstraints = false
+        
         contentView.addSubview(stack)
+        contentView.addSubview(subtitleLabel)
         
         NSLayoutConstraint.activate([
             stack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             stack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            stack.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10)
+            stack.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: 10),
+            
+            subtitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            subtitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            subtitleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
     }
     
-    fileprivate func setupUVConstraints() {
+    fileprivate func setupPressure() {
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        secondaryLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         contentView.addSubview(titleLabel)
-        contentView.addSubview(subtitleLabel)
+        contentView.addSubview(secondaryLabel)
         
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -206,6 +201,10 @@ class DetailedDailyForecastCell: UICollectionViewCell {
     }
     
     fileprivate func setupWindConstraints() {
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        infoIcon.translatesAutoresizingMaskIntoConstraints = false
+        
         contentView.addSubview(titleLabel)
         contentView.addSubview(infoIcon)
         contentView.addSubview(subtitleLabel)
@@ -216,10 +215,9 @@ class DetailedDailyForecastCell: UICollectionViewCell {
 
             infoIcon.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             infoIcon.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
-
+            
             subtitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             subtitleLabel.centerYAnchor.constraint(equalTo: infoIcon.centerYAnchor)
-            
         ])
     }
     
