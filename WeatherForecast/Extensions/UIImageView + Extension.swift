@@ -12,6 +12,7 @@ extension UIImageView {
         case headingSymbol
         case weatherSymbol
         case infoSymbol
+        case monochromeSymbol
     }
     
     convenience init(_ symbolType: SymbolType) {
@@ -30,6 +31,10 @@ extension UIImageView {
             self.contentMode = .scaleAspectFit
             self.tintColor = .white
             self.preferredSymbolConfiguration = .init(font: .systemFont(ofSize: 40))
+        case .monochromeSymbol:
+            self.contentMode = .scaleAspectFit
+            self.tintColor = .white
+            self.preferredSymbolConfiguration = .init(font: .systemFont(ofSize: 18))
         }
     }
 }
