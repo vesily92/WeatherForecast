@@ -14,7 +14,7 @@ import SwiftUI
 
 
 class MeteoConditionsCell: UICollectionViewCell {
-    enum DetailedInfoType {
+    enum DetailedInfoType: Int {
 //        case sunrise
         case temp
         case feelsLike
@@ -28,11 +28,11 @@ class MeteoConditionsCell: UICollectionViewCell {
 //
 //    lazy var isSunrise: Bool = true
     
-    private lazy var headerLabel = UILabel(.heading16semiboldBlack)
-    private lazy var titleLabel = UILabel(.sf26semiboldWhite)
-    private lazy var secondaryLabel = UILabel(.sf20semiboldWhite)
-    private lazy var subtitleLabel = UILabel(.sf16regularWhite)
-    private lazy var tempLabel = UILabel(.sf20semiboldWhite)
+    private lazy var headerLabel = UILabel(.heading16SemiboldBlack)
+    private lazy var titleLabel = UILabel(.sf26SemiboldWhite)
+    private lazy var secondaryLabel = UILabel(.sf20SemiboldWhite)
+    private lazy var subtitleLabel = UILabel(.sf16RegularWhite)
+    private lazy var tempLabel = UILabel(.sf20SemiboldWhite)
     
     private lazy var headerIcon = UIImageView(.headingSymbol)
     private lazy var infoIcon = UIImageView(.infoSymbol)
@@ -48,6 +48,14 @@ class MeteoConditionsCell: UICollectionViewCell {
 
         contentView.addSubview(headerIcon)
         contentView.addSubview(headerLabel)
+        
+//        NSLayoutConstraint.activate([
+//            headerIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+//            headerIcon.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
+//
+//            headerLabel.leadingAnchor.constraint(equalTo: headerIcon.trailingAnchor, constant: 5),
+//            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12)
+//        ])
         
         NSLayoutConstraint.activate([
             headerIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -68,14 +76,16 @@ class MeteoConditionsCell: UICollectionViewCell {
         case .temp:
 //            secondaryLabel.text = "Temperature:"
             headerIcon.image = UIImage(systemName: "thermometer")
-            headerLabel.text = "Temperature"
+//            headerLabel.text = "Temperature"
+            headerLabel.text = DateFormatter.format(model.dt, to: .detailed)
             secondaryLabel.text = "Morning: \nDay: \nEvening: \nNight:"
             tempLabel.text = "\(model.temperature.morn.displayTemp())\n\(model.temperature.day.displayTemp())\n\(model.temperature.eve.displayTemp())\n\(model.temperature.night.displayTemp())"
             contentView.backgroundColor = .systemTeal
             setupConstraintsFor(.temp)
         case .feelsLike:
             headerIcon.image = UIImage(systemName: "hand.raised")
-            headerLabel.text = "Feels Like"
+//            headerLabel.text = "Feels Like"
+            headerLabel.text = DateFormatter.format(model.dt, to: .detailed)
             secondaryLabel.text = "Morning:\nDay:\nEvening:\nNight:"
             tempLabel.text = "\(model.feelsLike.morn.displayTemp())\n\(model.feelsLike.day.displayTemp())\n\(model.feelsLike.eve.displayTemp())\n\(model.feelsLike.night.displayTemp())"
             contentView.backgroundColor = .systemOrange
@@ -93,21 +103,24 @@ class MeteoConditionsCell: UICollectionViewCell {
 //            : "Sunrise: " + DateFormatter.format(model.sunrise, to: .sunrise, withTimeZoneOffset: offset)
         case .pressure:
             headerIcon.image = UIImage(systemName: "barometer")
-            headerLabel.text = "Pressure"
+//            headerLabel.text = "Pressure"
+            headerLabel.text = DateFormatter.format(model.dt, to: .detailed)
             titleLabel.text = model.pressure.displayPressure()
             secondaryLabel.text = "mm Hg"
             contentView.backgroundColor = .systemGray2
             setupConstraintsFor(.pressure)
         case .humidity:
             headerIcon.image = UIImage(systemName: "humidity.fill")
-            headerLabel.text = "Humidity"
+//            headerLabel.text = "Humidity"
+            headerLabel.text = DateFormatter.format(model.dt, to: .detailed)
             titleLabel.text = "\(model.humidity) %"
             subtitleLabel.text = "The dew point is \(model.dewPoint.displayTemp())"
             contentView.backgroundColor = .systemPink
             setupConstraintsFor(.humidity)
         case .wind:
             headerIcon.image = UIImage(systemName: "wind")
-            headerLabel.text = "Wind"
+//            headerLabel.text = "Wind"
+            headerLabel.text = DateFormatter.format(model.dt, to: .detailed)
             titleLabel.text = "\(model.windSpeed) m/s"
             infoIcon.image = UIImage(systemName: getWindIcon(model: model))
             subtitleLabel.text = getWindDirection(model: model)
@@ -115,7 +128,8 @@ class MeteoConditionsCell: UICollectionViewCell {
             setupConstraintsFor(.wind)
         case .uvi:
             headerIcon.image = UIImage(systemName: "sun.max.fill")
-            headerLabel.text = "UV Index"
+//            headerLabel.text = "UV Index"
+            headerLabel.text = DateFormatter.format(model.dt, to: .detailed)
             titleLabel.text = "\(model.uvi)"
             secondaryLabel.text = getUVIDescription(model: model)
             subtitleLabel.text = "The maximum value of UV index for the day"
