@@ -197,26 +197,83 @@ struct Daily: Codable, Hashable {
         case sunrise
         case sunset
         case temperature = "temp"
+        case feelsLike = "feels_like"
         case pressure
         case humidity
+        case dewPoint = "dew_point"
         case windSpeed = "wind_speed"
+        case windDeg = "wind_deg"
         case weather
         case pop
         case uvi
     }
     
-    let id = UUID()
+//    let id = UUID()
+    var id: UUID = {
+        let id = UUID()
+        return id
+    }()
     
     let dt: Int
     let sunrise: Int
     let sunset: Int
     let temperature: Temperature
+    let feelsLike: FeelsLike
     let pressure: Int
     let humidity: Int
+    let dewPoint: Double
     let windSpeed: Double
+    let windDeg: Int
     let weather: [Weather]
     let pop: Double
     let uvi: Double
+    
+//    var windDirections: String {
+//        switch windDeg {
+//        case 349...360, 0...11: return "N"
+//        case 12...33: return "NNE"
+//        case 34...56: return "NE"
+//        case 57...78: return "ENE"
+//        case 79...101: return "E"
+//        case 102...123: return "ESE"
+//        case 124...146: return "SE"
+//        case 147...168: return "SSE"
+//        case 169...191: return "S"
+//        case 192...213: return "SSW"
+//        case 214...236: return "SW"
+//        case 237...258: return "WSW"
+//        case 259...281: return "W"
+//        case 282...303: return "WNW"
+//        case 304...326: return "NW"
+//        case 327...348: return "NNW"
+//        default: return ""
+//        }
+//    }
+//    
+//    var systemNameString: String {
+//        switch windDeg {
+//        case 338...360, 0...23: return "arrow.up.circle.fill" //"arrow.up"
+//        case 23...68: return "arrow.up.right.circle.fill" //"arrow.up.right"
+//        case 69...113: return "arrow.right.circle.fill" //"arrow.right"
+//        case 114...158: return "arrow.down.right.circle.fill" //"arrow.down.right"
+//        case 159...203: return "arrow.down.circle.fill" //"arrow.down"
+//        case 204...248: return "arrow.down.left.circle.fill" //"arrow.down.left"
+//        case 249...293: return "arrow.left.circle.fill" //"arrow.left"
+//        case 293...337: return "arrow.up.left.circle.fill" //"arrow.up.left"
+//        default: return "nosign"
+//            
+//        }
+//    }
+//    
+//    var uviDescription: String {
+//        switch uvi {
+//        case 0.0...3.0: return "Low"
+//        case 4.0...5.0: return "Moderate"
+//        case 6.0...7.0: return "High"
+//        case 8.0...10.0: return "Very High"
+//        default: return ""
+//        }
+//    }
     
     static func == (lhs: Daily, rhs: Daily) -> Bool {
         return lhs.id == rhs.id
@@ -227,6 +284,7 @@ struct Daily: Codable, Hashable {
         hasher.combine(sunrise)
         hasher.combine(sunset)
         hasher.combine(temperature)
+        hasher.combine(feelsLike)
         hasher.combine(pressure)
         hasher.combine(humidity)
         hasher.combine(windSpeed)
@@ -297,20 +355,51 @@ struct Alert: Codable, Hashable {
 
 struct Temperature: Codable, Hashable {
     enum CodingKeys: CodingKey {
-        case id, min, max
+        case id, day, min, max, night, eve, morn
     }
     let id = UUID()
     
+    let day: Double
     let min: Double
     let max: Double
+    let night: Double
+    let eve: Double
+    let morn: Double
     
     static func == (lhs: Temperature, rhs: Temperature) -> Bool {
         return lhs.id == rhs.id
     }
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+        hasher.combine(day)
         hasher.combine(min)
         hasher.combine(max)
+        hasher.combine(night)
+        hasher.combine(eve)
+        hasher.combine(morn)
+    }
+}
+
+struct FeelsLike: Codable, Hashable {
+    enum CodingKeys: CodingKey {
+        case id, day, night, eve, morn
+    }
+    let id = UUID()
+    
+    let day: Double
+    let night: Double
+    let eve: Double
+    let morn: Double
+    
+    static func == (lhs: FeelsLike, rhs: FeelsLike) -> Bool {
+        return lhs.id == rhs.id
+    }
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(day)
+        hasher.combine(night)
+        hasher.combine(eve)
+        hasher.combine(morn)
     }
 }
 
