@@ -10,17 +10,17 @@ import UIKit
 final class SectionHeader: UICollectionReusableView {
     static let reuseIdentifier = "SectionHeader"
     
-    private lazy var titleLabel = UILabel(fontSize: 16, color: .black, alpha: 0.3)
+    private lazy var titleLabel = UILabel()
     private lazy var iconView = UIImageView()
     
-    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 14))
+    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 20))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        iconView.contentMode = .scaleAspectFit
-        iconView.tintColor = .black
-        iconView.alpha = 0.3
+//        iconView.contentMode = .scaleAspectFit
+//        iconView.tintColor = .black
+//        iconView.alpha = 0.3
         
         let headerTitleStackView = UIStackView(arrangedSubviews: [
             iconView,
@@ -49,11 +49,26 @@ final class SectionHeader: UICollectionReusableView {
         var areFew: Bool {
             return alerts > 1 ? true : false
         }
-        titleLabel.text = areFew ? "Weather Alert: \(event) & \(alerts - 1) More" : "Weather Alert: \(event)"
+        titleLabel.font = .systemFont(ofSize: 20, weight: .semibold)
+        titleLabel.textColor = .white
+        
+        iconView.contentMode = .scaleAspectFit
+        iconView.preferredSymbolConfiguration = symbolConfig
+        iconView.tintColor = .white
+        
+        titleLabel.text = areFew ? "\(event.capitalized) & \(alerts - 1) More" : "\(event)"
         iconView.image = UIImage(systemName: "exclamationmark.triangle.fill")
     }
 
     func configure(with section: Section) {
+        titleLabel.font = .systemFont(ofSize: 16, weight: .semibold)
+        titleLabel.tintColor = .black
+        titleLabel.alpha = 0.3
+        
+        iconView.contentMode = .scaleAspectFit
+        iconView.tintColor = .black
+        iconView.alpha = 0.3
+        
         titleLabel.text = section.headerTitle
         iconView.image = UIImage(systemName: section.headerIcon)
     }
