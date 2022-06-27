@@ -10,15 +10,15 @@ import UIKit
 class AlertCell: UICollectionViewCell, SelfConfiguringCell {
     static let reuseIdentifier = "AlertCell"
     
-    private lazy var descriptionLabel = UILabel(fontSize: 16)
+    private lazy var descriptionLabel = UILabel(.sf16RegularWhite)
     private lazy var iconView = UIImageView()
     private lazy var seeMoreButton = UIButton(.seeMoreButton)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         descriptionLabel.numberOfLines = 0
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         
         seeMoreButton.translatesAutoresizingMaskIntoConstraints = false
         
