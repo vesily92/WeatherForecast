@@ -18,8 +18,6 @@ class ViewController: UIViewController {
     private var currentWeather: CurrentWeather?
     private var forecastData: ForecastData? {
         didSet {
-            print("forecast data fetched")
-            print(forecastData?.alerts)
             dataSource?.apply(makeSnapshot(), animatingDifferences: false)
         }
     }
@@ -30,10 +28,7 @@ class ViewController: UIViewController {
         lm.requestWhenInUseAuthorization()
         return lm
     }()
-    
-//    let alertsForHeader = Bundle.main.decode(ForecastData.self, from: "AlertJSON.json")
-//    let alertsForSection = Bundle.main.decode([Alert].self, from: "NilJSON.json")
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -105,7 +100,6 @@ class ViewController: UIViewController {
         ) as? T else {
             fatalError("Unable to dequeue \(cellType)")
         }
-        
         cell.configure(with: model, andTimezoneOffset: offset)
         return cell
     }
@@ -115,7 +109,6 @@ class ViewController: UIViewController {
             guard let section = Section(rawValue: sectionIndex) else {
                 fatalError("Unknown section kind")
             }
-
             switch section {
             case .alert:
                 if let forecastData = self.forecastData {
@@ -137,7 +130,6 @@ class ViewController: UIViewController {
         let globalFooter = createGlobalFooter(
             withKind: GlobalFooter.reuseIdentifier
         )
-
         let config = UICollectionViewCompositionalLayoutConfiguration()
         config.boundarySupplementaryItems = [currentWeatherHeader, globalFooter]
         config.interSectionSpacing = 20
@@ -308,7 +300,6 @@ extension ViewController {
             subitems: [item]
         )
         let section = NSCollectionLayoutSection(group: group)
-
         return section
     }
     
@@ -337,7 +328,6 @@ extension ViewController {
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
-
         return section
     }
     
@@ -358,79 +348,6 @@ extension ViewController {
 
         let sectionHeader = createSectionHeader()
         section.boundarySupplementaryItems = [sectionHeader]
-//        section.supplementariesFollowContentInsets = false
-        
-//        section.visibleItemsInvalidationHandler = { items, offset, environment in
-////            print("Alert Section offset \(offset.y)")
-//
-////            guard let globalHeader = self.weatherCollectionView.visibleSupplementaryViews(ofKind: CurrentWeatherHeader.reuseIdentifier).first as? CurrentWeatherHeader else { return }
-//            items.forEach { item in
-//
-//                guard let cell = self.weatherCollectionView.cellForItem(at: item.indexPath) as? AlertCell else { return }
-//
-//                guard let header = self.weatherCollectionView.supplementaryView(forElementKind: SectionHeader.reuseIdentifier, at: item.indexPath) as? SectionHeader else { return }
-//
-//
-//                let sectionPosition = header.frame.origin.y
-//                let frameMAX = item.frame.maxY
-//                let frameMIN = item.frame.minY
-//
-//
-//                let boundsMIN = header.bounds.minY
-//                let boundsMAX = header.bounds.maxY
-//
-//                let headerBounds = header.bounds.size.height
-//                let itemBounds = item.bounds.size.height
-//                let distance = itemBounds - headerBounds
-//
-//                print("-------------------------")
-//                print("alert: \(sectionPosition)")
-//                print("offset: \(offset.y)")
-//                print("-------------------------")
-//                print("FRAME MIN: \(frameMIN)")
-//                print("FRAME MAX: \(frameMAX)")
-//                print("-------------------------")
-//                print("BOUNDS MIN: \(boundsMIN)")
-//                print("BOUNDS MAX: \(boundsMAX)")
-//                print("BOUNDS HEIGHT: \(itemBounds)")
-//                print("-------------------------")
-////                print("DDISTANCE: \(distance)")
-//                print("-------------------------")
-////                print("custom offset: \(offsetY)")
-//
-//
-//
-////                if sectionPosition <= 180 {
-////                    globalHeader.setAlphaValue(with: sectionPosition / 180)
-////                }
-//                let alphaOffset = (offset.y + self.weatherCollectionView.contentInset.top) / 100
-//
-//                let alpha = 1 - (alphaOffset - (sectionPosition / 100))
-//
-//
-//                print(alpha)
-//
-//                if sectionPosition >= distance {
-//                    header.setAlphaValue(with: alpha)
-//
-//
-////                    cell.transform = CGAffineTransform(scaleX: 1, y: 0.5)
-////
-////                    item.transform = CGAffineTransform(scaleX: 1, y: 0.1)
-//                    header.layer.zPosition = 0
-//                    item.isHidden = true
-//                    cell.isHidden = true
-//                } else {
-////                    header.transform = CGAffineTransform(translationX: 0, y: 0)
-//                    header.setAlphaValue(with: 1)
-//
-//                    cell.isHidden = false
-//                    item.isHidden = false
-//                    header.isHidden = false
-//                }
-//            }
-//        }
-
         return section
     }
     
@@ -496,8 +413,6 @@ extension ViewController {
     private func createDailySection(using: Section, and layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         configuration.separatorConfiguration.color = .white
-//        configuration.separatorConfiguration.topSeparatorVisibility = .visible
-//        configuration.separatorConfiguration.topSeparatorInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0)
         configuration.separatorConfiguration.bottomSeparatorInsets = NSDirectionalEdgeInsets(
             top: 0,
             leading: 16,
@@ -513,7 +428,6 @@ extension ViewController {
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
         
         let sectionHeader = createSectionHeader()
-//        let sectionFooterButton = createSectionFooterButton()
         section.boundarySupplementaryItems = [sectionHeader]
         
         let backgroundView = createBackgroundView()
@@ -532,8 +446,6 @@ extension ViewController {
             elementKind: SectionHeader.reuseIdentifier,
             alignment: .topLeading
         )
-//        sectionHeader.contentInsets.leading = 16
-
         return sectionHeader
     }
     
@@ -546,7 +458,6 @@ extension ViewController {
             layoutSize: footerSize,
             elementKind: SectionFooterButton.reuseIdentifier,
             alignment: .bottomLeading)
-        
         return sectionFooterButton
     }
     
@@ -561,7 +472,6 @@ extension ViewController {
             alignment: .top
         )
         globalHeader.pinToVisibleBounds = true
-        
         return globalHeader
     }
     
@@ -581,11 +491,9 @@ extension ViewController {
     private func createBackgroundView() -> NSCollectionLayoutDecorationItem {
         let topInset: CGFloat = 0
         let sideInset: CGFloat = 16
-        
         let backgroundItem = NSCollectionLayoutDecorationItem.background(
             elementKind: SectionBackgroundView.reuseIdentifier
         )
-
         backgroundItem.contentInsets = NSDirectionalEdgeInsets(
             top: topInset,
             leading: sideInset,
