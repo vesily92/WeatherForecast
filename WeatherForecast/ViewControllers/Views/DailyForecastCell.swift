@@ -11,7 +11,7 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     static let reuseIdentifier = "DailyForecastCell"
     
     lazy private var weekdayLabel = UILabel(fontSize: 20)
-    lazy private var dateLabel = UILabel(fontSize: 12, weight: .regular, color: .black, alpha: 0.3)
+//    lazy private var dateLabel = UILabel(fontSize: 12, weight: .regular, color: .black, alpha: 0.3)
     lazy private var highestTempLabel = UILabel(fontSize: 20)
     lazy private var lowestTempLabel = UILabel(fontSize: 20, color: .black, alpha: 0.3)
     lazy private var popLabel = UILabel(fontSize: 12, color: .systemCyan)
@@ -27,7 +27,7 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         
         let dateStackView = UIStackView(arrangedSubviews: [
             weekdayLabel,
-            dateLabel
+//            dateLabel
         ])
         dateStackView.axis = .vertical
         dateStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -80,11 +80,11 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
             return DateFormatter.compare(.day, with: forecast.dt)
         }
         
-        dateLabel.text = DateFormatter.format(
-            forecast.dt,
-            to: .date,
-            withTimeZoneOffset: offset
-        )
+//        dateLabel.text = DateFormatter.format(
+//            forecast.dt,
+//            to: .date,
+//            withTimeZoneOffset: offset
+//        )
         weekdayLabel.text = isToday ? "Today" : DateFormatter.format(
             forecast.dt,
             to: .weekday,
