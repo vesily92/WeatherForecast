@@ -11,7 +11,7 @@ import SwiftUI
 class HourlyCollectionViewCell: UICollectionViewCell, SelfConfiguringCell {
     static let reuseIdentifier = "HourlyCollectionViewCell"
     
-    private var hourlyCollectionView: UICollectionView!
+    private var collectionView: UICollectionView!
     private var forecastData: ForecastData?
     
     override init(frame: CGRect) {
@@ -21,30 +21,29 @@ class HourlyCollectionViewCell: UICollectionViewCell, SelfConfiguringCell {
         layout.scrollDirection = .horizontal
         layout.estimatedItemSize = CGSize(width: 60, height: 120)
         
-        hourlyCollectionView = UICollectionView(
+        collectionView = UICollectionView(
             frame: contentView.bounds,
             collectionViewLayout: layout
         )
-        hourlyCollectionView.backgroundColor = .clear
-        hourlyCollectionView.showsHorizontalScrollIndicator = false
-        hourlyCollectionView.delegate = self
-        hourlyCollectionView.dataSource = self
-        hourlyCollectionView.register(
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(collectionView)
+        
+        collectionView.register(
             HourlyForecastCell.self,
             forCellWithReuseIdentifier: HourlyForecastCell.reuseIdentifier
         )
-
-        hourlyCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
-//        hourlyCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(hourlyCollectionView)
-        
-//        NSLayoutConstraint.activate([
-//            hourlyCollectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
-//            hourlyCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-//            hourlyCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            hourlyCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
-//        ])
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
+        ])
     }
     
     required init?(coder: NSCoder) {
@@ -54,7 +53,7 @@ class HourlyCollectionViewCell: UICollectionViewCell, SelfConfiguringCell {
     func configure(with forecast: AnyHashable, andTimezoneOffset: Int) {
         guard let forecast = forecast as? ForecastData else { return }
         self.forecastData = forecast
-        hourlyCollectionView.reloadData()
+        collectionView.reloadData()
     }
 }
 
