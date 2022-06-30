@@ -95,6 +95,7 @@ class DailyDetailedViewController: UIViewController, Coordinatable {
                 ) as? DailyDetailedCollectionViewCell else {
                     fatalError("Unable to dequeue DailyDetailedCollectionViewCell")
                 }
+                cell.coordinator = self.coordinator
                 cell.configure(with: forecast)
                 return cell
             }
@@ -115,3 +116,4 @@ class DailyDetailedViewController: UIViewController, Coordinatable {
         return snapshot
     }
 }
+
