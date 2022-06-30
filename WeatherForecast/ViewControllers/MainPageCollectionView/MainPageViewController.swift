@@ -65,7 +65,7 @@ class MainPageViewController: UIViewController, Coordinatable {
         collectionView.contentInsetAdjustmentBehavior = .never
         
         view.addSubview(collectionView)
-        navigationController?.isNavigationBarHidden = true
+//        navigationController?.isNavigationBarHidden = true
 
         collectionView.register(
             MainPageCollectionViewCell.self,
@@ -107,6 +107,7 @@ class MainPageViewController: UIViewController, Coordinatable {
                 ) as? MainPageCollectionViewCell else {
                     fatalError("Unable to dequeue DailyDetailedCollectionViewCell")
                 }
+                cell.coordinator = self.coordinator
                 guard let forecastData = self.forecastData,
                       let currentWeather = self.currentWeather else { return cell }
                 cell.configure(with: forecastData, and: currentWeather)
