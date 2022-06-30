@@ -26,8 +26,8 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell, Coordinatable {
     
     static let reuseIdentifier = "DailyDetailedCollectionViewCell"
     
-    var coordinator: Coordinator?
-    var itemIndex: Int!
+    weak var coordinator: Coordinator?
+//    var itemIndex: Int!
     
     private var collectionView: UICollectionView!
     private var dataSource: DataSource?
@@ -62,6 +62,7 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell, Coordinatable {
         )
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .darkGray
+        collectionView.delegate = self
         contentView.addSubview(collectionView)
         
         collectionView.register(
@@ -222,5 +223,16 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell, Coordinatable {
         snapshot.appendItems([CategorisedDailyItems(details: forecastData.daily.first!, category: .pressureAndWindInfo)], toSection: .pressureAndWindInfo)
 
         return snapshot
+    }
+}
+
+extension DailyDetailedCollectionViewCell: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let section = DailyDetailedCellSection(rawValue: indexPath.section) else { return }
+
+        if section == .dayPicker {
+            print(indexPath.item)
+            
+        }
     }
 }
