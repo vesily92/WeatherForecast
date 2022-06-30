@@ -8,14 +8,16 @@
 import UIKit
 import CoreLocation
 
-class MainPageCollectionViewCell: UICollectionViewCell, Coordinatable {
+class MainPageCollectionViewCell: UICollectionViewCell {
     
     typealias DataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>
     
     static let reuseIdentifier = "MainPageCollectionViewCell"
     
-    var coordinator: Coordinator?
+//    weak var parent: MainPageViewController?
+    weak var coordinator: Coordinator?
+//    var moveForward: (() -> Void)?
     
     private var weatherCollectionView: UICollectionView!
     private var dataSource: DataSource?
@@ -486,22 +488,13 @@ extension MainPageCollectionViewCell {
 extension MainPageCollectionViewCell: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        coordinator?.eventOccurred(with: .dailySectionItemTapped)
-//        guard let section = Section(rawValue: indexPath.section) else {
-//            fatalError("Unknown section kind")
-//        }
-//        if section == .daily {
-//            coordinator?.eventOccurred(with: .dailySectionItemTapped)
-//        }
-        
-////
-//        switch section {
-//        case .alert:
-//            <#code#>
-//        case .hourlyCollection:
-//            <#code#>
-//        case .daily:
-//            <#code#>
-//        }
+//        coordinator?.eventOccurred(with: .dailySectionItemTapped)
+        guard let section = Section(rawValue: indexPath.section) else {
+            fatalError("Unknown section kind")
+        }
+        if section == .daily {
+            coordinator?.eventOccurred(with: .dailySectionItemTapped)
+//            moveForward?()
+        }
     }
 }
