@@ -8,15 +8,16 @@
 import UIKit
 import CoreLocation
 
-class MainPageViewController: UIViewController, Coordinatable {
+class MainPageViewController: UIViewController {
 
-    private enum MainPageVCSections: Int, CaseIterable {
+    private enum MainPageVCSection: Int, CaseIterable {
         case main
     }
     
-    private typealias DataSource = UICollectionViewDiffableDataSource<MainPageVCSections, AnyHashable>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<MainPageVCSections, AnyHashable>
+    private typealias DataSource = UICollectionViewDiffableDataSource<MainPageVCSection, AnyHashable>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<MainPageVCSection, AnyHashable>
     
+//    weak var appCoordinator: ApplicationCoordinator?
     var coordinator: Coordinator?
     
     private var collectionView: UICollectionView!
@@ -96,7 +97,7 @@ class MainPageViewController: UIViewController, Coordinatable {
     
     private func createDataSouce() {
         dataSource = DataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, forecast in
-            guard let section = MainPageVCSections(rawValue: indexPath.section) else {
+            guard let section = MainPageVCSection(rawValue: indexPath.section) else {
                 fatalError("Unknown section kind")
             }
             switch section {
@@ -108,6 +109,7 @@ class MainPageViewController: UIViewController, Coordinatable {
                     fatalError("Unable to dequeue DailyDetailedCollectionViewCell")
                 }
                 cell.coordinator = self.coordinator
+//                cell.appCoordinator = self.appCoordinator
                 guard let forecastData = self.forecastData,
                       let currentWeather = self.currentWeather else { return cell }
                 cell.configure(with: forecastData, and: currentWeather)
@@ -124,7 +126,7 @@ class MainPageViewController: UIViewController, Coordinatable {
         }
         let forecasts = Array(repeating: forecastData, count: 1)
         
-        snapshot.appendSections(MainPageVCSections.allCases)
+        snapshot.appendSections(MainPageVCSection.allCases)
         snapshot.appendItems(forecasts, toSection: .main)
         
         return snapshot
