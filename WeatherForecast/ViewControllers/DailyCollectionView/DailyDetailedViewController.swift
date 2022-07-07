@@ -7,20 +7,26 @@
 
 import UIKit
 
-class DailyDetailedViewController: UIViewController, Coordinatable {
+class DailyDetailedViewController: UIViewController {
     
-    private enum DailyDetailedVCSections: Int, CaseIterable {
-        case main
+    private enum DailyDetailedVCSection: Int, CaseIterable {
+        case dayPicker
+        case meteoInfo
     }
     
-    private typealias DataSource = UICollectionViewDiffableDataSource<DailyDetailedVCSections, AnyHashable>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<DailyDetailedVCSections, AnyHashable>
+    private struct CategorisedDailyVCItems: Hashable {
+        let details: Daily
+        let category: DailyDetailedVCSection
+    }
     
+    private typealias DataSource = UICollectionViewDiffableDataSource<DailyDetailedVCSection, CategorisedDailyVCItems>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<DailyDetailedVCSection, CategorisedDailyVCItems>
+    
+//    weak var appCoordinator: ApplicationCoordinator?
     var coordinator: Coordinator?
-    
     private var collectionView: UICollectionView!
     private var dataSource: DataSource?
-    private var forecastData: ForecastData? {
+    var forecastData: ForecastData? {
         didSet {
             dataSource?.apply(makeSnapshot(), animatingDifferences: false)
         }
@@ -32,20 +38,10 @@ class DailyDetailedViewController: UIViewController, Coordinatable {
         NetworkManager.shared.fetchOneCallData(withLatitude: 59.9311, longitude: 30.3609) { forecastData in
             self.forecastData = forecastData
         }
-        setupNavBar()
         setupCollectionView()
         createDataSouce()
     }
-    
-    private func setupNavBar() {
-        let navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 44))
-        let navItem = UINavigationItem(title: "7-Day Forecast")
-        let dismissButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.close, target: self, action: nil)
-        navItem.rightBarButtonItem = dismissButton
-        navBar.setItems([navItem], animated: false)
-        view.addSubview(navBar)
-    }
-    
+
     private func setupCollectionView() {
         collectionView = UICollectionView(
             frame: view.bounds,
@@ -53,53 +49,84 @@ class DailyDetailedViewController: UIViewController, Coordinatable {
         )
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .darkGray
+        collectionView.delegate = self
+        collectionView.isScrollEnabled = false
         view.addSubview(collectionView)
         
         collectionView.register(
+            DayPickerCell.self,
+            forCellWithReuseIdentifier: DayPickerCell.reuseIdentifier
+        )
+        collectionView.register(
             DailyDetailedCollectionViewCell.self,
             forCellWithReuseIdentifier: DailyDetailedCollectionViewCell.reuseIdentifier
+        )
+        collectionView.register(
+            SectionHeader.self,
+            forSupplementaryViewOfKind: SectionHeader.reuseIdentifier,
+            withReuseIdentifier: SectionHeader.reuseIdentifier
         )
     }
     
     private func createCompositionalLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnv in
-            let itemSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
-            )
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            let groupSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
-            )
-            let group = NSCollectionLayoutGroup.vertical(
-                layoutSize: groupSize, subitems: [item]
-            )
-            let section = NSCollectionLayoutSection(group: group)
-            section.orthogonalScrollingBehavior = .groupPagingCentered
-            return section
+            guard let section = DailyDetailedVCSection(rawValue: sectionIndex) else {
+                fatalError("Unknown section kind")
+            }
+            
+            switch section {
+            case .dayPicker:
+                return self.createDayPickerSection(using: section)
+            case .meteoInfo:
+                return self.createMeteoInfoSection(using: section)
+            }
         }
+        let header = createGlobalHeader()
+        let config = UICollectionViewCompositionalLayoutConfiguration()
+        config.boundarySupplementaryItems = [header]
+        layout.configuration = config
         return layout
     }
     
     private func createDataSouce() {
         dataSource = DataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, forecast in
-            guard let section = DailyDetailedVCSections(rawValue: indexPath.section) else {
+            guard let section = DailyDetailedVCSection(rawValue: indexPath.section) else {
                 fatalError("Unknown section kind")
             }
             switch section {
-            case .main:
+            case .dayPicker:
+                guard let cell = self.collectionView.dequeueReusableCell(
+                    withReuseIdentifier: DayPickerCell.reuseIdentifier,
+                    for: indexPath
+                ) as? DayPickerCell else {
+                    fatalError("Unable to dequeue DayPickerCell")
+                }
+//                cell.isPicked = true
+                cell.configure(with: forecast.details)
+                return cell
+            case .meteoInfo:
                 guard let cell = self.collectionView.dequeueReusableCell(
                     withReuseIdentifier: DailyDetailedCollectionViewCell.reuseIdentifier,
                     for: indexPath
                 ) as? DailyDetailedCollectionViewCell else {
                     fatalError("Unable to dequeue DailyDetailedCollectionViewCell")
                 }
-                cell.coordinator = self.coordinator
-                cell.configure(with: forecast)
+//                cell.appCoordinator = self.appCoordinator
+                cell.configure(with: forecast.details)
                 return cell
             }
         })
+        dataSource?.supplementaryViewProvider = { weatherCollectionView, kind, indexPath in
+            guard let sectionHeader = weatherCollectionView.dequeueReusableSupplementaryView(
+                ofKind: SectionHeader.reuseIdentifier,
+                withReuseIdentifier: SectionHeader.reuseIdentifier,
+                for: indexPath
+            ) as? SectionHeader else {
+                return nil
+            }
+            sectionHeader.configureForLargeState(with: Section.daily)
+            return sectionHeader
+        }
     }
     
     private func makeSnapshot() -> Snapshot {
@@ -108,12 +135,83 @@ class DailyDetailedViewController: UIViewController, Coordinatable {
         guard let forecastData = forecastData else {
             fatalError()
         }
-        let forecasts = Array(repeating: forecastData, count: 1)
-        
-        snapshot.appendSections(DailyDetailedVCSections.allCases)
-        snapshot.appendItems(forecasts, toSection: .main)
+
+        snapshot.appendSections(DailyDetailedVCSection.allCases)
+        forecastData.daily.forEach { daily in
+            snapshot.appendItems(
+                [CategorisedDailyVCItems(details: daily, category: .dayPicker)],
+                toSection: .dayPicker
+            )
+            snapshot.appendItems(
+                [CategorisedDailyVCItems(details: daily, category: .meteoInfo)],
+                toSection: .meteoInfo
+            )
+        }
         
         return snapshot
     }
+    
+    private func createDayPickerSection(using: DailyDetailedVCSection) -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1/6),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalWidth(1/6)
+        )
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
+        return section
+    }
+    
+    private func createMeteoInfoSection(using: DailyDetailedVCSection) -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: groupSize, subitems: [item]
+        )
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .groupPagingCentered
+        return section
+    }
+    
+    private func createGlobalHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
+        let globalHeaderSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(80)
+        )
+        let globalHeader = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: globalHeaderSize,
+            elementKind: SectionHeader.reuseIdentifier,
+            alignment: .top
+        )
+        globalHeader.pinToVisibleBounds = true
+        return globalHeader
+    }
 }
 
+extension DailyDetailedViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let section = DailyDetailedVCSection(rawValue: indexPath.section) else { return }
+        
+        if section == .dayPicker {
+            //
+        }
+    }
+    
+    
+}
