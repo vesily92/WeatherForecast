@@ -11,6 +11,7 @@ class ApplicationCoordinator: Coordinator {
     
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController?
+    var data: AnyHashable?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -21,18 +22,25 @@ class ApplicationCoordinator: Coordinator {
         case .buttonTapped:
             print("Hello")
         case .dailySectionItemTapped:
-            var vc: UIViewController & Coordinatable = DailyDetailedViewController()
+            let vc = DailyDetailedViewController()
             vc.coordinator = self
             navigationController?.present(vc, animated: true)
-
+        case .dayPickerItemTapped:
+            print("")
         }
     }
-    
+    func navigate(with data: ForecastData?) {
+        let vc = DailyDetailedViewController()
+        vc.coordinator = self
+        vc.forecastData = data
+        navigationController?.present(vc, animated: true)
+    }
     
     func start() {
-        var vc: UIViewController & Coordinatable = MainPageViewController()
+        let vc = MainPageViewController()
         vc.coordinator = self
         navigationController?.setViewControllers([vc], animated: false)
     }
+    
 }
 
