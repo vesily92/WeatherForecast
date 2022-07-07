@@ -15,7 +15,7 @@ class MainPageCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "MainPageCollectionViewCell"
     
-//    weak var parent: MainPageViewController?
+//    weak var appCoordinator: ApplicationCoordinator?
     weak var coordinator: Coordinator?
 //    var moveForward: (() -> Void)?
     
@@ -494,6 +494,7 @@ extension MainPageCollectionViewCell: UICollectionViewDelegate {
         }
         if section == .daily {
             coordinator?.eventOccurred(with: .dailySectionItemTapped)
+//            coordinator?.navigate(with: forecastData)
 //            moveForward?()
         }
     }
