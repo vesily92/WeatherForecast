@@ -6,17 +6,17 @@
 //
 
 import UIKit
+import CoreLocation
 
 class GlobalFooter: UICollectionReusableView {
     static let reuseIdentifier = "GlobalFooter"
     
-    private lazy var titleLabel = UILabel(fontSize: 16, weight: .regular)
-    private lazy var subtitleLabel = UILabel(fontSize: 12, weight: .regular, color: .black, alpha: 0.3)
+    private lazy var titleLabel = UILabel(.specificationText16)
+    private lazy var subtitleLabel = UILabel(.smallText12, color: .gray)
     private lazy var openWeatherLogoView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         let separator = UIView(frame: .zero)
         separator.backgroundColor = .white
         separator.alpha = 0.7
@@ -59,9 +59,15 @@ class GlobalFooter: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with model: CurrentWeather) {
+    func configure(with forecast: ForecastData) {
         DispatchQueue.main.async {
-            self.titleLabel.text = "Weather for " + model.cityName
+            let coordinates = CLLocation(latitude: forecast.lat, longitude: forecast.lon)
+            
+            LocationManager.shared.getLocationName(with: coordinates, completion: { [weak self] location in
+                guard let location = location else { return }
+                self?.titleLabel.text = "Weather for " + location.cityName
+            })
+            
             self.subtitleLabel.text = "Provided by OpenWeather"
             self.openWeatherLogoView.image = UIImage(named: "OpenWeatherLogo")
         }
