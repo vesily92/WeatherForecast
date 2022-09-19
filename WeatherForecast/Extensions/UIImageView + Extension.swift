@@ -8,33 +8,65 @@
 import UIKit
 
 extension UIImageView {
+    
     enum SymbolType {
-        case headingSymbol
-        case weatherSymbol
-        case infoSymbol
-        case monochromeSymbol
+        case multicolor(_ size: SymbolType.Size? = nil)
+        case monochrome(_ color: SymbolType.Color, size: SymbolType.Size? = nil)
+        
+        enum Size: CGFloat {
+            case main = 20
+            case large = 42
+        }
+        
+        enum Color {
+            case white
+            case gray
+        }
     }
     
-    convenience init(_ symbolType: SymbolType) {
+    convenience init(_ type: SymbolType) {
         self.init()
         
-        switch symbolType {
-        case .headingSymbol:
+        switch type {
+        case .multicolor(let size):
             self.contentMode = .scaleAspectFit
-            self.tintColor = .black
-            self.alpha = 0.3
-        case .weatherSymbol:
+            let config = UIImage.SymbolConfiguration.preferringMulticolor()
+            
+            switch size {
+            case .main:
+                let sizeConfig = UIImage.SymbolConfiguration(
+                    font: .systemFont(ofSize: size!.rawValue)
+                )
+                config.applying(sizeConfig)
+            case .large:
+                let sizeConfig = UIImage.SymbolConfiguration(
+                    font: .systemFont(ofSize: size!.rawValue)
+                )
+                config.applying(sizeConfig)
+            default: break
+            }
+            self.preferredSymbolConfiguration = config
+            
+        case .monochrome(let color, let size):
             self.contentMode = .scaleAspectFit
-            self.preferredSymbolConfiguration = .preferringMulticolor()
-            self.preferredSymbolConfiguration = .init(font: .systemFont(ofSize: 18))
-        case .infoSymbol:
-            self.contentMode = .scaleAspectFit
-            self.tintColor = .white
-            self.preferredSymbolConfiguration = .init(font: .systemFont(ofSize: 40))
-        case .monochromeSymbol:
-            self.contentMode = .scaleAspectFit
-            self.tintColor = .white
-            self.preferredSymbolConfiguration = .init(font: .systemFont(ofSize: 18))
+            
+            switch color {
+            case .white: self.tintColor = .white
+            case .gray: self.tintColor = .gray
+            }
+            
+            switch size {
+            case .main:
+                self.preferredSymbolConfiguration = .init(
+                    font: .systemFont(ofSize: 20)
+                )
+            case .large:
+                self.preferredSymbolConfiguration = .init(
+                    font: .systemFont(ofSize: 42)
+                )
+            default: break
+            }
         }
     }
 }
+
