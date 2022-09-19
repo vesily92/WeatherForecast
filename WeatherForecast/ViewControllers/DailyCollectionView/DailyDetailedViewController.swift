@@ -21,26 +21,84 @@ class DailyDetailedViewController: UIViewController {
     
     private typealias DataSource = UICollectionViewDiffableDataSource<DailyDetailedVCSection, CategorisedDailyVCItems>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<DailyDetailedVCSection, CategorisedDailyVCItems>
-    
-//    weak var appCoordinator: ApplicationCoordinator?
+ 
     var coordinator: Coordinator?
-    private var collectionView: UICollectionView!
-    private var dataSource: DataSource?
     var forecastData: ForecastData? {
         didSet {
             dataSource?.apply(makeSnapshot(), animatingDifferences: false)
+            print("snapshot!")
+        }
+    }
+    var currentIndex: Int = 0 {
+        didSet {
+            print("currentIndex: \(currentIndex)")
+        }
+    }
+    
+    private var collectionView: UICollectionView! {
+        didSet {
+            print("collectionView initialised")
+        }
+    }
+    private var dataSource: DataSource? {
+        didSet {
+//            moveToTab(at: currentIndex)
+            print("dataSource initialised")
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+//        moveToTab(at: currentIndex)
 
-        NetworkManager.shared.fetchOneCallData(withLatitude: 59.9311, longitude: 30.3609) { forecastData in
-            self.forecastData = forecastData
-        }
         setupCollectionView()
-        createDataSouce()
+        createDataSource()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        switchTheDay(by: currentIndex)
+        scrollThePage(to: currentIndex)
+    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//
+//        moveToTab(at: currentIndex)
+//    }
+    
+    func switchTheDay(by index: Int) {
+//        collectionView.scrollToItem(
+//            at: IndexPath(item: index, section: 0),
+//            at: .centeredHorizontally,
+//            animated: false
+//        )
+//        collectionView.scrollToItem(
+//            at: IndexPath(item: index, section: 1),
+//            at: [.centeredHorizontally, .centeredVertically],
+//            animated: true
+//        )
+        guard let cell = collectionView.cellForItem(at: IndexPath(
+            item: index,
+            section: 0)
+        ) as? DayPickerCell else { return }
+        
+        
+        cell.isSelected = true
+        
+//        select(cell: DayPickerCell.self, by: index)
+        
+//        currentIndex = index
+    }
+    
+    func scrollThePage(to index: Int) {
+        collectionView.scrollToItem(
+            at: IndexPath(item: index, section: 1),
+            at: [.centeredHorizontally, .centeredVertically],
+            animated: true
+        )
+    }
+    
 
     private func setupCollectionView() {
         collectionView = UICollectionView(
@@ -88,30 +146,28 @@ class DailyDetailedViewController: UIViewController {
         return layout
     }
     
-    private func createDataSouce() {
-        dataSource = DataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, forecast in
+    private func createDataSource() {
+        dataSource = DataSource(collectionView: collectionView, cellProvider: { [weak self] collectionView, indexPath, forecast in
             guard let section = DailyDetailedVCSection(rawValue: indexPath.section) else {
                 fatalError("Unknown section kind")
             }
             switch section {
             case .dayPicker:
-                guard let cell = self.collectionView.dequeueReusableCell(
+                guard let cell = self?.collectionView.dequeueReusableCell(
                     withReuseIdentifier: DayPickerCell.reuseIdentifier,
                     for: indexPath
                 ) as? DayPickerCell else {
                     fatalError("Unable to dequeue DayPickerCell")
                 }
-//                cell.isPicked = true
                 cell.configure(with: forecast.details)
                 return cell
             case .meteoInfo:
-                guard let cell = self.collectionView.dequeueReusableCell(
+                guard let cell = self?.collectionView.dequeueReusableCell(
                     withReuseIdentifier: DailyDetailedCollectionViewCell.reuseIdentifier,
                     for: indexPath
                 ) as? DailyDetailedCollectionViewCell else {
                     fatalError("Unable to dequeue DailyDetailedCollectionViewCell")
                 }
-//                cell.appCoordinator = self.appCoordinator
                 cell.configure(with: forecast.details)
                 return cell
             }
@@ -124,9 +180,11 @@ class DailyDetailedViewController: UIViewController {
             ) as? SectionHeader else {
                 return nil
             }
-            sectionHeader.configureForLargeState(with: Section.daily)
+            sectionHeader.configure(with: Section.daily)
             return sectionHeader
         }
+        
+        dataSource?.apply(makeSnapshot())
     }
     
     private func makeSnapshot() -> Snapshot {
@@ -137,6 +195,8 @@ class DailyDetailedViewController: UIViewController {
         }
 
         snapshot.appendSections(DailyDetailedVCSection.allCases)
+//        snapshot.appendItems([CategorisedDailyVCItems(details: forecastData.daily[currentIndex], category: .dayPicker)], toSection: .dayPicker)
+//        snapshot.appendItems([CategorisedDailyVCItems(details: forecastData.daily[currentIndex], category: .meteoInfo)], toSection: .meteoInfo)
         forecastData.daily.forEach { daily in
             snapshot.appendItems(
                 [CategorisedDailyVCItems(details: daily, category: .dayPicker)],
@@ -166,7 +226,7 @@ class DailyDetailedViewController: UIViewController {
             subitems: [item]
         )
         let section = NSCollectionLayoutSection(group: group)
-        section.orthogonalScrollingBehavior = .continuous
+        section.orthogonalScrollingBehavior = .groupPaging
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
         return section
     }
@@ -185,7 +245,17 @@ class DailyDetailedViewController: UIViewController {
             layoutSize: groupSize, subitems: [item]
         )
         let section = NSCollectionLayoutSection(group: group)
+//        section.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
         section.orthogonalScrollingBehavior = .groupPagingCentered
+        
+        section.visibleItemsInvalidationHandler = { items, offset, _ in
+            print(offset.y)
+            
+            let page = Int(offset.x / self.collectionView.frame.size.width)
+            print(page)
+            self.switchTheDay(by: page)
+        }
+        
         return section
     }
     
@@ -202,16 +272,63 @@ class DailyDetailedViewController: UIViewController {
         globalHeader.pinToVisibleBounds = true
         return globalHeader
     }
+    
+    
+    
+    
+    
+    func select<T: UICollectionViewCell>(cell: T, by index: Int, _ isSelected: Bool = false) {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: cell.reuseIdentifier!,
+            for: IndexPath(item: index, section: 0)
+        ) as? T else {
+            fatalError("Unable to dequeue \(cell)")
+        }
+        cell.isSelected = isSelected
+    }
 }
 
 extension DailyDetailedViewController: UICollectionViewDelegate {
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let section = DailyDetailedVCSection(rawValue: indexPath.section) else { return }
+        switchTheDay(by: indexPath.item)
+        scrollThePage(to: indexPath.item)
         
-        if section == .dayPicker {
-            //
+//        guard let cell = collectionView.cellForItem(at: indexPath) as? DayPickerCell else { return }
+//
+//        cell.isSelected = true
+        
+//        print(collectionView.visibleCells)
+//        let dayIndexPath = IndexPath(item: indexPath.item, section: 0)
+//        let meteoIndexPath = IndexPath(item: indexPath.item, section: 1)
+//        collectionView.scrollToItem(at: dayIndexPath, at: .centeredHorizontally, animated: true)
+//        collectionView.scrollToItem(at: meteoIndexPath, at: .centeredHorizontally, animated: true)
+//        self.moveToTab(at: indexPath.item)
+//        self.delegate?.didMoveToTab(at: indexPath.item)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? DayPickerCell {
+            cell.isSelected = false
         }
     }
     
     
+//    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+//        guard let cell = collectionView.cellForItem(at: indexPath) as? DailyDetailedCollectionViewCell else { return }
+//        
+//        
+//    }
+    
+//    func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+//        if let cell = collectionView.cellForItem(at: indexPath) as? DayPickerCell {
+//            cell.highlightCell()
+//        }
+//    }
+
+    func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? DayPickerCell {
+            cell.isSelected = false
+        }
+    }
 }
