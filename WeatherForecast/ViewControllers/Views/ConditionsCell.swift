@@ -1,5 +1,5 @@
 //
-//  MeteorologicInfoCell.swift
+//  ConditionsCell.swift
 //  WeatherForecast
 //
 //  Created by Василий Пронин on 25.06.2022.
@@ -7,36 +7,34 @@
 
 import UIKit
 
-class MeteorologicInfoCell: UICollectionViewCell {
+class ConditionsCell: UICollectionViewCell {
+    
     enum InfoType: Int {
-        case tempAndFeelsLike
         case uviAndHumidity
         case pressureAndWind
     }
     
     static let reuseIdentifier = "MeteorologicInfoCell"
-//
-//    lazy var isSunrise: Bool = true
     
-    private lazy var leftHeaderLabel = UILabel(.heading16SemiboldBlack)
-    private lazy var leftTitleLabel = UILabel(.sf26SemiboldWhite)
-    private lazy var leftSecondaryLabel = UILabel(.sf20SemiboldWhite)
-    private lazy var leftTempLabel = UILabel(.sf20SemiboldWhite)
-    private lazy var leftSubtitleLabel = UILabel(.sf16RegularWhite)
-    
-    private lazy var leftHeaderIcon = UIImageView(.headingSymbol)
+    private lazy var leftHeaderLabel = UILabel(.mainText20, color: .gray)
+    private lazy var leftTitleLabel = UILabel(.largeText26)
+    private lazy var leftSecondaryLabel = UILabel(.mainText20)
+    private lazy var leftTempLabel = UILabel(.mainText20)
+    private lazy var leftSubtitleLabel = UILabel(.specificationText16)
+
+    private lazy var leftHeaderIcon = UIImageView(.monochrome(.gray))
     private lazy var leftCellBackgroundView = UIView()
     
-    private lazy var rightHeaderLabel = UILabel(.heading16SemiboldBlack)
-    private lazy var rightTitleLabel = UILabel(.sf26SemiboldWhite)
-    private lazy var rightSecondaryLabel = UILabel(.sf20SemiboldWhite)
-    private lazy var rightTempLabel = UILabel(.sf20SemiboldBlack)
-    private lazy var rightSubtitleLabel = UILabel(.sf16RegularWhite)
+    private lazy var rightHeaderLabel = UILabel(.mainText20, color: .gray)
+    private lazy var rightTitleLabel = UILabel(.largeText26)
+    private lazy var rightSecondaryLabel = UILabel(.mainText20)
+    private lazy var rightTempLabel = UILabel(.mainText20)
+    private lazy var rightSubtitleLabel = UILabel(.specificationText16)
     
-    private lazy var rightHeaderIcon = UIImageView(.headingSymbol)
+    private lazy var rightHeaderIcon = UIImageView(.monochrome(.gray))
     private lazy var rightCellBackgroundView = UIView()
     
-    private lazy var infoIcon = UIImageView(.infoSymbol)
+    private lazy var symbolView = UIImageView(.monochrome(.white, size: .large))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -89,25 +87,27 @@ class MeteorologicInfoCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(for infoType: InfoType, with model: Daily, andTimeZoneOffset offset: Int) {
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        leftHeaderLabel.text = nil
+        leftTitleLabel.text = nil
+        leftSecondaryLabel.text = nil
+        leftTempLabel.text = nil
+        leftSubtitleLabel.text = nil
+        
+        rightHeaderLabel.text = nil
+        rightTitleLabel.text = nil
+        rightSecondaryLabel.text = nil
+        rightTempLabel.text = nil
+        rightSubtitleLabel.text = nil
+        
+        symbolView.image = nil
+    }
+    
+    func configure(for infoType: InfoType, with model: Daily) {
+        
         switch infoType {
-        case .tempAndFeelsLike:
-            leftHeaderIcon.image = UIImage(systemName: "thermometer")
-            leftHeaderLabel.text = DateFormatter.format(model.dt, to: .date, withTimeZoneOffset: offset)
-            leftSecondaryLabel.text = "Morning: \nDay: \nEvening: \nNight:"
-//            leftTempLabel.text = "\(model.temperature.morn.displayTemp())\n\(model.temperature.day.displayTemp())\n\(model.temperature.eve.displayTemp())\n\(model.temperature.night.displayTemp())"
-            
-//            rightHeaderIcon.image = UIImage(systemName: "hand.raised")
-//            rightHeaderLabel.text = "Feels Like"
-            
-            rightSecondaryLabel.text = "\(model.temperature.morn.displayTemp())\n\(model.temperature.day.displayTemp())\n\(model.temperature.eve.displayTemp())\n\(model.temperature.night.displayTemp())"
-            rightTempLabel.text = "\(model.feelsLike.morn.displayTemp())\n\(model.feelsLike.day.displayTemp())\n\(model.feelsLike.eve.displayTemp())\n\(model.feelsLike.night.displayTemp())"
-            
-            contentView.backgroundColor = .systemGray2
-            contentView.layer.cornerRadius = 12
-            
-            setupTempAndFeelsLikeConstraints()
-            
         case .uviAndHumidity:
             leftHeaderIcon.image = UIImage(systemName: "sun.max.fill")
             leftHeaderLabel.text = "UV Index"
@@ -119,9 +119,8 @@ class MeteorologicInfoCell: UICollectionViewCell {
             rightHeaderLabel.text = "Humidity"
             rightTitleLabel.text = "\(model.humidity) %"
             rightSubtitleLabel.text = "The dew point is \(model.dewPoint.displayTemp())"
-            
+
             setupUVIAndHumidityConstraints()
-            
         case .pressureAndWind:
             leftHeaderIcon.image = UIImage(systemName: "barometer")
             leftHeaderLabel.text = "Pressure"
@@ -131,59 +130,27 @@ class MeteorologicInfoCell: UICollectionViewCell {
             rightHeaderIcon.image = UIImage(systemName: "wind")
             rightHeaderLabel.text = "Wind"
             rightTitleLabel.text = "\(model.windSpeed) m/s"
-            infoIcon.image = UIImage(systemName: getWindIcon(model: model))
-            rightSubtitleLabel.text = getWindDirection(model: model)
+            symbolView.image = UIImage(systemName: getWindIcon(model: model))
+            rightSecondaryLabel.text = getWindDirection(model: model)
             
             setupPressureAndWindConstraints()
         }
     }
-    
-    fileprivate func setupTempAndFeelsLikeConstraints() {
-        leftSecondaryLabel.numberOfLines = 0
-        leftSecondaryLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(leftSecondaryLabel)
-        
-        leftTempLabel.numberOfLines = 0
-        leftTempLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(leftTempLabel)
-        
-        rightSecondaryLabel.numberOfLines = 0
-        rightSecondaryLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(rightSecondaryLabel)
-        
-        rightTempLabel.numberOfLines = 0
-        rightTempLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(rightTempLabel)
-        
-        
-        NSLayoutConstraint.activate([
-            leftSecondaryLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            leftSecondaryLabel.topAnchor.constraint(equalTo: leftHeaderLabel.topAnchor, constant: 10),
-            leftSecondaryLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
+}
 
-            leftTempLabel.trailingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -16),
-            leftTempLabel.topAnchor.constraint(equalTo: leftHeaderLabel.topAnchor, constant: 10),
-            leftTempLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
-            
-            rightSecondaryLabel.leadingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: 16),
-            rightSecondaryLabel.topAnchor.constraint(equalTo: rightHeaderLabel.topAnchor, constant: 10),
-            rightSecondaryLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
-            
-            rightTempLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            rightTempLabel.topAnchor.constraint(equalTo: rightHeaderLabel.topAnchor, constant: 10),
-            rightTempLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12)
-        ])
-    }
+// - MARK: Constraints
+
+extension ConditionsCell {
     
     fileprivate func setupUVIAndHumidityConstraints() {
         leftSubtitleLabel.numberOfLines = 0
         leftSubtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(leftSubtitleLabel)
-        
+
         rightSubtitleLabel.numberOfLines = 0
         rightSubtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(rightSubtitleLabel)
-        
+
         let leftStack = UIStackView(arrangedSubviews: [
             leftTitleLabel,
             leftSecondaryLabel,
@@ -192,29 +159,28 @@ class MeteorologicInfoCell: UICollectionViewCell {
         leftStack.alignment = .leading
         leftStack.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(leftStack)
-        
+
         let rightStack = UIStackView(arrangedSubviews: [
-            rightTitleLabel,
-            rightSecondaryLabel,
+            rightTitleLabel
         ])
         rightStack.axis = .vertical
         rightStack.alignment = .leading
         rightStack.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(rightStack)
-        
+
         NSLayoutConstraint.activate([
             leftStack.leadingAnchor.constraint(equalTo: leftCellBackgroundView.leadingAnchor, constant: 16),
             leftStack.trailingAnchor.constraint(equalTo: leftCellBackgroundView.trailingAnchor, constant: -16),
             leftStack.topAnchor.constraint(equalTo: leftHeaderLabel.bottomAnchor, constant: 10),
-            
+
             leftSubtitleLabel.leadingAnchor.constraint(equalTo: leftCellBackgroundView.leadingAnchor, constant: 16),
             leftSubtitleLabel.trailingAnchor.constraint(equalTo: leftCellBackgroundView.trailingAnchor, constant: -16),
             leftSubtitleLabel.bottomAnchor.constraint(equalTo: leftCellBackgroundView.bottomAnchor, constant: -10),
-            
+
             rightStack.leadingAnchor.constraint(equalTo: rightCellBackgroundView.leadingAnchor, constant: 16),
             rightStack.trailingAnchor.constraint(equalTo: rightCellBackgroundView.trailingAnchor, constant: -16),
             rightStack.topAnchor.constraint(equalTo: rightHeaderLabel.bottomAnchor, constant: 10),
-            
+
             rightSubtitleLabel.leadingAnchor.constraint(equalTo: rightCellBackgroundView.leadingAnchor, constant: 16),
             rightSubtitleLabel.trailingAnchor.constraint(equalTo: rightCellBackgroundView.trailingAnchor, constant: -16),
             rightSubtitleLabel.bottomAnchor.constraint(equalTo: rightCellBackgroundView.bottomAnchor, constant: -10)
@@ -222,9 +188,6 @@ class MeteorologicInfoCell: UICollectionViewCell {
     }
     
     fileprivate func setupPressureAndWindConstraints() {
-//        leftTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-//        leftSecondaryLabel.translatesAutoresizingMaskIntoConstraints = false
-//
         let leftStack = UIStackView(arrangedSubviews: [
             leftTitleLabel,
             leftSecondaryLabel,
@@ -233,30 +196,38 @@ class MeteorologicInfoCell: UICollectionViewCell {
         leftStack.alignment = .leading
         leftStack.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(leftStack)
-        
+
+        let rightStack = UIStackView(arrangedSubviews: [
+            symbolView,
+            rightSecondaryLabel
+        ])
+        rightStack.axis = .horizontal
+
+        rightStack.alignment = .leading
+        rightStack.spacing = 12
+        rightStack.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(rightStack)
+
         rightTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        rightSubtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        infoIcon.translatesAutoresizingMaskIntoConstraints = false
-        
         contentView.addSubview(rightTitleLabel)
-        contentView.addSubview(infoIcon)
-        contentView.addSubview(rightSubtitleLabel)
-        
+
         NSLayoutConstraint.activate([
             leftStack.leadingAnchor.constraint(equalTo: leftCellBackgroundView.leadingAnchor, constant: 16),
             leftStack.trailingAnchor.constraint(equalTo: leftCellBackgroundView.trailingAnchor, constant: -16),
             leftStack.topAnchor.constraint(equalTo: leftHeaderLabel.bottomAnchor, constant: 10),
-            
+
             rightTitleLabel.leadingAnchor.constraint(equalTo: rightCellBackgroundView.leadingAnchor, constant: 16),
             rightTitleLabel.topAnchor.constraint(equalTo: rightHeaderLabel.bottomAnchor, constant: 10),
 
-            infoIcon.centerXAnchor.constraint(equalTo: rightCellBackgroundView.centerXAnchor),
-            infoIcon.topAnchor.constraint(equalTo: rightTitleLabel.bottomAnchor, constant: 12),
-            
-            rightSubtitleLabel.leadingAnchor.constraint(equalTo: rightCellBackgroundView.leadingAnchor, constant: 16),
-            rightSubtitleLabel.centerYAnchor.constraint(equalTo: infoIcon.centerYAnchor)
+            rightStack.topAnchor.constraint(equalTo: rightTitleLabel.bottomAnchor, constant: 12),
+            rightStack.leadingAnchor.constraint(equalTo: rightCellBackgroundView.leadingAnchor, constant: 16)
         ])
     }
+}
+
+// - MARK: Helpers
+
+extension ConditionsCell {
     
     fileprivate func getUVIDescription(model: Daily) -> String {
         switch model.uvi {
