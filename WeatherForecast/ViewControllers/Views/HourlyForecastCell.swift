@@ -13,22 +13,13 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     
     lazy var isSunrise: Bool = true
     
-//    lazy private var timeLabel = UILabel(fontSize: 16)
-    lazy private var timeLabel = UILabel(.sf16SemiboldWhite)
-//    lazy private var popLabel = UILabel(fontSize: 12, color: .systemCyan)
-    lazy private var popLabel = UILabel(.sf12SemiboldTeal)
-//    lazy private var temperatureLabel = UILabel(fontSize: 20)
-    lazy private var temperatureLabel = UILabel(.sf20SemiboldWhite)
-    lazy private var symbolView = UIImageView()
-    
-    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 18))
+    lazy private var timeLabel = UILabel(.specificationText16)
+    lazy private var popLabel = UILabel(.smallText12, color: .teal)
+    lazy private var temperatureLabel = UILabel(.mainText20)
+    lazy private var symbolView = UIImageView(.multicolor())
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        symbolView.preferredSymbolConfiguration = .preferringMulticolor()
-        symbolView.contentMode = .scaleAspectFit
-
         let iconPopStackView = UIStackView(arrangedSubviews: [
             symbolView,
             popLabel
@@ -59,8 +50,7 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
             )
             temperatureLabel.text = forecast.temp.displayTemp()
             symbolView.image = UIImage(
-                systemName: forecast.weather.first!.systemNameString,
-                withConfiguration: symbolConfig
+                systemName: forecast.weather.first!.systemNameString
             )
         }
         
@@ -69,8 +59,7 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
             popLabel.text = nil
             temperatureLabel.text = forecast.temp.displayTemp()
             symbolView.image = UIImage(
-                systemName: forecast.weather.first!.systemNameString,
-                withConfiguration: symbolConfig
+                systemName: forecast.weather.first!.systemNameString
             )
         }
         
