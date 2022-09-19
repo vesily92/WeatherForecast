@@ -6,88 +6,93 @@
 //
 
 import UIKit
+import CoreLocation
 
 class CurrentWeatherHeader: UICollectionReusableView {
     static let reuseIdentifier = "CurrentWeatherHeader"
     
-    lazy private var cityNameLabel = UILabel(fontSize: 36, weight: .medium)
-    lazy private var tempLabel = UILabel(fontSize: 54)
-    lazy private var descriptionLabel = UILabel(fontSize: 20, weight: .medium)
-    lazy private var feelsLikeLabel = UILabel(fontSize: 20, weight: .medium)
-    lazy private var subheadlineLabel = UILabel(fontSize: 20, weight: .medium, alpha: 0)
-    lazy private var iconView = UIImageView()
-    lazy private var backgroundView = UIImageView()
+    private lazy var cityNameLabel = UILabel(.largeTitle36)
+    private lazy var tempLabel = UILabel(.globalTemperature)
+    private lazy var descriptionLabel = UILabel(.mainText20)
+    private lazy var feelsLikeLabel = UILabel(.mainText20)
+    private lazy var subheadlineLabel: UILabel = {
+        let label = UILabel(.mainText20)
+        label.alpha = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    private lazy var symbolView = UIImageView(.multicolor())
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        layer.zPosition = 2
-        
+    private lazy var backgroundView: UIImageView = {
+        let view = UIImageView()
+        view.backgroundColor = .clear
+        view.alpha = 0
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.insertSubview(blurView, at: 0)
+        return view
+    }()
+    
+    private lazy var blurView: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: .systemUltraThinMaterialLight)
         let blurView = UIVisualEffectView(effect: blurEffect)
         blurView.translatesAutoresizingMaskIntoConstraints = false
+        return blurView
+    }()
+    
+    private lazy var stackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.alignment = .fill
+        stack.distribution = .fillEqually
+        [tempLabel,
+         symbolView].forEach { stack.addArrangedSubview($0) }
+        return stack
+    }()
+    
+    private lazy var containerView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 10
+        stack.alignment = .center
+        stack.distribution = .fill
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        [cityNameLabel,
+         stackView,
+         descriptionLabel,
+         feelsLikeLabel].forEach { stack.addArrangedSubview($0) }
+        return stack
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
-        backgroundView.backgroundColor = .clear
-        backgroundView.alpha = 0
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        backgroundView.insertSubview(blurView, at: 0)
-        
-        subheadlineLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        iconView.contentMode = .scaleAspectFit
-        iconView.preferredSymbolConfiguration = .preferringMulticolor()
-        
-        let subStackView = UIStackView(arrangedSubviews: [
-            tempLabel,
-            iconView
-        ])
-        subStackView.axis = .horizontal
-        subStackView.alignment = .fill
-        subStackView.distribution = .fillEqually
-        
-        let mainStackView = UIStackView(arrangedSubviews: [
-            cityNameLabel,
-            subStackView,
-            descriptionLabel,
-            feelsLikeLabel,
-        ])
-        mainStackView.axis = .vertical
-        mainStackView.spacing = 10
-        mainStackView.alignment = .center
-        mainStackView.distribution = .fill
-        mainStackView.translatesAutoresizingMaskIntoConstraints = false
-        
+        layer.zPosition = 2
+
         addSubview(backgroundView)
-        addSubview(mainStackView)
+        addSubview(containerView)
         addSubview(subheadlineLabel)
         
-        NSLayoutConstraint.activate([
-            backgroundView.topAnchor.constraint(equalTo: topAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            backgroundView.heightAnchor.constraint(lessThanOrEqualToConstant: 140),
-            
-            blurView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor),
-            blurView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor),
-            blurView.topAnchor.constraint(equalTo: backgroundView.topAnchor),
-            blurView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor),
-            
-            mainStackView.topAnchor.constraint(equalTo: topAnchor, constant: 60),
-            mainStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            
-            subheadlineLabel.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 100),
-            subheadlineLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
-        ])
+        setupConstraints()
     }
-
-    func configure(with forecast: CurrentWeather) {
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(with forecast: ForecastData) {
         DispatchQueue.main.async {
-            self.cityNameLabel.text = forecast.cityName
-            self.tempLabel.text = forecast.tempString
-            self.descriptionLabel.text = forecast.descriptionString
-            self.feelsLikeLabel.text = forecast.feelsLikeString
-            self.iconView.image = UIImage(systemName: forecast.systemNameString)
+            let coordinates = CLLocation(latitude: forecast.lat, longitude: forecast.lon)
             
-            self.subheadlineLabel.text = forecast.tempString + " " + "|" + " " + forecast.descriptionString
+            LocationManager.shared.getLocationName(with: coordinates) { [weak self] location in
+                guard let location = location else { return }
+                self?.cityNameLabel.text = location.cityName
+            }
+            self.tempLabel.text = forecast.current.temp.displayTemp()
+            self.descriptionLabel.text = forecast.current.weather.first!.description.capitalized
+            self.feelsLikeLabel.text = "Feels like: " + forecast.current.feelsLike.displayTemp()
+            self.symbolView.image = UIImage(systemName: forecast.current.weather.first!.systemNameString)
+            
+            self.subheadlineLabel.text = forecast.current.temp.displayTemp() + " " + "|" + " " + forecast.current.weather.first!.description.capitalized
         }
     }
    
@@ -95,7 +100,7 @@ class CurrentWeatherHeader: UICollectionReusableView {
         tempLabel.alpha = offset
         descriptionLabel.alpha = offset
         feelsLikeLabel.alpha = offset
-        iconView.alpha = offset
+        symbolView.alpha = offset
     }
     
     
@@ -111,9 +116,25 @@ class CurrentWeatherHeader: UICollectionReusableView {
     func restoreZIndex() {
         layer.zPosition = 2
     }
-   
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    
+    func setupConstraints() {
+        NSLayoutConstraint.activate([
+            backgroundView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundView.heightAnchor.constraint(lessThanOrEqualToConstant: 160),
+            
+            blurView.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor),
+            blurView.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor),
+            blurView.topAnchor.constraint(equalTo: backgroundView.topAnchor),
+            blurView.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor),
+            
+            containerView.topAnchor.constraint(equalTo: topAnchor, constant: 80),
+            containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            
+            subheadlineLabel.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 120),
+            subheadlineLabel.centerXAnchor.constraint(equalTo: centerXAnchor)
+        ])
     }
 }
 
