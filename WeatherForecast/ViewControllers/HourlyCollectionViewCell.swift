@@ -22,7 +22,12 @@ class HourlyCollectionViewCell: UICollectionViewCell, SelfConfiguringCell {
         layout.estimatedItemSize = CGSize(width: 60, height: 120)
         
         collectionView = UICollectionView(
-            frame: contentView.bounds,
+            frame: CGRect(
+                x: 16,
+                y: 0,
+                width: contentView.bounds.width - 32,
+                height: contentView.bounds.height
+            ),
             collectionViewLayout: layout
         )
         collectionView.backgroundColor = .clear
@@ -30,7 +35,7 @@ class HourlyCollectionViewCell: UICollectionViewCell, SelfConfiguringCell {
         collectionView.delegate = self
         collectionView.dataSource = self
         
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
+//        collectionView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(collectionView)
         
         collectionView.register(
@@ -38,12 +43,12 @@ class HourlyCollectionViewCell: UICollectionViewCell, SelfConfiguringCell {
             forCellWithReuseIdentifier: HourlyForecastCell.reuseIdentifier
         )
         
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
-        ])
+//        NSLayoutConstraint.activate([
+//            collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
+//            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+//            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+//            collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
+//        ])
     }
     
     required init?(coder: NSCoder) {
