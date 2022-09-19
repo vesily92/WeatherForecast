@@ -28,16 +28,18 @@ class NetworkManager {
     private init() {}
     
     func fetchOneCallData(withLatitude latitude: CLLocationDegrees, longitude: CLLocationDegrees, andCompletion completion: @escaping (ForecastData) -> Void) {
-        let urlString = "https://api.openweathermap.org/data/2.5/onecall?lat=\(latitude)&lon=\(longitude)&exclude=minutely&appid=\(apiKey)&units=metric"
+        let urlString = "https://api.openweathermap.org/data/2.5/onecall?lat=\(latitude)&lon=\(longitude)&exclude=minutely&appid=\(apiKey)&units=metric&lang=en"
         
         guard let url = URL(string: urlString) else { return }
         
         let session = URLSession(configuration: .default)
         let task = session.dataTask(with: url) { data, response, error in
-            guard let data = data else {
+            guard let data = data, let response = response else {
                 print(error?.localizedDescription ?? "No error description")
                 return
             }
+            
+            guard url == response.url else { return }
 //            print(String(data: data, encoding: .utf8)!)
             do {
                 let forecastData = try JSONDecoder().decode(ForecastData.self, from: data)
