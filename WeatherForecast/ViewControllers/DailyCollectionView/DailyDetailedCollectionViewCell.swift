@@ -9,8 +9,8 @@ import UIKit
 
 class DailyDetailedCollectionViewCell: UICollectionViewCell {
     
+    
     private enum DailyDetailedCellSection: Int, CaseIterable {
-//        case dayPicker
         case dailyTempInfo
         case uviAndHumidityInfo
         case pressureAndWindInfo
@@ -26,10 +26,10 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "DailyDetailedCollectionViewCell"
     
-//    weak var appCoordinator: ApplicationCoordinator?
     weak var coordinator: Coordinator?
-
+    
     private var collectionView: UICollectionView!
+    
     private var dataSource: DataSource?
     
     private var dailyData: Daily? {
@@ -64,15 +64,17 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell {
         )
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .darkGray
+        collectionView.isPagingEnabled = true
+        
         contentView.addSubview(collectionView)
-
+        
         collectionView.register(
             DailyTempCell.self,
             forCellWithReuseIdentifier: DailyTempCell.reuseIdentifier
         )
         collectionView.register(
-            MeteoInfoCell.self,
-            forCellWithReuseIdentifier: MeteoInfoCell.reuseIdentifier
+            ConditionsCell.self,
+            forCellWithReuseIdentifier: ConditionsCell.reuseIdentifier
         )
     }
     
@@ -136,9 +138,6 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell {
             guard let section = DailyDetailedCellSection(rawValue: indexPath.section) else {
                 fatalError("Unknown section kind")
             }
-//            guard let offset = self.forecastData?.timezoneOffset else {
-//                fatalError("No date")
-//            }
 
             switch section {
             case .dailyTempInfo:
@@ -152,18 +151,18 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell {
                 return cell
             case .uviAndHumidityInfo:
                 guard let meteorologicCell = self.collectionView.dequeueReusableCell(
-                    withReuseIdentifier: MeteoInfoCell.reuseIdentifier,
+                    withReuseIdentifier: ConditionsCell.reuseIdentifier,
                     for: indexPath
-                ) as? MeteoInfoCell else {
+                ) as? ConditionsCell else {
                     fatalError("Unable to dequeue MeteorologicInfoCell")
                 }
                 meteorologicCell.configure(for: .uviAndHumidity, with: forecast.details)
                 return meteorologicCell
             case .pressureAndWindInfo:
                 guard let meteorologicCell = self.collectionView.dequeueReusableCell(
-                    withReuseIdentifier: MeteoInfoCell.reuseIdentifier,
+                    withReuseIdentifier: ConditionsCell.reuseIdentifier,
                     for: indexPath
-                ) as? MeteoInfoCell else {
+                ) as? ConditionsCell else {
                     fatalError("Unable to dequeue MeteorologicInfoCell")
                 }
                 meteorologicCell.configure(for: .pressureAndWind, with: forecast.details)
@@ -197,4 +196,3 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell {
         return snapshot
     }
 }
-
