@@ -10,22 +10,19 @@ import CoreLocation
 
 class MainPageCollectionViewCell: UICollectionViewCell {
     
-    typealias DataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>
-    typealias Snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>
+    private typealias DataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>
     
     static let reuseIdentifier = "MainPageCollectionViewCell"
     
-//    weak var appCoordinator: ApplicationCoordinator?
-    weak var coordinator: Coordinator?
-//    var moveForward: (() -> Void)?
+    var onDailySectionTapped: ((ForecastData) -> Void)?
     
-    private var weatherCollectionView: UICollectionView!
+    weak var coordinator: Coordinator?
+    
+    private var collectionView: UICollectionView!
     private var dataSource: DataSource?
-    private var currentWeather: CurrentWeather?
     private var forecastData: ForecastData? {
-        didSet {
-            dataSource?.apply(makeSnapshot(), animatingDifferences: false)
-        }
+        didSet { dataSource?.applySnapshotUsingReloadData(makeSnapshot()) }
     }
 
     override init(frame: CGRect) {
@@ -40,93 +37,92 @@ class MainPageCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with forecastData: ForecastData, and currentWeather: CurrentWeather) {
+    func configure(with forecastData: ForecastData) {
         self.forecastData = forecastData
-        self.currentWeather = currentWeather
     }
     
     private func setupCollectionView() {
-        weatherCollectionView = UICollectionView(
+        collectionView = UICollectionView(
             frame: contentView.bounds,
             collectionViewLayout: createCompositionalLayout()
         )
-        weatherCollectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        weatherCollectionView.backgroundColor = .systemGray4
-        weatherCollectionView.showsVerticalScrollIndicator = false
-        weatherCollectionView.contentInsetAdjustmentBehavior = .never
-        weatherCollectionView.delegate = self
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.backgroundColor = .systemGray4
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.contentInsetAdjustmentBehavior = .never
+        collectionView.delegate = self
         
-        contentView.addSubview(weatherCollectionView)
+        contentView.addSubview(collectionView)
     }
     
     private func registerCells() {
-        weatherCollectionView.register(
+        collectionView.register(
             EmptyCell.self,
             forCellWithReuseIdentifier: EmptyCell.reuseIdentifier
         )
-        weatherCollectionView.register(
+        collectionView.register(
             AlertCell.self,
             forCellWithReuseIdentifier: AlertCell.reuseIdentifier
         )
-        weatherCollectionView.register(
+        collectionView.register(
             HourlyCollectionViewCell.self,
             forCellWithReuseIdentifier: HourlyCollectionViewCell.reuseIdentifier
         )
-        weatherCollectionView.register(
+        collectionView.register(
             DailyForecastCell.self,
             forCellWithReuseIdentifier: DailyForecastCell.reuseIdentifier
         )
-        weatherCollectionView.register(
+        collectionView.register(
             CurrentWeatherHeader.self,
             forSupplementaryViewOfKind: CurrentWeatherHeader.reuseIdentifier,
             withReuseIdentifier: CurrentWeatherHeader.reuseIdentifier
         )
-        weatherCollectionView.register(
+        collectionView.register(
             GlobalFooter.self,
             forSupplementaryViewOfKind: GlobalFooter.reuseIdentifier,
             withReuseIdentifier: GlobalFooter.reuseIdentifier
         )
-        weatherCollectionView.register(
+        collectionView.register(
             SectionHeader.self,
             forSupplementaryViewOfKind: SectionHeader.reuseIdentifier,
             withReuseIdentifier: SectionHeader.reuseIdentifier
         )
-        weatherCollectionView.register(
-            SectionFooterButton.self,
-            forSupplementaryViewOfKind: SectionFooterButton.reuseIdentifier,
-            withReuseIdentifier: SectionFooterButton.reuseIdentifier
-        )
     }
 
-    private func configure<T: SelfConfiguringCell>(_ cellType: T.Type, with model: AnyHashable, andTimeZone offset: Int, for indexPath: IndexPath) -> T {
-        guard let cell = weatherCollectionView.dequeueReusableCell(
+    private func configure<T: SelfConfiguringCell>(
+        _ cellType: T.Type,
+        with model: AnyHashable,
+        andTimeZone offset: Int,
+        for indexPath: IndexPath
+    ) -> T {
+        guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: cellType.reuseIdentifier,
             for: indexPath
         ) as? T else {
             fatalError("Unable to dequeue \(cellType)")
         }
+        
         cell.configure(with: model, andTimezoneOffset: offset)
         return cell
     }
     
     private func createCompositionalLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
+        let layout = UICollectionViewCompositionalLayout { [unowned self] sectionIndex, layoutEnvironment in
             guard let section = Section(rawValue: sectionIndex) else {
                 fatalError("Unknown section kind")
             }
             switch section {
             case .alert:
-                if let forecastData = self.forecastData {
+                if let forecastData = forecastData {
                     if forecastData.alerts != nil {
-                        print("Alert section created")
-                        return self.createAlertSection(using: section)
+                        return createAlertSection(using: section)
                     }
                 }
-                return self.createEmptySection(using: section)
+                return createEmptySection(using: section)
             case .hourlyCollection:
-                return self.createHourlyCollectionSection(using: section)
+                return createHourlyCollectionSection(using: section)
             case .daily:
-                return self.createDailySection(using: section, and: layoutEnvironment)
+                return createDailySection(using: section, and: layoutEnvironment)
             }
         }
         let currentWeatherHeader = createGlobalHeader(
@@ -152,20 +148,21 @@ class MainPageCollectionViewCell: UICollectionViewCell {
 extension MainPageCollectionViewCell {
     
     private func createDataSource() {
-        print("datasource")
-        dataSource = DataSource(collectionView: weatherCollectionView, cellProvider: { collectionView, indexPath, forecast in
+        dataSource = DataSource(
+            collectionView: collectionView
+        ) { [weak self] collectionView, indexPath, forecast in
+            
             guard let section = Section(rawValue: indexPath.section) else {
                 fatalError("Unknown section kind")
             }
-            guard let offset = self.forecastData?.timezoneOffset else {
-                fatalError("No date")
+            guard let offset = self?.forecastData?.timezoneOffset else {
+                fatalError("No data")
             }
             switch section {
             case .alert:
-                if let forecastData = self.forecastData {
+                if let forecastData = self?.forecastData {
                     if forecastData.alerts != nil {
-                        print("Alert cell configured")
-                        return self.configure(
+                        return self?.configure(
                             AlertCell.self,
                             with: forecast,
                             andTimeZone: offset,
@@ -173,68 +170,57 @@ extension MainPageCollectionViewCell {
                         )
                     }
                 }
-                return self.configure(
+                return self?.configure(
                     EmptyCell.self,
                     with: forecast,
                     andTimeZone: offset,
                     for: indexPath
                 )
             case .hourlyCollection:
-                return self.configure(
+                return self?.configure(
                     HourlyCollectionViewCell.self,
                     with: forecast,
                     andTimeZone: offset,
                     for: indexPath
                 )
             case .daily:
-                return self.configure(
+                return self?.configure(
                     DailyForecastCell.self,
                     with: forecast,
                     andTimeZone: offset,
                     for: indexPath
                 )
             }
-        })
+        }
         
-        dataSource?.supplementaryViewProvider = { weatherCollectionView, kind, indexPath in
+        dataSource?.supplementaryViewProvider = { [weak self] weatherCollectionView, kind, indexPath in
             switch kind {
             case CurrentWeatherHeader.reuseIdentifier:
                 guard let currentWeatherHeader = weatherCollectionView.dequeueReusableSupplementaryView(
-                    ofKind: CurrentWeatherHeader.reuseIdentifier,
-                    withReuseIdentifier: CurrentWeatherHeader.reuseIdentifier,
+                    ofKind: kind,
+                    withReuseIdentifier: kind,
                     for: indexPath
                 ) as? CurrentWeatherHeader else {
                     fatalError("Unknown header kind")
                 }
-                print("supplementaryViewProvider")
-
-                if let currentWeather = self.currentWeather {
-                    currentWeatherHeader.configure(with: currentWeather)
+                if let forecastData = self?.forecastData {
+                    currentWeatherHeader.configure(with: forecastData)
                 }
                 return currentWeatherHeader
 
             case GlobalFooter.reuseIdentifier:
                 guard let globalFooter = weatherCollectionView.dequeueReusableSupplementaryView(
-                    ofKind: GlobalFooter.reuseIdentifier,
-                    withReuseIdentifier: GlobalFooter.reuseIdentifier,
+                    ofKind: kind,
+                    withReuseIdentifier: kind,
                     for: indexPath
                 ) as? GlobalFooter else {
                     fatalError("Unknown global footer kind")
                 }
-                if let currentWeather = self.currentWeather {
-                    globalFooter.configure(with: currentWeather)
+                if let forecastData = self?.forecastData {
+                    globalFooter.configure(with: forecastData)
                 }
                 return globalFooter
                 
-            case SectionFooterButton.reuseIdentifier:
-                guard let sectionFooterButton = weatherCollectionView.dequeueReusableSupplementaryView(
-                    ofKind: SectionFooterButton.reuseIdentifier,
-                    withReuseIdentifier: SectionFooterButton.reuseIdentifier,
-                    for: indexPath
-                ) as? SectionFooterButton else {
-                    fatalError("Unknown footer kind")
-                }
-                return sectionFooterButton
             default:
                 guard let sectionHeader = weatherCollectionView.dequeueReusableSupplementaryView(
                     ofKind: SectionHeader.reuseIdentifier,
@@ -246,10 +232,9 @@ extension MainPageCollectionViewCell {
                 guard let section = Section(rawValue: indexPath.section) else {
                     return nil
                 }
-                
                 switch section {
                 case .alert:
-                    if let forecastData = self.forecastData {
+                    if let forecastData = self?.forecastData {
                         sectionHeader.configureForAlertSection(with: forecastData)
                     }
                 case .hourlyCollection:
@@ -263,6 +248,31 @@ extension MainPageCollectionViewCell {
             }
         }
     }
+    
+//    private func reloadData() {
+//        var snapshot = Snapshot()
+//
+//        guard let forecastData = forecastData else {
+//            fatalError()
+//        }
+//
+//        let forecasts = Array(repeating: forecastData, count: 1)
+//
+//        if let alert = forecastData.alerts?.first {
+//            let alerts = Array(repeating: alert, count: 1)
+//            snapshot.appendSections(Section.allCases)
+//            snapshot.appendItems(alerts, toSection: .alert)
+//            snapshot.appendItems(forecasts, toSection: .hourlyCollection)
+////            snapshot.appendItems(forecasts, toSection: .hourlyCompositional)
+//            snapshot.appendItems(forecastData.daily, toSection: .daily)
+//        } else {
+//            snapshot.appendSections(Section.allCases)
+//            snapshot.appendItems(forecasts, toSection: .hourlyCollection)
+////            snapshot.appendItems(forecasts, toSection: .hourlyCompositional)
+//            snapshot.appendItems(forecastData.daily, toSection: .daily)
+//        }
+//        dataSource?.apply(snapshot, animatingDifferences: true)
+//    }
     
     private func makeSnapshot() -> Snapshot {
         var snapshot = Snapshot()
@@ -321,7 +331,7 @@ extension MainPageCollectionViewCell {
 
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(40)
+            heightDimension: .estimated(90)
         )
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: groupSize,
@@ -329,11 +339,16 @@ extension MainPageCollectionViewCell {
             count: 1
         )
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: 0,
+            leading: 16,
+            bottom: 0,
+            trailing: 16
+        )
 
         let sectionHeader = createSectionHeader()
-        let sectionFooterButton = createSectionFooterButton()
-        section.boundarySupplementaryItems = [sectionHeader, sectionFooterButton]
+//        let sectionFooterButton = createSectionFooterButton()
+        section.boundarySupplementaryItems = [sectionHeader]
         
         let backgroundView = createBackgroundView()
         section.decorationItems = [backgroundView]
@@ -371,20 +386,20 @@ extension MainPageCollectionViewCell {
         section.boundarySupplementaryItems = [sectionHeader]
         
         section.visibleItemsInvalidationHandler = { items, offset, _ in
-            guard let globalHeader = self.weatherCollectionView.visibleSupplementaryViews(ofKind: CurrentWeatherHeader.reuseIdentifier).first as? CurrentWeatherHeader else { return }
+            guard let globalHeader = self.collectionView.visibleSupplementaryViews(ofKind: CurrentWeatherHeader.reuseIdentifier).first as? CurrentWeatherHeader else { return }
             
             if offset.y < 0 {
                 globalHeader.setAlphaForMainLabels(with: 1)
             }
-            if offset.y > 50 {
-                globalHeader.setAlphaForMainLabels(with: 1 - ((offset.y - 50) / 100))
+            if offset.y > 30 {
+                globalHeader.setAlphaForMainLabels(with: 1 - ((offset.y - 30) / 100))
                 globalHeader.reduceZIndex()
             }
-            if offset.y > 150 {
-                globalHeader.setAlphaForSubheadline(with: 0 + ((offset.y - 150) / 14))
+            if offset.y > 130 {
+                globalHeader.setAlphaForSubheadline(with: 0 + ((offset.y - 130) / 13))
                 globalHeader.restoreZIndex()
             } else {
-                globalHeader.setAlphaForSubheadline(with: 0 + ((offset.y - 150) / 100))
+                globalHeader.setAlphaForSubheadline(with: 0 + ((offset.y - 130) / 100))
             }
         }
         return section
@@ -405,7 +420,12 @@ extension MainPageCollectionViewCell {
             using: configuration,
             layoutEnvironment: layoutEnvironment
         )
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: 0,
+            leading: 16,
+            bottom: 0,
+            trailing: 16
+        )
         
         let sectionHeader = createSectionHeader()
         section.boundarySupplementaryItems = [sectionHeader]
@@ -492,10 +512,17 @@ extension MainPageCollectionViewCell: UICollectionViewDelegate {
         guard let section = Section(rawValue: indexPath.section) else {
             fatalError("Unknown section kind")
         }
+        guard let forecastData = forecastData else { return }
+        
         if section == .daily {
-            coordinator?.eventOccurred(with: .dailySectionItemTapped)
-//            coordinator?.navigate(with: forecastData)
-//            moveForward?()
+            NotificationCenter.default.post(
+                name: .scrollToItem,
+                object: nil
+            )
+            
+//            onDailySectionTapped?(forecastData)
+
+            coordinator?.navigate(with: forecastData, by: indexPath.item)
         }
     }
 }
