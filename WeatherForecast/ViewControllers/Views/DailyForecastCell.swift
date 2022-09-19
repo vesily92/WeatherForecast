@@ -10,36 +10,24 @@ import UIKit
 class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
     static let reuseIdentifier = "DailyForecastCell"
     
-    lazy private var weekdayLabel = UILabel(fontSize: 20)
-//    lazy private var dateLabel = UILabel(fontSize: 12, weight: .regular, color: .black, alpha: 0.3)
-    lazy private var highestTempLabel = UILabel(fontSize: 20)
-    lazy private var lowestTempLabel = UILabel(fontSize: 20, color: .black, alpha: 0.3)
-    lazy private var popLabel = UILabel(fontSize: 12, color: .systemCyan)
-    lazy private var iconView = UIImageView()
-    
-    private let symbolConfig = UIImage.SymbolConfiguration(font: .systemFont(ofSize: 18))
+    lazy private var weekdayLabel = UILabel(.mainText20)
+    lazy private var highestTempLabel = UILabel(.mainText20)
+    lazy private var lowestTempLabel = UILabel(.mainText20, color: .gray)
+    lazy private var popLabel = UILabel(.smallText12, color: .teal)
+    lazy private var symbolView = UIImageView(.multicolor())
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        weekdayLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        iconView.preferredSymbolConfiguration = .preferringMulticolor()
-        iconView.contentMode = .scaleAspectFit
-        
-        let dateStackView = UIStackView(arrangedSubviews: [
-            weekdayLabel,
-//            dateLabel
-        ])
-        dateStackView.axis = .vertical
-        dateStackView.translatesAutoresizingMaskIntoConstraints = false
-
-        let iconStackView = UIStackView(arrangedSubviews: [
-            iconView,
+        let symbolStackView = UIStackView(arrangedSubviews: [
+            symbolView,
             popLabel
         ])
-        iconStackView.axis = .vertical
-        iconStackView.distribution = .equalCentering
-        iconStackView.alignment = .center
-        iconStackView.translatesAutoresizingMaskIntoConstraints = false
+        symbolStackView.axis = .vertical
+        symbolStackView.distribution = .equalCentering
+        symbolStackView.alignment = .center
+        symbolStackView.translatesAutoresizingMaskIntoConstraints = false
         
         let tempStackView = UIStackView(arrangedSubviews: [
             highestTempLabel,
@@ -49,19 +37,19 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         tempStackView.distribution = .equalCentering
         tempStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        contentView.addSubview(dateStackView)
-        contentView.addSubview(iconStackView)
+        contentView.addSubview(weekdayLabel)
+        contentView.addSubview(symbolStackView)
         contentView.addSubview(tempStackView)
         
         NSLayoutConstraint.activate([
             
-            dateStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            dateStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            dateStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: contentView.bounds.width / 3),
+            weekdayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            weekdayLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            weekdayLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: contentView.bounds.width / 3),
             
-            iconStackView.trailingAnchor.constraint(equalTo: tempStackView.leadingAnchor),
-            iconStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            iconStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: contentView.bounds.width / 5),
+            symbolStackView.trailingAnchor.constraint(equalTo: tempStackView.leadingAnchor),
+            symbolStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            symbolStackView.widthAnchor.constraint(greaterThanOrEqualToConstant: contentView.bounds.width / 5),
             
             tempStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             tempStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -80,11 +68,6 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
             return DateFormatter.compare(.day, with: forecast.dt)
         }
         
-//        dateLabel.text = DateFormatter.format(
-//            forecast.dt,
-//            to: .date,
-//            withTimeZoneOffset: offset
-//        )
         weekdayLabel.text = isToday ? "Today" : DateFormatter.format(
             forecast.dt,
             to: .weekday,
@@ -95,9 +78,8 @@ class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
         popLabel.text = forecast.pop.displayPop(
             if: forecast.weather.first!.isPopNeeded
         )
-        iconView.image = UIImage(
-            systemName: forecast.weather.first!.systemNameString,
-            withConfiguration: symbolConfig
+        symbolView.image = UIImage(
+            systemName: forecast.weather.first!.systemNameString
         )
     }
 }
