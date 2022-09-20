@@ -56,7 +56,7 @@ class SearchVC: UIViewController {
     
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
-        
+        collectionView.isEditing = editing
     }
     
     private func setupNavBar() {
@@ -75,13 +75,12 @@ class SearchVC: UIViewController {
         searchVC.searchBar.tintColor = .white
         searchVC.obscuresBackgroundDuringPresentation = true
         searchVC.definesPresentationContext = true
-//        searchVC.searchBar.showsCancelButton = false
         navigationItem.searchController = searchVC
     }
     
     private func setupCollectionView() {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
-            var configuration = UICollectionLayoutListConfiguration(appearance: .sidebarPlain)
+            var configuration = UICollectionLayoutListConfiguration(appearance: .sidebar)
             configuration.backgroundColor = .clear
             configuration.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
                 return self?.trailingSwipeActionsConfiguration(for: indexPath)
@@ -114,6 +113,19 @@ class SearchVC: UIViewController {
                 }
                 return .clear
             }
+            
+            if indexPath.item != 0 {
+                let accessories: [UICellAccessory] = [
+                    .delete(displayed: .whenEditing) { [weak self] in
+                        self?.deleteItem(forecast)
+                    },
+                    .reorder(
+                        displayed: .whenEditing,
+                        options: .init(tintColor: .white)
+                    )
+                ]
+                cell.accessories = accessories
+            }
             cell.backgroundConfiguration = backgroundConfig
             cell.configure(with: forecast)
         }
@@ -127,6 +139,17 @@ class SearchVC: UIViewController {
                 item: forecast
             )
         }
+        searchDataSource.reorderingHandlers.canReorderItem = { forecast -> Bool in
+            true
+        }
+        searchDataSource.reorderingHandlers.didReorder = { [weak self] transaction in
+            transaction.sectionTransactions.forEach { sectionTransaction in
+                guard let self = self else { return }
+                var forecastData = self.forecastData
+                forecastData = sectionTransaction.finalSnapshot.items
+                self.forecastData = forecastData
+            }
+        }
     }
     
     private func loadData() {
@@ -137,16 +160,14 @@ class SearchVC: UIViewController {
         searchDataSource.applySnapshotUsingReloadData(snapshot)
     }
     
-    private func delete(_ forecastData: ForecastData) -> Bool {
-        var deleted = false
+    private func deleteItem(_ forecastData: ForecastData) {
         if let index = self.forecastData.firstIndex(where: { $0.id == forecastData.id }) {
             self.forecastData.remove(at: index)
-            deleted = true
         }
+        
         var snapshot = searchDataSource.snapshot()
         snapshot.deleteItems([forecastData])
         searchDataSource.apply(snapshot, animatingDifferences: true)
-        return deleted
     }
     
     private func trailingSwipeActionsConfiguration(for indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -163,7 +184,8 @@ class SearchVC: UIViewController {
     private func deleteAction(_ forecastData: ForecastData) -> UIContextualAction {
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] _, _, completionHandler in
             guard let self = self else { return }
-            completionHandler(self.delete(forecastData))
+            self.deleteItem(forecastData)
+            completionHandler(true)
         }
         deleteAction.image = UIImage(systemName: "trash")
         return deleteAction
@@ -191,6 +213,7 @@ extension SearchVC: UICollectionViewDelegate {
         )
         dismiss(animated: true)
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveOfItemFromOriginalIndexPath originalIndexPath: IndexPath, atCurrentIndexPath currentIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
         if proposedIndexPath.item == 0 {
