@@ -23,7 +23,7 @@ class NetworkManager {
 
     static let shared = NetworkManager()
     
-    var onCompletion: ((CurrentWeather) -> Void)?
+//    var onCompletion: ((CurrentWeather) -> Void)?
     
     private init() {}
     
@@ -53,43 +53,43 @@ class NetworkManager {
         task.resume()
     }
     
-    func fetchCurrentWeatherData(forRequestType requestType: RequestType) {
-        var urlString = ""
-        switch requestType {
-        case .cityName(let city):
-            urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric"
-        case .coordinates(let latitude, let longitude):
-            urlString = "https://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)&units=metric"
-        }
-        performRequest(withURLString: urlString)
-    }
+//    func fetchCurrentWeatherData(forRequestType requestType: RequestType) {
+//        var urlString = ""
+//        switch requestType {
+//        case .cityName(let city):
+//            urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(city)&appid=\(apiKey)&units=metric"
+//        case .coordinates(let latitude, let longitude):
+//            urlString = "https://api.openweathermap.org/data/2.5/weather?lat=\(latitude)&lon=\(longitude)&appid=\(apiKey)&units=metric"
+//        }
+//        performRequest(withURLString: urlString)
+//    }
     
-    fileprivate func performRequest(withURLString urlString: String) {
-        guard let url = URL(string: urlString) else { return }
-        let session = URLSession(configuration: .default)
-        let task = session.dataTask(with: url) { data, response, error in
-            guard let data = data else {
-                print(error?.localizedDescription ?? "No error description")
-                return
-            }
-            if let currentWeather = self.parseJSON(withData: data) {
-                self.onCompletion?(currentWeather)
-            }
-        }
-        task.resume()
-    }
+//    fileprivate func performRequest(withURLString urlString: String) {
+//        guard let url = URL(string: urlString) else { return }
+//        let session = URLSession(configuration: .default)
+//        let task = session.dataTask(with: url) { data, response, error in
+//            guard let data = data else {
+//                print(error?.localizedDescription ?? "No error description")
+//                return
+//            }
+//            if let currentWeather = self.parseJSON(withData: data) {
+//                self.onCompletion?(currentWeather)
+//            }
+//        }
+//        task.resume()
+//    }
     
-    fileprivate func parseJSON(withData data: Data) -> CurrentWeather? {
-        let decoder = JSONDecoder()
-        do {
-            let currentWeatherData = try decoder.decode(CurrentWeatherData.self, from: data)
-            guard let currentWeather = CurrentWeather(model: currentWeatherData) else {
-                return nil
-            }
-            return currentWeather
-        } catch let error as NSError {
-            print(String(describing: error))
-        }
-        return nil
-    }
+//    fileprivate func parseJSON(withData data: Data) -> CurrentWeather? {
+//        let decoder = JSONDecoder()
+//        do {
+//            let currentWeatherData = try decoder.decode(CurrentWeatherData.self, from: data)
+//            guard let currentWeather = CurrentWeather(model: currentWeatherData) else {
+//                return nil
+//            }
+//            return currentWeather
+//        } catch let error as NSError {
+//            print(String(describing: error))
+//        }
+//        return nil
+//    }
 }
