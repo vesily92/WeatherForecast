@@ -22,7 +22,7 @@ extension UIButton {
             seeMoreConfig.titleAlignment = .leading
             seeMoreConfig.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
                 var outgoing = incoming
-                outgoing.font = .systemFont(ofSize: 16)
+                outgoing.font = .systemFont(ofSize: 16, weight: .semibold)
                 return outgoing
             }
             seeMoreConfig.image = UIImage(systemName: "chevron.right")
