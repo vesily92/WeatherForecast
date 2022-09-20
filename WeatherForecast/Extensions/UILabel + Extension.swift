@@ -24,6 +24,10 @@ extension UILabel {
             case teal
         }
     }
+    
+    var isTruncated: Bool {
+        frame.width < intrinsicContentSize.width
+    }
 
     convenience init(_ labelType: LabelType, color: LabelType.Color? = nil) {
         self.init()
