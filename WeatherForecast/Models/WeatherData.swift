@@ -10,12 +10,39 @@ enum Section: Int, Hashable, CaseIterable {
    
     case alert
     case hourlyCollection
+//    case hourlyCompositional
     case daily
     
     var headerTitle: String {
         switch self {
         case .alert: return "Weather Alert"
         case .hourlyCollection: return "Hourly Forecast"
+//        case .hourlyCompositional: return "Hourly Forecast"
+        case .daily: return "Daily Forecast"
+        }
+    }
+    var headerIcon: String {
+        switch self {
+        case .alert: return "exclamationmark.triangle.fill"
+        case .hourlyCollection: return "clock"
+//        case .hourlyCompositional: return "clock"
+        case .daily: return "calendar"
+        }
+    }
+}
+
+enum Section2: Int, Hashable, CaseIterable {
+   
+    case alert
+    case hourlyCollection
+//    case hourlyCompositional
+    case daily
+    
+    var headerTitle: String {
+        switch self {
+        case .alert: return "Weather Alert"
+        case .hourlyCollection: return "Hourly Forecast"
+//        case .hourlyCompositional: return "Hourly Forecast"
         case .daily: return "7-Day Forecast"
         }
     }
@@ -23,6 +50,7 @@ enum Section: Int, Hashable, CaseIterable {
         switch self {
         case .alert: return "exclamationmark.triangle.fill"
         case .hourlyCollection: return "clock"
+//        case .hourlyCompositional: return "clock"
         case .daily: return "calendar"
         }
     }
