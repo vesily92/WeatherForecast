@@ -11,8 +11,10 @@ extension UILabel {
     
     enum LabelType {
         case largeTitle36
+        case largeTitle36Regular
         case globalTemperature
         case mainText20
+        case mainText20Bold
         case specificationText16
         case largeText26
         case smallText12
@@ -29,10 +31,14 @@ extension UILabel {
         switch labelType {
         case .largeTitle36:
             self.font = .systemFont(ofSize: 36, weight: .semibold)
+        case .largeTitle36Regular:
+            self.font = .systemFont(ofSize: 36)
         case .globalTemperature:
             self.font = .systemFont(ofSize: 54, weight: .regular)
         case .mainText20:
             self.font = .systemFont(ofSize: 20, weight: .semibold)
+        case .mainText20Bold:
+            self.font = .systemFont(ofSize: 20, weight: .bold)
         case .specificationText16:
             self.font = .systemFont(ofSize: 16, weight: .semibold)
         case .largeText26:
