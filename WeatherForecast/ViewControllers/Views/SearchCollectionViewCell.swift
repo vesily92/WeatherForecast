@@ -55,50 +55,10 @@ class SearchCollectionViewCell: UICollectionViewListCell {
         rightStack.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(rightStack)
         
-//        let container = UIStackView(arrangedSubviews: [
-//            leftStack,
-//            rightStack
-//        ])
-//        container.axis = .horizontal
-////        container.alignment = .leading
-//        container.distribution = .fill
-//        container.translatesAutoresizingMaskIntoConstraints = false
-////
-//        contentView.addSubview(container)
-        
-//        let heightConstraint = container.heightAnchor.constraint(equalToConstant: 80)
-//        heightConstraint.priority = .defaultHigh
-        
-//        let view = UIView()
-//        view.layer.cornerRadius = 12
-//        view.layer.zPosition = -2
-//        view.backgroundColor = .systemGray2
-//        view.translatesAutoresizingMaskIntoConstraints = false
-//        contentView.addSubview(view)
-        
         let heightConstraint = rightStack.heightAnchor.constraint(equalToConstant: 60)
         heightConstraint.priority = .defaultHigh
         
         NSLayoutConstraint.activate([
-            
-            
-//            view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-////            heightConstraint,
-//            view.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-//            view.heightAnchor.constraint(equalToConstant: 80),
-
-//            container.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            container.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-//            container.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-//            container.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
-//            heightConstraint
-            
-//            container.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-//            container.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-//            container.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-//            container.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
-
             leftStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             leftStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             leftStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
