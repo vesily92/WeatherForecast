@@ -33,9 +33,7 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell {
     private var dataSource: DataSource?
     
     private var dailyData: Daily? {
-        didSet {
-            dataSource?.apply(makeSnapshot(), animatingDifferences: false)
-        }
+        didSet { dataSource?.apply(makeSnapshot(), animatingDifferences: false) }
     }
 
     private let inset: CGFloat = 16
