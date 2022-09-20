@@ -19,7 +19,9 @@ class SearchVC: UIViewController {
     var onForecastDataChanged: (([ForecastData]) -> Void)?
     
     var forecastData: [ForecastData] = [] {
-        didSet { onForecastDataChanged?(forecastData) }
+        didSet {
+            onForecastDataChanged?(forecastData)
+        }
     }
     private var collectionView: UICollectionView!
     private let searchVC = UISearchController(searchResultsController: ResultsViewController())
@@ -61,6 +63,7 @@ class SearchVC: UIViewController {
     
     private func setupNavBar() {
         navigationItem.rightBarButtonItem = editButtonItem
+        
         navigationItem.rightBarButtonItem?.tintColor = .white
         navigationItem.hidesSearchBarWhenScrolling = false
         
@@ -102,10 +105,11 @@ class SearchVC: UIViewController {
     }
     
     private func createDataSource() {
-        let searchCellRegistration = UICollectionView.CellRegistration<SearchCollectionViewCell, ForecastData> { cell, indexPath, forecast in
+        let searchCellRegistration = UICollectionView.CellRegistration<SearchCollectionViewCell, ForecastData> { [weak self] cell, indexPath, forecast in
+            guard let self = self else { return }
             
             var backgroundConfig = UIBackgroundConfiguration.listPlainCell()
-            backgroundConfig.backgroundColorTransformer = UIConfigurationColorTransformer { [weak cell] c in
+            backgroundConfig.backgroundColorTransformer = UIConfigurationColorTransformer { [weak cell] _ in
                 if let state = cell?.configurationState {
                     if state.isSelected || state.isHighlighted {
                         return .clear
@@ -127,7 +131,7 @@ class SearchVC: UIViewController {
                 cell.accessories = accessories
             }
             cell.backgroundConfiguration = backgroundConfig
-            cell.configure(with: forecast)
+            cell.configure(with: forecast, indexPath: indexPath)
         }
         
         searchDataSource = UICollectionViewDiffableDataSource(
@@ -175,14 +179,19 @@ class SearchVC: UIViewController {
             guard let forecast = searchDataSource.itemIdentifier(for: indexPath) else {
                 return nil
             }
-            let configuration = UISwipeActionsConfiguration(actions: [deleteAction(forecast)])
+            let configuration = UISwipeActionsConfiguration(
+                actions: [deleteAction(forecast)]
+            )
             return configuration
         }
         return nil
     }
     
     private func deleteAction(_ forecastData: ForecastData) -> UIContextualAction {
-        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] _, _, completionHandler in
+        let deleteAction = UIContextualAction(
+            style: .destructive,
+            title: nil
+        ) { [weak self] _, _, completionHandler in
             guard let self = self else { return }
             self.deleteItem(forecastData)
             completionHandler(true)
