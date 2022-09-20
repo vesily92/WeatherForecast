@@ -14,7 +14,7 @@ enum PreferableFormat {
     case weekdayShort
     case date
     case dateShort
-    case sunrise
+    case hoursMinutes
 }
 
 enum DateFormat {
@@ -37,7 +37,7 @@ extension DateFormatter {
         case .weekdayShort: dateFormatter.dateFormat = "EE"
         case .date: dateFormatter.dateFormat = "d MMMM"
         case .dateShort: dateFormatter.dateFormat = "d"
-        case .sunrise: dateFormatter.dateFormat = "HH:MM"
+        case .hoursMinutes: dateFormatter.dateFormat = "HH:MM"
         }
         
         return dateFormatter.string(from: date)
