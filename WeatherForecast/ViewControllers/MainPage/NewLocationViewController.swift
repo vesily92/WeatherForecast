@@ -76,7 +76,9 @@ class NewLocationViewController: UIViewController {
             navigationItem.rightBarButtonItem?.tintColor = .white
         }
         navigationItem.leftBarButtonItem?.tintColor = .white
-        navigationController?.navigationBar.backgroundColor = .clear
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.layoutIfNeeded()
     }
     
     private func setupCollectionView() {
@@ -355,7 +357,6 @@ extension NewLocationViewController {
         )
 
         let sectionHeader = createSectionHeader()
-//        let sectionFooterButton = createSectionFooterButton()
         section.boundarySupplementaryItems = [sectionHeader]
         
         let backgroundView = createBackgroundView()
@@ -456,18 +457,6 @@ extension NewLocationViewController {
         )
         return sectionHeader
     }
-    
-//    private func createSectionFooterButton() -> NSCollectionLayoutBoundarySupplementaryItem {
-//        let footerSize = NSCollectionLayoutSize(
-//            widthDimension: .fractionalWidth(1.0),
-//            heightDimension: .estimated(20)
-//        )
-//        let sectionFooterButton = NSCollectionLayoutBoundarySupplementaryItem(
-//            layoutSize: footerSize,
-//            elementKind: SectionFooterButton.reuseIdentifier,
-//            alignment: .bottomLeading)
-//        return sectionFooterButton
-//    }
     
     private func createGlobalHeader(withKind headerKind: String) -> NSCollectionLayoutBoundarySupplementaryItem {
         let globalHeaderSize = NSCollectionLayoutSize(
