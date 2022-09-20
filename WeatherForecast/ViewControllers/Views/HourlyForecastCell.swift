@@ -68,7 +68,7 @@ class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
                 isSunrise
                 ? forecast.sunrise
                 : forecast.sunset,
-                to: .sunrise,
+                to: .hoursMinutes,
                 withTimeZoneOffset: offset
             )
             popLabel.text = nil
