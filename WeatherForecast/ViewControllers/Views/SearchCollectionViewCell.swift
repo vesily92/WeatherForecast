@@ -11,16 +11,11 @@ import CoreLocation
 class SearchCollectionViewCell: UICollectionViewListCell {
     
     static let reuseIdentifier = "SearchCollectionViewCell"
-//    var forecastData: ForecastData! {
-//        didSet {
-//            configure(with: forecastData)
-//        }
-//    }
     
-    private lazy var locationTitleLabel = UILabel(.mainText20)
-    private lazy var subtitleLabel = UILabel(.smallText12)
+    private lazy var locationTitleLabel = UILabel(.mainText20Bold)
+    private lazy var subtitleLabel = UILabel(.specificationText16)
     private lazy var weatherDescriptionLabel = UILabel(.smallText12)
-    private lazy var tempLabel = UILabel(.largeText26)
+    private lazy var tempLabel = UILabel(.largeTitle36Regular)
     private lazy var symbolView = UIImageView(.multicolor())
     
     override init(frame: CGRect) {
@@ -29,20 +24,19 @@ class SearchCollectionViewCell: UICollectionViewListCell {
         contentView.layer.cornerRadius = 12
         contentView.backgroundColor = .systemGray2
         
-        let innerStack = UIStackView(arrangedSubviews: [
+        let locationStack = UIStackView(arrangedSubviews: [
             locationTitleLabel,
             subtitleLabel
         ])
-        innerStack.axis = .vertical
-        innerStack.alignment = .leading
-//        innerStack.spacing = 20
+        locationStack.axis = .vertical
+        locationStack.alignment = .leading
         
         let leftStack = UIStackView(arrangedSubviews: [
-            innerStack,
+            locationStack,
             weatherDescriptionLabel
         ])
         leftStack.axis = .vertical
-        leftStack.distribution = .equalCentering
+        leftStack.distribution = .equalSpacing
         leftStack.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(leftStack)
         
@@ -51,21 +45,20 @@ class SearchCollectionViewCell: UICollectionViewListCell {
             symbolView
         ])
         rightStack.axis = .horizontal
-        rightStack.distribution = .equalCentering
         rightStack.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(rightStack)
         
-        let heightConstraint = rightStack.heightAnchor.constraint(equalToConstant: 60)
+        let heightConstraint = rightStack.heightAnchor.constraint(equalToConstant: 70)
         heightConstraint.priority = .defaultHigh
         
         NSLayoutConstraint.activate([
             leftStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            leftStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            leftStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            leftStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            leftStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
 
             rightStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            rightStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            rightStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            rightStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            rightStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
             heightConstraint
         ])
     }
@@ -74,15 +67,32 @@ class SearchCollectionViewCell: UICollectionViewListCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with forecast: AnyHashable) {
-        guard let forecast = forecast as? ForecastData else { return }
-        DispatchQueue.main.async {
-            LocationManager.shared.getLocationName(with: CLLocation(latitude: forecast.lat, longitude: forecast.lon), completion: { location in
-                self.locationTitleLabel.text = location?.cityName
-            })
-            self.weatherDescriptionLabel.text = forecast.current.weather.first!.description.capitalized
-            self.tempLabel.text = forecast.current.temp.displayTemp()
-            self.symbolView.image = UIImage(systemName: forecast.current.weather.first!.systemNameString)
+    func configure(with forecast: ForecastData, indexPath: IndexPath) {
+        if indexPath.item == 0 {
+            DispatchQueue.main.async {
+                self.locationTitleLabel.text = "My Location"
+                LocationManager.shared.getLocationName(with: CLLocation(latitude: forecast.lat, longitude: forecast.lon), completion: { [weak self] location in
+                    self?.subtitleLabel.text = location?.cityName
+                })
+                self.weatherDescriptionLabel.text = forecast.current.weather.first!.description.capitalized
+                self.tempLabel.text = forecast.current.temp.displayTemp()
+                self.symbolView.image = UIImage(systemName: forecast.current.weather.first!.systemNameString)
+            }
+            
+        } else {
+            DispatchQueue.main.async {
+                LocationManager.shared.getLocationName(with: CLLocation(latitude: forecast.lat, longitude: forecast.lon), completion: { [weak self] location in
+                    self?.locationTitleLabel.text = location?.cityName
+                })
+                self.subtitleLabel.text = DateFormatter.format(
+                    forecast.current.dt,
+                    to: .hoursMinutes,
+                    withTimeZoneOffset: forecast.timezoneOffset
+                )
+                self.weatherDescriptionLabel.text = forecast.current.weather.first!.description.capitalized
+                self.tempLabel.text = forecast.current.temp.displayTemp()
+                self.symbolView.image = UIImage(systemName: forecast.current.weather.first!.systemNameString)
+            }
         }
     }
 }
