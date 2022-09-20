@@ -449,18 +449,6 @@ extension MainPageCollectionViewCell {
         return sectionHeader
     }
     
-    private func createSectionFooterButton() -> NSCollectionLayoutBoundarySupplementaryItem {
-        let footerSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(20)
-        )
-        let sectionFooterButton = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: footerSize,
-            elementKind: SectionFooterButton.reuseIdentifier,
-            alignment: .bottomLeading)
-        return sectionFooterButton
-    }
-    
     private func createGlobalHeader(withKind headerKind: String) -> NSCollectionLayoutBoundarySupplementaryItem {
         let globalHeaderSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
