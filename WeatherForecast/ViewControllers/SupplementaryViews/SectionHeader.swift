@@ -15,12 +15,6 @@ final class SectionHeader: UICollectionReusableView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-//        symbolView.contentMode = .scaleAspectFit
-//        symbolView.preferredSymbolConfiguration = UIImage.SymbolConfiguration(
-//            font: .systemFont(ofSize: 20)
-//        )
-
         let stackView = UIStackView(arrangedSubviews: [
             symbolView,
             titleLabel
@@ -42,18 +36,35 @@ final class SectionHeader: UICollectionReusableView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     func configureForAlertSection(with forecast: ForecastData) {
         guard let alerts = forecast.alerts?.count,
               let event = forecast.alerts?.first?.event else {
                   return
               }
+        
         var areFew: Bool {
             return alerts > 1 ? true : false
         }
+
+        var text = ""
+        
+        titleLabel.text = event.capitalized
+        if titleLabel.isTruncated {
+            text = event
+                .capitalized
+                .components(separatedBy: " ")
+                .dropFirst()
+                .first?.trimmingCharacters(in: .symbols) ?? ""
+        } else {
+            text = event.capitalized
+        }
+
+        titleLabel.textColor = .white
         symbolView.tintColor = .white
         
-        titleLabel.text = areFew ? "\(event.capitalized) & \(alerts - 1) More" : "\(event)"
+        
+        titleLabel.text = areFew ? "\(text) & \(alerts - 1) More" : "\(text)"
         symbolView.image = UIImage(systemName: "exclamationmark.triangle.fill")
     }
 
