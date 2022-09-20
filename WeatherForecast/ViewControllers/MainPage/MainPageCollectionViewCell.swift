@@ -239,8 +239,6 @@ extension MainPageCollectionViewCell {
                     }
                 case .hourlyCollection:
                     sectionHeader.configure(with: section)
-//                case .hourlyCompositional:
-//                    sectionHeader.configure(with: section)
                 case .daily:
                     sectionHeader.configure(with: section)
                 }
@@ -248,31 +246,6 @@ extension MainPageCollectionViewCell {
             }
         }
     }
-    
-//    private func reloadData() {
-//        var snapshot = Snapshot()
-//
-//        guard let forecastData = forecastData else {
-//            fatalError()
-//        }
-//
-//        let forecasts = Array(repeating: forecastData, count: 1)
-//
-//        if let alert = forecastData.alerts?.first {
-//            let alerts = Array(repeating: alert, count: 1)
-//            snapshot.appendSections(Section.allCases)
-//            snapshot.appendItems(alerts, toSection: .alert)
-//            snapshot.appendItems(forecasts, toSection: .hourlyCollection)
-////            snapshot.appendItems(forecasts, toSection: .hourlyCompositional)
-//            snapshot.appendItems(forecastData.daily, toSection: .daily)
-//        } else {
-//            snapshot.appendSections(Section.allCases)
-//            snapshot.appendItems(forecasts, toSection: .hourlyCollection)
-////            snapshot.appendItems(forecasts, toSection: .hourlyCompositional)
-//            snapshot.appendItems(forecastData.daily, toSection: .daily)
-//        }
-//        dataSource?.apply(snapshot, animatingDifferences: true)
-//    }
     
     private func makeSnapshot() -> Snapshot {
         var snapshot = Snapshot()

@@ -9,7 +9,6 @@ import UIKit
 
 class DailyDetailedCollectionViewCell: UICollectionViewCell {
     
-    
     private enum DailyDetailedCellSection: Int, CaseIterable {
         case dailyTempInfo
         case uviAndHumidityInfo
