@@ -14,11 +14,7 @@ class MainPageCollectionViewCell: UICollectionViewCell {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>
     
     static let reuseIdentifier = "MainPageCollectionViewCell"
-    
-    var onDailySectionTapped: ((ForecastData) -> Void)?
-    
     weak var coordinator: Coordinator?
-    
     private var collectionView: UICollectionView!
     private var dataSource: DataSource?
     private var forecastData: ForecastData? {
@@ -261,12 +257,10 @@ extension MainPageCollectionViewCell {
             snapshot.appendSections(Section.allCases)
             snapshot.appendItems(alerts, toSection: .alert)
             snapshot.appendItems(forecasts, toSection: .hourlyCollection)
-//            snapshot.appendItems(forecasts, toSection: .hourlyCompositional)
             snapshot.appendItems(forecastData.daily, toSection: .daily)
         } else {
             snapshot.appendSections(Section.allCases)
             snapshot.appendItems(forecasts, toSection: .hourlyCollection)
-//            snapshot.appendItems(forecasts, toSection: .hourlyCompositional)
             snapshot.appendItems(forecastData.daily, toSection: .daily)
         }
         return snapshot
@@ -320,7 +314,6 @@ extension MainPageCollectionViewCell {
         )
 
         let sectionHeader = createSectionHeader()
-//        let sectionFooterButton = createSectionFooterButton()
         section.boundarySupplementaryItems = [sectionHeader]
         
         let backgroundView = createBackgroundView()
@@ -469,7 +462,6 @@ extension MainPageCollectionViewCell {
 extension MainPageCollectionViewCell: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        coordinator?.eventOccurred(with: .dailySectionItemTapped)
         guard let section = Section(rawValue: indexPath.section) else {
             fatalError("Unknown section kind")
         }
@@ -480,9 +472,6 @@ extension MainPageCollectionViewCell: UICollectionViewDelegate {
                 name: .scrollToItem,
                 object: nil
             )
-            
-//            onDailySectionTapped?(forecastData)
-
             coordinator?.navigate(with: forecastData, by: indexPath.item)
         }
     }
