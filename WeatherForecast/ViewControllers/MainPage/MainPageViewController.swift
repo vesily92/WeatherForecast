@@ -18,20 +18,15 @@ class MainPageViewController: UIViewController, UpdatableWithForecastData {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<MainPageVCSection, AnyHashable>
     
     var onSearchTapped: (([ForecastData]) -> Void)?
-    
     var coordinator: Coordinator?
     var forecastData: [ForecastData] = [] {
         didSet {
             dataSource?.apply(makeSnapshot(), animatingDifferences: true)
             pageControl.numberOfPages = forecastData.count
             setupNavBar()
-            print(forecastData.count)
-//            setupPageControl()
         }
     }
-    
-    var locations: [Location]?
-    
+        
     private var observer: NSObjectProtocol?
     private var dataSource: DataSource?
     private var collectionView: UICollectionView!
