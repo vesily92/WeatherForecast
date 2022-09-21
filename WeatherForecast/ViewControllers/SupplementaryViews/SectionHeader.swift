@@ -8,6 +8,7 @@
 import UIKit
 
 final class SectionHeader: UICollectionReusableView {
+
     static let reuseIdentifier = "SectionHeader"
     
     private lazy var titleLabel = UILabel(.mainText20)
@@ -42,27 +43,19 @@ final class SectionHeader: UICollectionReusableView {
               let event = forecast.alerts?.first?.event else {
                   return
               }
-        
         var areFew: Bool {
             return alerts > 1 ? true : false
         }
-
         var text = ""
         
         titleLabel.text = event.capitalized
         if titleLabel.isTruncated {
-            text = event
-                .capitalized
-                .components(separatedBy: " ")
-                .dropFirst()
-                .first?.trimmingCharacters(in: .symbols) ?? ""
+            text = "Warning!"
         } else {
             text = event.capitalized
         }
-
         titleLabel.textColor = .white
         symbolView.tintColor = .white
-        
         
         titleLabel.text = areFew ? "\(text) & \(alerts - 1) More" : "\(text)"
         symbolView.image = UIImage(systemName: "exclamationmark.triangle.fill")
