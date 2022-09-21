@@ -9,21 +9,15 @@ import UIKit
 
 class NewLocationViewController: UIViewController {
     
-    var onAddTapped: ((ForecastData) -> Void)?
-    
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>
     
     weak var coordinator: Coordinator?
-    
-//    private var observer: NSObjectProtocol?
-    
+    var isNew: Bool!
+    var forecastData: ForecastData?
     private var collectionView: UICollectionView!
     private var dataSource: DataSource?
-    var isNew: Bool!
     
-    var forecastData: ForecastData?
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavBar()
@@ -36,20 +30,10 @@ class NewLocationViewController: UIViewController {
     
     @objc private func addNewLocation() {
         if let forecastData = forecastData {
-            onAddTapped?(forecastData)
-            
-//            NotificationCenter.default.post(
-//                name: .forecastDidAppend,
-//                object: self,
-//                userInfo: [NotificationKeys.forecast: forecastData]
-//            )
-            
             NotificationCenter.default.post(
                 name: .appendData,
                 object: [NotificationKeys.data: forecastData]
             )
-            
-            
             dismiss(animated: true)
         }
     }
