@@ -26,6 +26,7 @@ class DetailedDailyDayPickerView: UIView {
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
         let collectionView = UICollectionView(
             frame: self.bounds,
@@ -36,14 +37,13 @@ class DetailedDailyDayPickerView: UIView {
         
         collectionView.backgroundColor = .darkGray
         collectionView.showsHorizontalScrollIndicator = false
-        
+
         collectionView.register(
             DetailedDailyDayPickerCell.self,
             forCellWithReuseIdentifier: DetailedDailyDayPickerCell.reuseIdentifier
         )
-        
         self.addSubview(collectionView)
-        
+
         return collectionView
     }()
     

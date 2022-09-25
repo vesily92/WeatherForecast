@@ -10,8 +10,10 @@ import UIKit
 class DetailedDailyDayPickerItem: UIView {
     
     private var dailyData: Daily
-    private let weekdayLabel = UILabel(.mainText20)
-    private let dateLabel = UILabel(.mainText20)
+//    private let weekdayLabel = UILabel(.mainText20)
+    private let weekdayLabel = UILabel(fontSize: 20, fontWeight: .semibold, textColor: .white)
+//    private let dateLabel = UILabel(.mainText20)
+    private let dateLabel = UILabel(fontSize: 20, fontWeight: .semibold, textColor: .white)
     
     init(dailyData: Daily) {
         self.dailyData = dailyData
@@ -28,22 +30,22 @@ class DetailedDailyDayPickerItem: UIView {
     }
     
     private func setupUI() {
-        self.layer.cornerRadius = 40
+        self.layer.cornerRadius = 12
         let stack = UIStackView(arrangedSubviews: [
             weekdayLabel,
             dateLabel
         ])
         stack.axis = .vertical
         stack.alignment = .center
-        stack.distribution = .fillEqually
+        stack.distribution = .fillProportionally
         stack.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(stack)
 
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
-            stack.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8),
-            stack.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8),
-            stack.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -8)
+            stack.topAnchor.constraint(equalTo: self.topAnchor),
+            stack.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            stack.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: self.trailingAnchor)
         ])
     }
     

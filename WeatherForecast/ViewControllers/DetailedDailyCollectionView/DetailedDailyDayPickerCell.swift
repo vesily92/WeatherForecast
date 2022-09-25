@@ -37,7 +37,7 @@ class DetailedDailyDayPickerCell: UICollectionViewCell {
     private func configureCell() {
         guard let view = view else { return }
         
-        contentView.layer.cornerRadius = contentView.frame.width / 2
+//        contentView.layer.cornerRadius = contentView.frame.width / 2
         view.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(view)
         

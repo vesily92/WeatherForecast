@@ -38,7 +38,7 @@ class DetailedDailyConditionsView: UIView {
             forCellWithReuseIdentifier: DetailedDailyConditionsCell.reuseIdentifier
         )
         self.addSubview(collectionView)
-
+        
         return collectionView
     }()
     
