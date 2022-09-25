@@ -25,12 +25,21 @@ class ApplicationCoordinator: Coordinator {
     }
     
 
+//    func navigate(with data: ForecastData?, by index: Int) {
+//        let vc = DDViewController()
+//        vc.coordinator = self
+//        vc.forecastData = data
+////        vc.currentIndex = index
+//        navigationController?.present(vc, animated: true)
+//    }
+    
     func navigate(with data: ForecastData?, by index: Int) {
         let vc = DetailedDailyViewController()
         vc.coordinator = self
         vc.forecastData = data
 //        vc.currentIndex = index
-        navigationController?.present(vc, animated: true)
+        let navController = UINavigationController(rootViewController: vc)
+        navigationController?.present(navController, animated: true)
     }
     
     func search(with data: [ForecastData]) {
@@ -56,7 +65,7 @@ class ApplicationCoordinator: Coordinator {
     func start() {
         showMainPageScreen()
         
-//        let vc = DetailedDailyViewController()
+//        let vc = DDViewController()
 //        vc.coordinator = self
 //        navigationController?.setViewControllers([vc], animated: true)
 //        let vc = MainPageViewController()

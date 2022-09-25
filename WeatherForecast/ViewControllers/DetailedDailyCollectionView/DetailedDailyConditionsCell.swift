@@ -1,5 +1,5 @@
 //
-//  DailyDetailedCollectionViewCell.swift
+//  DetailedDailyConditionsCell.swift
 //  WeatherForecast
 //
 //  Created by Василий Пронин on 29.06.2022.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DailyDetailedCollectionViewCell: UICollectionViewCell {
+class DetailedDailyConditionsCell: UICollectionViewCell {
     
     private enum DailyDetailedCellSection: Int, CaseIterable {
         case dailyTempInfo
@@ -28,18 +28,14 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell {
     weak var coordinator: Coordinator?
     
     private var collectionView: UICollectionView!
-    
     private var dataSource: DataSource?
-    
     private var dailyData: Daily? {
         didSet { dataSource?.apply(makeSnapshot(), animatingDifferences: false) }
     }
-
     private let inset: CGFloat = 16
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         setupCollectionView()
         createDataSource()
     }
@@ -47,7 +43,6 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     
     func configure(with forecast: AnyHashable) {
         guard let forecast = forecast as? Daily else { return }
@@ -107,7 +102,12 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell {
             subitems: [item]
         )
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset / 2, trailing: inset)
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: inset,
+            leading: inset,
+            bottom: inset / 2,
+            trailing: inset
+        )
         return section
     }
     
@@ -126,7 +126,12 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell {
             subitems: [item]
         )
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: inset / 2, leading: inset, bottom: inset / 2, trailing: inset)
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: inset / 2,
+            leading: inset,
+            bottom: inset / 2,
+            trailing: inset
+        )
         return section
     }
     
@@ -178,18 +183,29 @@ class DailyDetailedCollectionViewCell: UICollectionViewCell {
 
         snapshot.appendSections(DailyDetailedCellSection.allCases)
         snapshot.appendItems(
-            [CategorisedDailyCellItems(details: dailyData, category: .dailyTempInfo)],
+            [CategorisedDailyCellItems(
+                details: dailyData,
+                category: .dailyTempInfo
+            )],
             toSection: .dailyTempInfo
         )
         snapshot.appendItems(
-            [CategorisedDailyCellItems(details: dailyData, category: .uviAndHumidityInfo)],
+            [CategorisedDailyCellItems(
+                details: dailyData,
+                category: .uviAndHumidityInfo
+            )],
             toSection: .uviAndHumidityInfo
         )
         snapshot.appendItems(
-            [CategorisedDailyCellItems(details: dailyData, category: .pressureAndWindInfo)],
+            [CategorisedDailyCellItems(
+                details: dailyData,
+                category: .pressureAndWindInfo
+            )],
             toSection: .pressureAndWindInfo
         )
         
         return snapshot
     }
 }
+
+

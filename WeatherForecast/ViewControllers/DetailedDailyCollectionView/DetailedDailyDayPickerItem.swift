@@ -1,57 +1,34 @@
 //
-//  DayPickerItem.swift
+//  DetailedDailyDayPickerItem.swift
 //  WeatherForecast
 //
-//  Created by Василий Пронин on 13.07.2022.
+//  Created by Василий Пронин on 23.09.2022.
 //
 
 import UIKit
 
-class DayPickerItem: UIView, DayPickerItemProtocol {
+class DetailedDailyDayPickerItem: UIView {
     
     private var dailyData: Daily
-
-    private lazy var weekdayLabel: UILabel = {
-        let label = UILabel(.mainText20)
-        label.text = DateFormatter.format(dailyData.dt, to: .weekdayShort)
-        return label
-    }()
-    
-    private lazy var dateLabel: UILabel = {
-        let label = UILabel(.mainText20)
-        label.text = DateFormatter.format(dailyData.dt, to: .dateShort)
-        return label
-    }()
+    private let weekdayLabel = UILabel(.mainText20)
+    private let dateLabel = UILabel(.mainText20)
     
     init(dailyData: Daily) {
         self.dailyData = dailyData
         super.init(frame: .zero)
         
-        self.translatesAutoresizingMaskIntoConstraints = false
-        self.setupUI()
+        weekdayLabel.text = DateFormatter.format(dailyData.dt, to: .weekdayShort)
+        dateLabel.text = DateFormatter.format(dailyData.dt, to: .dateShort)
+        
+        setupUI()
     }
     
     required init?(coder: NSCoder) {
-        fatalError("")
-    }
-
-    func onSelected() {
-        self.backgroundColor = .white
-        self.weekdayLabel.textColor = .black
-        self.dateLabel.textColor = .black
+        fatalError("init(coder:) has not been implemented")
     }
     
-    func onNotSelected() {
-        self.backgroundColor = .clear
-        self.weekdayLabel.textColor = .white
-        self.dateLabel.textColor = .white
-    }
-    
-    // MARK: - UI Setup
     private func setupUI() {
-        
         self.layer.cornerRadius = 40
-        
         let stack = UIStackView(arrangedSubviews: [
             weekdayLabel,
             dateLabel
@@ -68,5 +45,21 @@ class DayPickerItem: UIView, DayPickerItemProtocol {
             stack.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 8),
             stack.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -8)
         ])
+    }
+    
+}
+
+extension DetailedDailyDayPickerItem: DetailedDailyDayPickerItemProtocol {
+    
+    func onSelected() {
+        self.backgroundColor = .white
+        self.weekdayLabel.textColor = .black
+        self.dateLabel.textColor = .black
+    }
+    
+    func onNotSelected() {
+        self.backgroundColor = .clear
+        self.weekdayLabel.textColor = .white
+        self.dateLabel.textColor = .white
     }
 }
