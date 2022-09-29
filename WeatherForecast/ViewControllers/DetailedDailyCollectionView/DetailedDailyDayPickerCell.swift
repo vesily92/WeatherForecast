@@ -26,18 +26,17 @@ class DetailedDailyDayPickerCell: UICollectionViewCell {
         view = nil
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//    }
+//    
+//    required init?(coder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
     private func configureCell() {
         guard let view = view else { return }
         
-//        contentView.layer.cornerRadius = contentView.frame.width / 2
         view.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(view)
         

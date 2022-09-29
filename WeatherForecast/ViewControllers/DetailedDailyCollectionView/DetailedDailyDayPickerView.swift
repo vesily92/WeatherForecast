@@ -18,10 +18,11 @@ class DetailedDailyDayPickerView: UIView {
     var days: [DetailedDailyDayPickerItemProtocol] {
         didSet {
             collectionView.reloadData()
+            switchTheDay(at: IndexPath(item: index, section: 0))
             days[index].onSelected()
         }
     }
-    private var index = 0
+    var index: Int
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -29,7 +30,7 @@ class DetailedDailyDayPickerView: UIView {
         layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
         let collectionView = UICollectionView(
-            frame: self.bounds,
+            frame: .zero,
             collectionViewLayout: layout
         )
         collectionView.delegate = self
@@ -37,6 +38,7 @@ class DetailedDailyDayPickerView: UIView {
         
         collectionView.backgroundColor = .darkGray
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
         collectionView.register(
             DetailedDailyDayPickerCell.self,
@@ -47,9 +49,9 @@ class DetailedDailyDayPickerView: UIView {
         return collectionView
     }()
     
-    
-    init(days: [DetailedDailyDayPickerItemProtocol] = []) {
+    init(days: [DetailedDailyDayPickerItemProtocol] = [], index: Int) {
         self.days = days
+        self.index = index
         super.init(frame: .zero)
     }
     
@@ -91,6 +93,7 @@ extension DetailedDailyDayPickerView: UICollectionViewDelegate {
 
 extension DetailedDailyDayPickerView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        CGSize(width: 80, height: 80)
+        let size = UIScreen.main.bounds.width / 5.5
+        return CGSize(width: size, height: size)
     }
 }

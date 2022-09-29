@@ -16,15 +16,23 @@ class DetailedDailyConditionsView: UIView {
     weak var delegate: DetailedDailyConditionsViewDelegate?
     
     var dailyData: [Daily] {
-        didSet { collectionView.reloadData() }
+        didSet {
+            scrollToPage(at: IndexPath(item: index, section: 0))
+            collectionView.reloadData()
+        }
     }
+    var index: Int
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
 
+//        let collectionView = UICollectionView(
+//            frame: self.bounds,
+//            collectionViewLayout: layout
+//        )
         let collectionView = UICollectionView(
-            frame: self.bounds,
+            frame: .zero,
             collectionViewLayout: layout
         )
         collectionView.delegate = self
@@ -33,6 +41,7 @@ class DetailedDailyConditionsView: UIView {
         collectionView.backgroundColor = .darkGray
         collectionView.isPagingEnabled = true
         collectionView.showsHorizontalScrollIndicator = false
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(
             DetailedDailyConditionsCell.self,
             forCellWithReuseIdentifier: DetailedDailyConditionsCell.reuseIdentifier
@@ -42,10 +51,11 @@ class DetailedDailyConditionsView: UIView {
         return collectionView
     }()
     
-    init(dailyData: [Daily] = []) {
+    init(dailyData: [Daily] = [], index: Int) {
         self.dailyData = dailyData
-        
+        self.index = index
         super.init(frame: .zero)
+        setConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -58,6 +68,15 @@ class DetailedDailyConditionsView: UIView {
             at: .centeredHorizontally,
             animated: true
         )
+    }
+    
+    private func setConstraints() {
+        NSLayoutConstraint.activate([
+            collectionView.widthAnchor.constraint(equalTo: self.widthAnchor),
+            collectionView.heightAnchor.constraint(equalTo: self.heightAnchor),
+            collectionView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            collectionView.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        ])
     }
 }
 

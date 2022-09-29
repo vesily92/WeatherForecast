@@ -24,9 +24,7 @@ class DetailedDailyConditionsCell: UICollectionViewCell {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<DailyDetailedCellSection, CategorisedDailyCellItems>
     
     static let reuseIdentifier = "DailyDetailedCollectionViewCell"
-    
-    weak var coordinator: Coordinator?
-    
+        
     private var collectionView: UICollectionView!
     private var dataSource: DataSource?
     private var dailyData: Daily? {

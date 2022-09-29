@@ -10,10 +10,8 @@ import UIKit
 class DetailedDailyDayPickerItem: UIView {
     
     private var dailyData: Daily
-//    private let weekdayLabel = UILabel(.mainText20)
-    private let weekdayLabel = UILabel(fontSize: 20, fontWeight: .semibold, textColor: .white)
-//    private let dateLabel = UILabel(.mainText20)
-    private let dateLabel = UILabel(fontSize: 20, fontWeight: .semibold, textColor: .white)
+    private let weekdayLabel = UILabel(fontSize: 18, fontWeight: .semibold)
+    private let dateLabel = UILabel(fontSize: 18, fontWeight: .semibold)
     
     init(dailyData: Daily) {
         self.dailyData = dailyData
