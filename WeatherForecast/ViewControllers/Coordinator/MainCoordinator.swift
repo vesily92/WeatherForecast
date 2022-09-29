@@ -11,105 +11,70 @@ protocol UpdatableWithForecastData: AnyObject {
     var forecastData: [ForecastData] { get set }
 }
 
-class ApplicationCoordinator: Coordinator {
+class MainCoordinator: Coordinator {
 
-    private var data: AnyHashable?
     private var forecastData: [ForecastData]? {
         didSet { updateInterfaces() }
-        
     }
+    
     private weak var navigationController: UINavigationController?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
     
-
-//    func navigate(with data: ForecastData?, by index: Int) {
-//        let vc = DDViewController()
-//        vc.coordinator = self
-//        vc.forecastData = data
-////        vc.currentIndex = index
-//        navigationController?.present(vc, animated: true)
-//    }
-    
-    func navigate(with data: ForecastData?, by index: Int) {
-        let vc = DetailedDailyViewController()
-        vc.coordinator = self
-        vc.forecastData = data
-//        vc.currentIndex = index
-        let navController = UINavigationController(rootViewController: vc)
-        navigationController?.present(navController, animated: true)
-    }
-    
-    func search(with data: [ForecastData]) {
-        let vc = SearchViewController()
-        vc.coordinator = self
-        vc.forecastData = data
-        let navController = UINavigationController(rootViewController: vc)
-        navController.modalPresentationStyle = .fullScreen
-        navigationController?.present(navController, animated: true)
-    }
-    
-    func showResult(with data: ForecastData, isNew: Bool) {
-        let vc = NewLocationViewController()
-        vc.coordinator = self
-        vc.forecastData = data
-        vc.isNew = isNew
-
-        let navController = UINavigationController(rootViewController: vc)
-        getTopMostViewController()?.present(navController, animated: true)
-
-    }
-    
     func start() {
         showMainPageScreen()
-        
-//        let vc = DDViewController()
-//        vc.coordinator = self
-//        navigationController?.setViewControllers([vc], animated: true)
-//        let vc = MainPageViewController()
-////        let vc = ForecastViewController()
-////        vc.tabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 0)
-//        vc.coordinator = self
-//        navigationController?.setViewControllers([vc], animated: false)
-    }
-    
-//    func navigateToMainPage(with indexPath: IndexPath) {
-//        let vc = MainPageViewController()
-//        vc.coordinator = self
-//        navigationController.dismiss(animated: true)
-//        DispatchQueue.main.async {
-//            vc.collectionView.scrollToItem(at: indexPath, at: .top, animated: false)
-//        }
-//    }
-
-    func getTopMostViewController() -> UIViewController? {
-        var topMostViewController = UIApplication.shared.windows[0].rootViewController
-        while let presentedViewController = topMostViewController?.presentedViewController {
-            topMostViewController = presentedViewController
-        }
-        return topMostViewController
     }
     
     private func showMainPageScreen(with indexPath: IndexPath? = nil) {
         let vc = MainPageViewController()
         vc.coordinator = self
+        
         vc.onSearchTapped = { [weak self] forecastData in
+            self?.forecastData = forecastData
             self?.showSearchScreen(with: forecastData)
         }
+        
+        vc.onCellDidTap = { [weak self] forecast, index in
+            self?.showDetailedDailyScreen(with: forecast, and: index)
+        }
+        
         navigationController?.pushViewController(vc, animated: true)
     }
 
     private func showSearchScreen(with forecastData: [ForecastData]) {
-        let vc = SearchVC()
-        vc.coordinator = self
+        let vc = SearchViewController()
         vc.forecastData = forecastData
+        
         vc.onForecastDataChanged = { [weak self] forecastData in
             self?.forecastData = forecastData
         }
+        
+        vc.onSearchResultTapped = { [weak self] forecastData, isNew in
+            self?.showNewLocationVC(with: forecastData, isNew: isNew)
+        }
+        
         let navController = UINavigationController(rootViewController: vc)
         navController.modalPresentationStyle = .fullScreen
+        navigationController?.present(navController, animated: true)
+    }
+    
+    private func showNewLocationVC(with data: ForecastData, isNew: Bool) {
+        let vc = NewLocationViewController()
+        vc.forecastData = data
+        vc.isNew = isNew
+
+        let navController = UINavigationController(rootViewController: vc)
+        getTopMostViewController()?.present(navController, animated: true)
+    }
+    
+    private func showDetailedDailyScreen(with data: ForecastData, and index: Int) {
+        let vc = DetailedDailyViewController()
+        vc.forecastData = data
+        vc.index = index
+        
+        let navController = UINavigationController(rootViewController: vc)
         navigationController?.present(navController, animated: true)
     }
 
@@ -118,6 +83,14 @@ class ApplicationCoordinator: Coordinator {
         navigationController?.viewControllers.forEach {
             ($0 as? UpdatableWithForecastData)?.forecastData = forecastData
         }
+    }
+    
+    private func getTopMostViewController() -> UIViewController? {
+        var topMostViewController = UIApplication.shared.windows[0].rootViewController
+        while let presentedViewController = topMostViewController?.presentedViewController {
+            topMostViewController = presentedViewController
+        }
+        return topMostViewController
     }
 }
 
