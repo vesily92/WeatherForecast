@@ -14,20 +14,33 @@ class MainPageViewController: UIViewController, UpdatableWithForecastData {
         case main
     }
     
-    private typealias DataSource = UICollectionViewDiffableDataSource<MainPageVCSection, AnyHashable>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<MainPageVCSection, AnyHashable>
+    private typealias DataSource = UICollectionViewDiffableDataSource<MainPageVCSection, ForecastData>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<MainPageVCSection, ForecastData>
     
-    var onSearchTapped: (([ForecastData]) -> Void)?
+    // MARK: Callbacks
+    
     var coordinator: Coordinator?
+    var onCellDidTap: ((ForecastData, Int) -> Void)?
+    var onSearchTapped: (([ForecastData]) -> Void)?
+    
+    // MARK: Properties
+    
     var forecastData: [ForecastData] = [] {
         didSet {
-            dataSource?.apply(makeSnapshot(), animatingDifferences: true)
             pageControl.numberOfPages = forecastData.count
+            makeSnapshot()
             setupNavBar()
+            updateLocations()
         }
     }
-        
-    private var observer: NSObjectProtocol?
+    var locations: [Location] = [] {
+        didSet {
+            print("Locations: \(locations.count)")
+            locations.forEach { loc in
+                print(loc.latitude)
+            }
+        }
+    }
     private var dataSource: DataSource?
     private var collectionView: UICollectionView!
     private var pageControl: UIPageControl!
@@ -57,6 +70,8 @@ class MainPageViewController: UIViewController, UpdatableWithForecastData {
             )
         }
     }
+    
+    // MARK: Setup UI
     
     @objc private func search() {
         onSearchTapped?(forecastData)
@@ -115,6 +130,8 @@ class MainPageViewController: UIViewController, UpdatableWithForecastData {
         )
     }
     
+    // MARK: Setup layout
+    
     private func createCompositionalLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnv in
             let itemSize = NSCollectionLayoutSize(
@@ -142,6 +159,8 @@ class MainPageViewController: UIViewController, UpdatableWithForecastData {
         return layout
     }
     
+    // MARK: DataSource
+    
     private func createDataSource() {
         dataSource = DataSource(
             collectionView: collectionView
@@ -157,33 +176,24 @@ class MainPageViewController: UIViewController, UpdatableWithForecastData {
                 ) as? MainPageCollectionViewCell else {
                     fatalError("Unable to dequeue DailyDetailedCollectionViewCell")
                 }
-                cell.coordinator = self?.coordinator
-                
-                if let forecastData = self?.forecastData {
-                    cell.configure(with: forecastData[indexPath.item])
+                cell.onCellTapped = { [weak self] forecast, index in
+                    self?.onCellDidTap?(forecast, index)
                 }
+                cell.configure(with: forecast)
+
                 return cell
             }
         }
     }
-    
-    private func reloadData() {
-        var snapshot = Snapshot()
 
+    private func makeSnapshot() {
+        var snapshot = Snapshot()
         snapshot.appendSections(MainPageVCSection.allCases)
         snapshot.appendItems(forecastData, toSection: .main)
-        
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
     
-    private func makeSnapshot() -> Snapshot {
-        var snapshot = Snapshot()
-
-        snapshot.appendSections(MainPageVCSection.allCases)
-        snapshot.appendItems(forecastData, toSection: .main)
-        
-        return snapshot
-    }
+    // MARK: Current location data methods
     
     private func fetchData(with location: CLLocation) {
         let latitude = location.coordinate.latitude
@@ -204,6 +214,13 @@ class MainPageViewController: UIViewController, UpdatableWithForecastData {
                 guard let self = self else { return }
                 self.fetchData(with: location)
             }
+        }
+    }
+    
+    private func updateLocations() {
+        LocationManager.shared.getLocations(from: forecastData) { [weak self] locations in
+            guard let locations = locations else { return }
+            self?.locations = locations
         }
     }
 }
