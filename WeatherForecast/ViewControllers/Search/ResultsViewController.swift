@@ -14,11 +14,11 @@ protocol ResultsViewControllerDelegate: AnyObject {
 
 class ResultsViewController: UIViewController {
     
+    weak var delegate: ResultsViewControllerDelegate?
+    
     var onLocationTapped: ((CLLocation) -> Void)?
     
-    public var locations: [Location] = []
-    
-    weak var delegate: ResultsViewControllerDelegate?
+    var locations: [Location] = []
     
     private var tableView: UITableView!
 
@@ -26,15 +26,9 @@ class ResultsViewController: UIViewController {
         super.viewDidLoad()
         setupTableView()
     }
-    
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        tableView.frame = view.bounds
-//    }
 
     public func update(with locations: [Location]) {
         self.locations = locations
-//        print(locations.first)
         tableView.reloadData()
     }
     
@@ -71,14 +65,10 @@ extension ResultsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print("ResultsVC didSelectRowAt started")
         guard let latitude = locations[indexPath.row].latitude,
               let longitude = locations[indexPath.row].longitude else { return }
-//        print("ResultsVC didSelectRowAt guard passed")
         tableView.deselectRow(at: indexPath, animated: true)
-//        print("ResultsVC didSelectRowAt deselectRow")
         DispatchQueue.main.async {
-//            print("ResultsVC didSelectRowAt delegate method called")
             self.delegate?.didTapLocation(with: CLLocation(latitude: latitude, longitude: longitude))
         }
     }

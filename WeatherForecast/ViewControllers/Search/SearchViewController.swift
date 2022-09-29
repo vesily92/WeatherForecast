@@ -1,5 +1,5 @@
 //
-//  SearchVC.swift
+//  SearchViewCOntroller.swift
 //  WeatherForecast
 //
 //  Created by Василий Пронин on 16.09.2022.
@@ -9,19 +9,17 @@ import UIKit
 import CoreLocation
 import CoreData
 
-class SearchVC: UIViewController {
+class SearchViewController: UIViewController, UpdatableWithForecastData {
     
     private enum SearchSection: Int {
         case main
     }
-    
-    var coordinator: Coordinator?
+            
+    var onSearchResultTapped: ((ForecastData, Bool) -> Void)?
     var onForecastDataChanged: (([ForecastData]) -> Void)?
     
     var forecastData: [ForecastData] = [] {
-        didSet {
-            onForecastDataChanged?(forecastData)
-        }
+        didSet { onForecastDataChanged?(forecastData) }
     }
     private var collectionView: UICollectionView!
     private let searchVC = UISearchController(searchResultsController: ResultsViewController())
@@ -36,7 +34,7 @@ class SearchVC: UIViewController {
         setupCollectionView()
         createDataSource()
         
-        loadData()
+        makeSnapshot()
         
         NotificationCenter.default.addObserver(
             forName: .appendData,
@@ -156,7 +154,7 @@ class SearchVC: UIViewController {
         }
     }
     
-    private func loadData() {
+    private func makeSnapshot() {
         var snapshot = NSDiffableDataSourceSnapshot<SearchSection, ForecastData>()
 
         snapshot.appendSections([.main])
@@ -213,7 +211,7 @@ class SearchVC: UIViewController {
     }
 }
 
-extension SearchVC: UICollectionViewDelegate {
+extension SearchViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         NotificationCenter.default.post(
@@ -233,7 +231,7 @@ extension SearchVC: UICollectionViewDelegate {
     }
 }
 
-extension SearchVC: UISearchResultsUpdating {
+extension SearchViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
         guard let query = searchVC.searchBar.text,
@@ -252,7 +250,7 @@ extension SearchVC: UISearchResultsUpdating {
     }
 }
 
-extension SearchVC: ResultsViewControllerDelegate {
+extension SearchViewController: ResultsViewControllerDelegate {
     
     func didTapLocation(with coordinates: CLLocation) {
         searchVC.dismiss(animated: true)
@@ -262,7 +260,7 @@ extension SearchVC: ResultsViewControllerDelegate {
                 array: self.forecastData,
                 doesNotContain: forecastData
             )
-            self.coordinator?.showResult(with: forecastData, isNew: isNew)
+            self.onSearchResultTapped?(forecastData, isNew)
         }
     }
 }
