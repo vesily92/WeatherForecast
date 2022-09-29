@@ -11,8 +11,9 @@ class NewLocationViewController: UIViewController {
     
     private typealias DataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>
+        
+//    var onAddLocationTapped: ((ForecastData) -> Void)?
     
-    weak var coordinator: Coordinator?
     var isNew: Bool!
     var forecastData: ForecastData?
     private var collectionView: UICollectionView!
@@ -34,6 +35,10 @@ class NewLocationViewController: UIViewController {
                 name: .appendData,
                 object: [NotificationKeys.data: forecastData]
             )
+//            
+            
+//            onAddLocationTapped?(forecastData)
+//            print(forecastData.current.dt)
             dismiss(animated: true)
         }
     }
@@ -88,17 +93,17 @@ class NewLocationViewController: UIViewController {
             forCellWithReuseIdentifier: AlertCell.reuseIdentifier
         )
         collectionView.register(
-            HourlyCollectionViewCell.self,
-            forCellWithReuseIdentifier: HourlyCollectionViewCell.reuseIdentifier
+            HourlyNestedCollectionViewCell.self,
+            forCellWithReuseIdentifier: HourlyNestedCollectionViewCell.reuseIdentifier
         )
         collectionView.register(
-            DailyForecastCell.self,
-            forCellWithReuseIdentifier: DailyForecastCell.reuseIdentifier
+            DailyCell.self,
+            forCellWithReuseIdentifier: DailyCell.reuseIdentifier
         )
         collectionView.register(
-            CurrentWeatherHeader.self,
-            forSupplementaryViewOfKind: CurrentWeatherHeader.reuseIdentifier,
-            withReuseIdentifier: CurrentWeatherHeader.reuseIdentifier
+            GlobalHeader.self,
+            forSupplementaryViewOfKind: GlobalHeader.reuseIdentifier,
+            withReuseIdentifier: GlobalHeader.reuseIdentifier
         )
         collectionView.register(
             GlobalFooter.self,
@@ -144,7 +149,7 @@ class NewLocationViewController: UIViewController {
             }
         }
         let currentWeatherHeader = createGlobalHeader(
-            withKind: CurrentWeatherHeader.reuseIdentifier
+            withKind: GlobalHeader.reuseIdentifier
         )
         let globalFooter = createGlobalFooter(
             withKind: GlobalFooter.reuseIdentifier
@@ -196,14 +201,14 @@ extension NewLocationViewController {
                 )
             case .hourlyCollection:
                 return self?.configure(
-                    HourlyCollectionViewCell.self,
+                    HourlyNestedCollectionViewCell.self,
                     with: forecast,
                     andTimeZone: offset,
                     for: indexPath
                 )
             case .daily:
                 return self?.configure(
-                    DailyForecastCell.self,
+                    DailyCell.self,
                     with: forecast,
                     andTimeZone: offset,
                     for: indexPath
@@ -213,12 +218,12 @@ extension NewLocationViewController {
         
         dataSource?.supplementaryViewProvider = { [weak self] weatherCollectionView, kind, indexPath in
             switch kind {
-            case CurrentWeatherHeader.reuseIdentifier:
+            case GlobalHeader.reuseIdentifier:
                 guard let currentWeatherHeader = weatherCollectionView.dequeueReusableSupplementaryView(
-                    ofKind: CurrentWeatherHeader.reuseIdentifier,
-                    withReuseIdentifier: CurrentWeatherHeader.reuseIdentifier,
+                    ofKind: GlobalHeader.reuseIdentifier,
+                    withReuseIdentifier: GlobalHeader.reuseIdentifier,
                     for: indexPath
-                ) as? CurrentWeatherHeader else {
+                ) as? GlobalHeader else {
                     fatalError("Unknown header kind")
                 }
 
@@ -379,7 +384,7 @@ extension NewLocationViewController {
         section.boundarySupplementaryItems = [sectionHeader]
         
         section.visibleItemsInvalidationHandler = { items, offset, _ in
-            guard let globalHeader = self.collectionView.visibleSupplementaryViews(ofKind: CurrentWeatherHeader.reuseIdentifier).first as? CurrentWeatherHeader else { return }
+            guard let globalHeader = self.collectionView.visibleSupplementaryViews(ofKind: GlobalHeader.reuseIdentifier).first as? GlobalHeader else { return }
             
             if offset.y < 0 {
                 globalHeader.setAlphaForMainLabels(with: 1)
