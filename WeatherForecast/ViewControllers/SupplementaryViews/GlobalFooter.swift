@@ -65,7 +65,9 @@ class GlobalFooter: UICollectionReusableView {
             
             LocationManager.shared.getLocationName(with: coordinates, completion: { [weak self] location in
                 guard let location = location else { return }
-                self?.titleLabel.text = "Weather for " + location.cityName
+                if let city = location.cityName {
+                    self?.titleLabel.text = "Weather for " + city
+                }
             })
             
             self.subtitleLabel.text = "Provided by OpenWeather"

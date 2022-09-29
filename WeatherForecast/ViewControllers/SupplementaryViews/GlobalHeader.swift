@@ -1,5 +1,5 @@
 //
-//  CurrentWeatherHeader.swift
+//  GlobalHeader.swift
 //  WeatherForecast
 //
 //  Created by Василий Пронин on 01.03.2022.
@@ -8,7 +8,7 @@
 import UIKit
 import CoreLocation
 
-class CurrentWeatherHeader: UICollectionReusableView {
+class GlobalHeader: UICollectionReusableView {
     static let reuseIdentifier = "CurrentWeatherHeader"
     
     private lazy var cityNameLabel = UILabel(.largeTitle36)

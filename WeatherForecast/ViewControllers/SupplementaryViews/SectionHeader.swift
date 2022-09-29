@@ -28,9 +28,11 @@ final class SectionHeader: UICollectionReusableView {
         addSubview(stackView)
 
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            stackView.widthAnchor.constraint(greaterThanOrEqualToConstant: 50),
-            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 12)
+            stackView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+            stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 12),
+            stackView.widthAnchor.constraint(
+                lessThanOrEqualToConstant: UIScreen.main.bounds.width - 64
+            )
         ])
     }
     
