@@ -14,7 +14,9 @@ class MainPageCollectionViewCell: UICollectionViewCell {
     private typealias Snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>
     
     static let reuseIdentifier = "MainPageCollectionViewCell"
-    weak var coordinator: Coordinator?
+        
+    var onCellTapped: ((ForecastData, Int) -> Void)?
+    
     private var collectionView: UICollectionView!
     private var dataSource: DataSource?
     private var forecastData: ForecastData? {
@@ -61,17 +63,17 @@ class MainPageCollectionViewCell: UICollectionViewCell {
             forCellWithReuseIdentifier: AlertCell.reuseIdentifier
         )
         collectionView.register(
-            HourlyCollectionViewCell.self,
-            forCellWithReuseIdentifier: HourlyCollectionViewCell.reuseIdentifier
+            HourlyNestedCollectionViewCell.self,
+            forCellWithReuseIdentifier: HourlyNestedCollectionViewCell.reuseIdentifier
         )
         collectionView.register(
-            DailyForecastCell.self,
-            forCellWithReuseIdentifier: DailyForecastCell.reuseIdentifier
+            DailyCell.self,
+            forCellWithReuseIdentifier: DailyCell.reuseIdentifier
         )
         collectionView.register(
-            CurrentWeatherHeader.self,
-            forSupplementaryViewOfKind: CurrentWeatherHeader.reuseIdentifier,
-            withReuseIdentifier: CurrentWeatherHeader.reuseIdentifier
+            GlobalHeader.self,
+            forSupplementaryViewOfKind: GlobalHeader.reuseIdentifier,
+            withReuseIdentifier: GlobalHeader.reuseIdentifier
         )
         collectionView.register(
             GlobalFooter.self,
@@ -122,7 +124,7 @@ class MainPageCollectionViewCell: UICollectionViewCell {
             }
         }
         let currentWeatherHeader = createGlobalHeader(
-            withKind: CurrentWeatherHeader.reuseIdentifier
+            withKind: GlobalHeader.reuseIdentifier
         )
         let globalFooter = createGlobalFooter(
             withKind: GlobalFooter.reuseIdentifier
@@ -174,14 +176,14 @@ extension MainPageCollectionViewCell {
                 )
             case .hourlyCollection:
                 return self?.configure(
-                    HourlyCollectionViewCell.self,
+                    HourlyNestedCollectionViewCell.self,
                     with: forecast,
                     andTimeZone: offset,
                     for: indexPath
                 )
             case .daily:
                 return self?.configure(
-                    DailyForecastCell.self,
+                    DailyCell.self,
                     with: forecast,
                     andTimeZone: offset,
                     for: indexPath
@@ -191,12 +193,12 @@ extension MainPageCollectionViewCell {
         
         dataSource?.supplementaryViewProvider = { [weak self] weatherCollectionView, kind, indexPath in
             switch kind {
-            case CurrentWeatherHeader.reuseIdentifier:
+            case GlobalHeader.reuseIdentifier:
                 guard let currentWeatherHeader = weatherCollectionView.dequeueReusableSupplementaryView(
                     ofKind: kind,
                     withReuseIdentifier: kind,
                     for: indexPath
-                ) as? CurrentWeatherHeader else {
+                ) as? GlobalHeader else {
                     fatalError("Unknown header kind")
                 }
                 if let forecastData = self?.forecastData {
@@ -278,8 +280,8 @@ extension MainPageCollectionViewCell {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(
-            widthDimension: .estimated(0.1),
-            heightDimension: .estimated(0.1)
+            widthDimension: .absolute(0.1),
+            heightDimension: .absolute(0.1)
         )
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: groupSize,
@@ -298,7 +300,7 @@ extension MainPageCollectionViewCell {
 
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(90)
+            heightDimension: .absolute(90)
         )
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: groupSize,
@@ -330,7 +332,7 @@ extension MainPageCollectionViewCell {
         
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(120.0)
+            heightDimension: .absolute(120.0)
         )
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: groupSize,
@@ -352,7 +354,7 @@ extension MainPageCollectionViewCell {
         section.boundarySupplementaryItems = [sectionHeader]
         
         section.visibleItemsInvalidationHandler = { items, offset, _ in
-            guard let globalHeader = self.collectionView.visibleSupplementaryViews(ofKind: CurrentWeatherHeader.reuseIdentifier).first as? CurrentWeatherHeader else { return }
+            guard let globalHeader = self.collectionView.visibleSupplementaryViews(ofKind: GlobalHeader.reuseIdentifier).first as? GlobalHeader else { return }
             
             if offset.y < 0 {
                 globalHeader.setAlphaForMainLabels(with: 1)
@@ -405,7 +407,7 @@ extension MainPageCollectionViewCell {
     private func createSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
         let headerSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(36)
+            heightDimension: .absolute(36)
         )
         let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: headerSize,
@@ -418,7 +420,7 @@ extension MainPageCollectionViewCell {
     private func createGlobalHeader(withKind headerKind: String) -> NSCollectionLayoutBoundarySupplementaryItem {
         let globalHeaderSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(300)
+            heightDimension: .absolute(300)
         )
         let globalHeader = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: globalHeaderSize,
@@ -432,7 +434,7 @@ extension MainPageCollectionViewCell {
     private func createGlobalFooter(withKind footerKind: String) -> NSCollectionLayoutBoundarySupplementaryItem {
         let globalFooterSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(200)
+            heightDimension: .absolute(200)
         )
         let globalFooter = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: globalFooterSize,
@@ -472,7 +474,8 @@ extension MainPageCollectionViewCell: UICollectionViewDelegate {
                 name: .scrollToItem,
                 object: nil
             )
-            coordinator?.navigate(with: forecastData, by: indexPath.item)
+            
+            onCellTapped?(forecastData, indexPath.item)
         }
     }
 }
