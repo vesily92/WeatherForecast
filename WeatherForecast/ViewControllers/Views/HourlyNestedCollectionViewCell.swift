@@ -1,5 +1,5 @@
 //
-//  HourlyCollectionViewCell.swift
+//  HourlyNestedCollectionViewCell.swift
 //  WeatherForecast
 //
 //  Created by Василий Пронин on 22.04.2022.
@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-class HourlyCollectionViewCell: UICollectionViewCell, SelfConfiguringCell {
+class HourlyNestedCollectionViewCell: UICollectionViewCell, SelfConfiguringCell {
     static let reuseIdentifier = "HourlyCollectionViewCell"
     
     private var collectionView: UICollectionView!
@@ -39,8 +39,8 @@ class HourlyCollectionViewCell: UICollectionViewCell, SelfConfiguringCell {
         contentView.addSubview(collectionView)
         
         collectionView.register(
-            HourlyForecastCell.self,
-            forCellWithReuseIdentifier: HourlyForecastCell.reuseIdentifier
+            HourlyCell.self,
+            forCellWithReuseIdentifier: HourlyCell.reuseIdentifier
         )
         
 //        NSLayoutConstraint.activate([
@@ -62,7 +62,7 @@ class HourlyCollectionViewCell: UICollectionViewCell, SelfConfiguringCell {
     }
 }
 
-extension HourlyCollectionViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
+extension HourlyNestedCollectionViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         1
     }
@@ -72,7 +72,7 @@ extension HourlyCollectionViewCell: UICollectionViewDelegate, UICollectionViewDa
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyForecastCell.reuseIdentifier, for: indexPath) as? HourlyForecastCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyCell.reuseIdentifier, for: indexPath) as? HourlyCell else {
             fatalError("Unable to dequeue cell")
         }
         
@@ -125,7 +125,7 @@ extension HourlyCollectionViewCell: UICollectionViewDelegate, UICollectionViewDa
     }
 }
 
-extension HourlyCollectionViewCell {
+extension HourlyNestedCollectionViewCell {
     
     private enum CellType {
         case hourly

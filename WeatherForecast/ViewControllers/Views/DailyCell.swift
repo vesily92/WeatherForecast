@@ -1,5 +1,5 @@
 //
-//  DailyForecastCell.swift
+//  DailyCell.swift
 //  WeatherForecast
 //
 //  Created by Василий Пронин on 09.02.2022.
@@ -7,14 +7,14 @@
 
 import UIKit
 
-class DailyForecastCell: UICollectionViewCell, SelfConfiguringCell {
+class DailyCell: UICollectionViewCell, SelfConfiguringCell {
     static let reuseIdentifier = "DailyForecastCell"
     
-    lazy private var weekdayLabel = UILabel(.mainText20)
-    lazy private var highestTempLabel = UILabel(.mainText20)
-    lazy private var lowestTempLabel = UILabel(.mainText20, color: .gray)
-    lazy private var popLabel = UILabel(.smallText12, color: .teal)
-    lazy private var symbolView = UIImageView(.multicolor())
+    private lazy var weekdayLabel = UILabel(.mainText20)
+    private lazy var highestTempLabel = UILabel(.mainText20)
+    private lazy var lowestTempLabel = UILabel(.mainText20, color: .gray)
+    private lazy var popLabel = UILabel(.smallText12, color: .teal)
+    private lazy var symbolView = UIImageView(.multicolor())
     
     override init(frame: CGRect) {
         super.init(frame: frame)

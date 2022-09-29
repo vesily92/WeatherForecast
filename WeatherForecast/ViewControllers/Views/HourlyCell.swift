@@ -1,5 +1,5 @@
 //
-//  HourlyForecastCell.swift
+//  HourlyCell.swift
 //  WeatherForecast
 //
 //  Created by Василий Пронин on 09.02.2022.
@@ -7,16 +7,16 @@
 
 import UIKit
 
-class HourlyForecastCell: UICollectionViewCell, SelfConfiguringCell {
+class HourlyCell: UICollectionViewCell, SelfConfiguringCell {
     
     static let reuseIdentifier = "HourlyForecastCell"
     
     lazy var isSunrise: Bool = true
     
-    lazy private var timeLabel = UILabel(.specificationText16)
-    lazy private var popLabel = UILabel(.smallText12, color: .teal)
-    lazy private var temperatureLabel = UILabel(.mainText20)
-    lazy private var symbolView = UIImageView(.multicolor())
+    private lazy var timeLabel = UILabel(.specificationText16)
+    private lazy var popLabel = UILabel(.smallText12, color: .teal)
+    private lazy var temperatureLabel = UILabel(.mainText20)
+    private lazy var symbolView = UIImageView(.multicolor())
     
     override init(frame: CGRect) {
         super.init(frame: frame)
