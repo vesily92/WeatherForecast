@@ -28,12 +28,6 @@
 		7B42474227BBC396009DDADE /* SectionBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42474127BBC396009DDADE /* SectionBackgroundView.swift */; };
 		7B42475027BFCDBB009DDADE /* AlertCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B42474F27BFCDBA009DDADE /* AlertCell.swift */; };
 		7B59756827CE3E2200302F9C /* GlobalHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B59756727CE3E2200302F9C /* GlobalHeader.swift */; };
-		7B75755F28E053E9004F1067 /* DayPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B75755C28E053E8004F1067 /* DayPickerView.swift */; };
-		7B75756028E053E9004F1067 /* DayPickerCell2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B75755D28E053E9004F1067 /* DayPickerCell2.swift */; };
-		7B75756128E053E9004F1067 /* DayPickerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B75755E28E053E9004F1067 /* DayPickerItem.swift */; };
-		7B75756528E05400004F1067 /* DetailedDailyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B75756228E05400004F1067 /* DetailedDailyView.swift */; };
-		7B75756628E05400004F1067 /* DDViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B75756328E05400004F1067 /* DDViewController.swift */; };
-		7B75756728E05400004F1067 /* ConditionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B75756428E05400004F1067 /* ConditionsView.swift */; };
 		7B9BB3F5286A38B90069B699 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9BB3F4286A38B90069B699 /* Coordinator.swift */; };
 		7B9BB3F7286ACEBA0069B699 /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9BB3F6286ACEBA0069B699 /* MainCoordinator.swift */; };
 		7B9BB3FB286C58B90069B699 /* DetailedDailyConditionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9BB3FA286C58B90069B699 /* DetailedDailyConditionsCell.swift */; };
@@ -81,12 +75,6 @@
 		7B42474127BBC396009DDADE /* SectionBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionBackgroundView.swift; sourceTree = "<group>"; };
 		7B42474F27BFCDBA009DDADE /* AlertCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertCell.swift; sourceTree = "<group>"; };
 		7B59756727CE3E2200302F9C /* GlobalHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalHeader.swift; sourceTree = "<group>"; };
-		7B75755C28E053E8004F1067 /* DayPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayPickerView.swift; sourceTree = "<group>"; };
-		7B75755D28E053E9004F1067 /* DayPickerCell2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayPickerCell2.swift; sourceTree = "<group>"; };
-		7B75755E28E053E9004F1067 /* DayPickerItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayPickerItem.swift; sourceTree = "<group>"; };
-		7B75756228E05400004F1067 /* DetailedDailyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailedDailyView.swift; sourceTree = "<group>"; };
-		7B75756328E05400004F1067 /* DDViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DDViewController.swift; sourceTree = "<group>"; };
-		7B75756428E05400004F1067 /* ConditionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConditionsView.swift; sourceTree = "<group>"; };
 		7B9BB3F4286A38B90069B699 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		7B9BB3F6286ACEBA0069B699 /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		7B9BB3FA286C58B90069B699 /* DetailedDailyConditionsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedDailyConditionsCell.swift; sourceTree = "<group>"; };
@@ -250,19 +238,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		7B75755B28E053BC004F1067 /* CurrentVersion */ = {
-			isa = PBXGroup;
-			children = (
-				7B75756328E05400004F1067 /* DDViewController.swift */,
-				7B75756428E05400004F1067 /* ConditionsView.swift */,
-				7B75756228E05400004F1067 /* DetailedDailyView.swift */,
-				7B75755D28E053E9004F1067 /* DayPickerCell2.swift */,
-				7B75755E28E053E9004F1067 /* DayPickerItem.swift */,
-				7B75755C28E053E8004F1067 /* DayPickerView.swift */,
-			);
-			path = CurrentVersion;
-			sourceTree = "<group>";
-		};
 		7B9BB3FC286C6A100069B699 /* DetailedDailyCollectionView */ = {
 			isa = PBXGroup;
 			children = (
@@ -272,7 +247,6 @@
 				7BF3E4A628DCA98400A4BB7B /* DetailedDailyDayPickerView.swift */,
 				7BF3E4A828DDE21A00A4BB7B /* DetailedDailyDayPickerCell.swift */,
 				7BF3E4AA28DDEEEC00A4BB7B /* DetailedDailyDayPickerItem.swift */,
-				7B75755B28E053BC004F1067 /* CurrentVersion */,
 			);
 			path = DetailedDailyCollectionView;
 			sourceTree = "<group>";
@@ -379,7 +353,6 @@
 				7B9BB3FE286C6A4E0069B699 /* MainPageViewController.swift in Sources */,
 				7BE7372428D445DB0046A3B6 /* SearchViewController.swift in Sources */,
 				7B9BB3F5286A38B90069B699 /* Coordinator.swift in Sources */,
-				7B75756528E05400004F1067 /* DetailedDailyView.swift in Sources */,
 				7BE054B22866EF3500B625E9 /* ConditionsCell.swift in Sources */,
 				7BE03AA82837C4D100AD93C0 /* SectionHeader.swift in Sources */,
 				7B9BB3F7286ACEBA0069B699 /* MainCoordinator.swift in Sources */,
@@ -392,9 +365,7 @@
 				7B241A1427AC1D8800F07F52 /* AppDelegate.swift in Sources */,
 				7B241A4227B3F57100F07F52 /* HourlyCell.swift in Sources */,
 				7B241A4627B4F2AC00F07F52 /* SelfConfiguringCell.swift in Sources */,
-				7B75755F28E053E9004F1067 /* DayPickerView.swift in Sources */,
 				7BB7659127F3202A0049C6A1 /* DateFormatter + Extension.swift in Sources */,
-				7B75756728E05400004F1067 /* ConditionsView.swift in Sources */,
 				7B1CA231285B580A00C671BE /* GlobalFooter.swift in Sources */,
 				7B59756827CE3E2200302F9C /* GlobalHeader.swift in Sources */,
 				7B1CA24628606D4A00C671BE /* DailyTempCell.swift in Sources */,
@@ -408,9 +379,7 @@
 				7B9CD3F627F5F55700D33DBC /* EmptyCell.swift in Sources */,
 				7BCD7A7428B94D6000661B42 /* NewLocationViewController.swift in Sources */,
 				7B9CD3FE27FC2AD000D33DBC /* Double + Extension.swift in Sources */,
-				7B75756028E053E9004F1067 /* DayPickerCell2.swift in Sources */,
 				7BF3E4A928DDE21A00A4BB7B /* DetailedDailyDayPickerCell.swift in Sources */,
-				7B75756128E053E9004F1067 /* DayPickerItem.swift in Sources */,
 				7BA6B3832813038B00C765D9 /* HourlyNestedCollectionViewCell.swift in Sources */,
 				7BA6B387281B042100C765D9 /* Collection + Extension.swift in Sources */,
 				7BF3E4A728DCA98400A4BB7B /* DetailedDailyDayPickerView.swift in Sources */,
@@ -420,7 +389,6 @@
 				7B42475027BFCDBB009DDADE /* AlertCell.swift in Sources */,
 				7B241A2E27AC1FBC00F07F52 /* Constants.swift in Sources */,
 				7BF3E4A228DC88F300A4BB7B /* DetailedDailyViewController.swift in Sources */,
-				7B75756628E05400004F1067 /* DDViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

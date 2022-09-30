@@ -60,4 +60,11 @@ extension UILabel {
             self.textColor = .white
         }
     }
+    
+    convenience init(fontSize: CGFloat, fontWeight: UIFont.Weight = .regular, textColor: UIColor = .white) {
+        self.init()
+        
+        self.font = .systemFont(ofSize: fontSize, weight: fontWeight)
+        self.textColor = textColor
+    }
 }
