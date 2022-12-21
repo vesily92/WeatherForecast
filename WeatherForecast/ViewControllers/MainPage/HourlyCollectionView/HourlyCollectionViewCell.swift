@@ -1,5 +1,5 @@
 //
-//  HourlyCollectionViewCellNEW.swift
+//  HourlyCollectionViewCell.swift
 //  WeatherForecast
 //
 //  Created by Василий Пронин on 16.12.2022.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HourlyCollectionViewCellNEW: UICollectionViewCell, SelfConfigurable {
+class HourlyCollectionViewCell: UICollectionViewCell, SelfConfigurable {
     static let reuseIdentifier = "HourlyCollectionViewCell"
     
     private var collectionView: UICollectionView!
@@ -55,7 +55,7 @@ class HourlyCollectionViewCellNEW: UICollectionViewCell, SelfConfigurable {
     }
 }
 
-extension HourlyCollectionViewCellNEW: UICollectionViewDelegate, UICollectionViewDataSource {
+extension HourlyCollectionViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         27
     }
@@ -109,7 +109,7 @@ extension HourlyCollectionViewCellNEW: UICollectionViewDelegate, UICollectionVie
     }
 }
 
-extension HourlyCollectionViewCellNEW {
+extension HourlyCollectionViewCell {
     
     private enum CellType {
         case hourly
