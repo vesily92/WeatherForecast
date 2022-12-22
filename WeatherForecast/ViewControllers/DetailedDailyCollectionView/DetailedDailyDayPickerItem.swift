@@ -46,7 +46,6 @@ class DetailedDailyDayPickerItem: UIView {
             stack.trailingAnchor.constraint(equalTo: self.trailingAnchor)
         ])
     }
-    
 }
 
 extension DetailedDailyDayPickerItem: DetailedDailyDayPickerItemProtocol {

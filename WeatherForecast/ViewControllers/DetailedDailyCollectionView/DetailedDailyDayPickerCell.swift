@@ -39,5 +39,4 @@ class DetailedDailyDayPickerCell: UICollectionViewCell {
             view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
-    
 }

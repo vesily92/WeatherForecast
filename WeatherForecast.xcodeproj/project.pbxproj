@@ -40,6 +40,7 @@
 		7B7C318529483B4700BCF835 /* MainPageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B7C318429483B4600BCF835 /* MainPageCollectionViewCell.swift */; };
 		7B7C318729483B9A00BCF835 /* MainPageNewLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B7C318629483B9A00BCF835 /* MainPageNewLocationViewController.swift */; };
 		7B7C31892948441500BCF835 /* MainPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B7C31882948441500BCF835 /* MainPageViewController.swift */; };
+		7B88F1D82954AA6C006DC7EA /* UIView + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B88F1D72954AA6C006DC7EA /* UIView + Extension.swift */; };
 		7B9BB3F5286A38B90069B699 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9BB3F4286A38B90069B699 /* Coordinator.swift */; };
 		7B9BB3F7286ACEBA0069B699 /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9BB3F6286ACEBA0069B699 /* MainCoordinator.swift */; };
 		7B9BB3FB286C58B90069B699 /* DetailedDailyConditionsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9BB3FA286C58B90069B699 /* DetailedDailyConditionsCell.swift */; };
@@ -99,6 +100,7 @@
 		7B7C318429483B4600BCF835 /* MainPageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPageCollectionViewCell.swift; sourceTree = "<group>"; };
 		7B7C318629483B9A00BCF835 /* MainPageNewLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPageNewLocationViewController.swift; sourceTree = "<group>"; };
 		7B7C31882948441500BCF835 /* MainPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPageViewController.swift; sourceTree = "<group>"; };
+		7B88F1D72954AA6C006DC7EA /* UIView + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIView + Extension.swift"; path = "../../../../UIView + Extension.swift"; sourceTree = "<group>"; };
 		7B9BB3F4286A38B90069B699 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		7B9BB3F6286ACEBA0069B699 /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		7B9BB3FA286C58B90069B699 /* DetailedDailyConditionsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedDailyConditionsCell.swift; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				7B9CD3FD27FC2AD000D33DBC /* Double + Extension.swift */,
+				7B88F1D72954AA6C006DC7EA /* UIView + Extension.swift */,
 				7B1CA24728619F8E00C671BE /* Int + Extension.swift */,
 				7B1CA23D285CA27700C671BE /* UILabel + Extension.swift */,
 				7BB7659027F3202A0049C6A1 /* DateFormatter + Extension.swift */,
@@ -451,6 +454,7 @@
 				7B241A4427B3F62900F07F52 /* DailyCell.swift in Sources */,
 				7B42475027BFCDBB009DDADE /* AlertCell.swift in Sources */,
 				7B241A2E27AC1FBC00F07F52 /* Constants.swift in Sources */,
+				7B88F1D82954AA6C006DC7EA /* UIView + Extension.swift in Sources */,
 				7BF3E4A228DC88F300A4BB7B /* DetailedDailyViewController.swift in Sources */,
 				7B5EAFA629485E5E00442F8A /* ConditionsView.swift in Sources */,
 			);
