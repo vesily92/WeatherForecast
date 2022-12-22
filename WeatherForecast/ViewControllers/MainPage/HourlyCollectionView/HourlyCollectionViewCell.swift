@@ -21,6 +21,7 @@ class HourlyCollectionViewCell: UICollectionViewCell, SelfConfigurable {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.estimatedItemSize = CGSize(width: 60, height: 120)
+        layout.sectionInset.right = 16
         
         collectionView = UICollectionView(
             frame: CGRect(
