@@ -2,20 +2,15 @@
 //  MainPageViewController.swift
 //  WeatherForecast
 //
-//  Created by Василий Пронин on 29.06.2022.
+//  Created by Василий Пронин on 13.12.2022.
 //
 
 import UIKit
-import CoreLocation
 
 class MainPageViewController: UIViewController, UpdatableWithForecastData {
     
-    private enum MainPageVCSection: Int, CaseIterable {
-        case main
-    }
-    
-    private typealias DataSource = UICollectionViewDiffableDataSource<MainPageVCSection, ForecastData>
-    private typealias Snapshot = NSDiffableDataSourceSnapshot<MainPageVCSection, ForecastData>
+    private typealias DataSource = UICollectionViewDiffableDataSource<Int, ForecastData>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<Int, ForecastData>
     
     // MARK: Callbacks
     
@@ -30,17 +25,9 @@ class MainPageViewController: UIViewController, UpdatableWithForecastData {
             pageControl.numberOfPages = forecastData.count
             makeSnapshot()
             setupNavBar()
-            updateLocations()
         }
     }
-    var locations: [Location] = [] {
-        didSet {
-            print("Locations: \(locations.count)")
-            locations.forEach { loc in
-                print(loc.latitude)
-            }
-        }
-    }
+
     private var dataSource: DataSource?
     private var collectionView: UICollectionView!
     private var pageControl: UIPageControl!
@@ -112,7 +99,6 @@ class MainPageViewController: UIViewController, UpdatableWithForecastData {
         ])
     }
     
-    
     private func setupCollectionView() {
         collectionView = UICollectionView(
             frame: view.bounds,
@@ -162,42 +148,35 @@ class MainPageViewController: UIViewController, UpdatableWithForecastData {
     // MARK: DataSource
     
     private func createDataSource() {
+        print("MPVC data source")
         dataSource = DataSource(
             collectionView: collectionView
         ) { [weak self] collectionView, indexPath, forecast in
-            guard let section = MainPageVCSection(rawValue: indexPath.section) else {
-                fatalError("Unknown section kind")
+            guard let cell = self?.collectionView.dequeueReusableCell(
+                withReuseIdentifier: MainPageCollectionViewCell.reuseIdentifier,
+                for: indexPath
+            ) as? MainPageCollectionViewCell else {
+                fatalError("Unable to dequeue DailyDetailedCollectionViewCell")
             }
-            switch section {
-            case .main:
-                guard let cell = self?.collectionView.dequeueReusableCell(
-                    withReuseIdentifier: MainPageCollectionViewCell.reuseIdentifier,
-                    for: indexPath
-                ) as? MainPageCollectionViewCell else {
-                    fatalError("Unable to dequeue DailyDetailedCollectionViewCell")
-                }
-                cell.onCellTapped = { [weak self] forecast, index in
-                    self?.onCellDidTap?(forecast, index)
-                }
-                cell.configure(with: forecast)
-
-                return cell
+            cell.mainPageView.onCellTapped = { [weak self] forecast, index in
+                self?.onCellDidTap?(forecast, index)
             }
+            cell.configure(with: forecast)
+            
+            return cell
         }
     }
 
     private func makeSnapshot() {
         var snapshot = Snapshot()
-        snapshot.appendSections(MainPageVCSection.allCases)
-        snapshot.appendItems(forecastData, toSection: .main)
+        snapshot.appendSections([0])
+        snapshot.appendItems(forecastData)
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
     
     // MARK: Current location data methods
     
-    private func fetchData(with location: CLLocation) {
-        let latitude = location.coordinate.latitude
-        let longitude = location.coordinate.longitude
+    private func fetchData(withLat latitude: Double, andLon longitude: Double) {
         
         NetworkManager.shared.fetchOneCallData(
             withLatitude: latitude,
@@ -209,18 +188,11 @@ class MainPageViewController: UIViewController, UpdatableWithForecastData {
     }
     
     private func fetchDataForUserLocation() {
-        LocationManager.shared.getUserLocation { [weak self] location in
+        LocationManager.shared.getUserLocation { [weak self] latitude, longitude in
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                self.fetchData(with: location)
+                self.fetchData(withLat: latitude, andLon: longitude)
             }
-        }
-    }
-    
-    private func updateLocations() {
-        LocationManager.shared.getLocations(from: forecastData) { [weak self] locations in
-            guard let locations = locations else { return }
-            self?.locations = locations
         }
     }
 }
