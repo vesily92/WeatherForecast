@@ -6,10 +6,10 @@
 //
 
 import UIKit
-import CoreLocation
 
-class GlobalHeader: UICollectionReusableView {
-    static let reuseIdentifier = "CurrentWeatherHeader"
+class GlobalHeader: UICollectionReusableView, SelfConfigurable {
+
+    static let reuseIdentifier = "GlobalHeader"
     
     private lazy var cityNameLabel = UILabel(.largeTitle36)
     private lazy var tempLabel = UILabel(.globalTemperature)
@@ -21,7 +21,7 @@ class GlobalHeader: UICollectionReusableView {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    private lazy var symbolView = UIImageView(.multicolor())
+    private lazy var symbolView = UIImageView()
     
     private lazy var backgroundView: UIImageView = {
         let view = UIImageView()
@@ -66,31 +66,26 @@ class GlobalHeader: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        layer.zPosition = 2
-
-        addSubview(backgroundView)
-        addSubview(containerView)
-        addSubview(subheadlineLabel)
-        
-        setupConstraints()
+        setupUI()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with forecast: ForecastData) {
+    func configure(with forecast: AnyHashable, tzOffset: Int? = nil) {
+        guard let forecast = forecast as? ForecastData else { return }
         DispatchQueue.main.async {
-            let coordinates = CLLocation(latitude: forecast.lat, longitude: forecast.lon)
-            
-            LocationManager.shared.getLocationName(with: coordinates) { [weak self] location in
+            LocationManager.shared.getLocationName(withLat: forecast.lat, andLon: forecast.lon) { [weak self] location in
                 guard let location = location else { return }
                 self?.cityNameLabel.text = location.cityName
             }
             self.tempLabel.text = forecast.current.temp.displayTemp()
             self.descriptionLabel.text = forecast.current.weather.first!.description.capitalized
             self.feelsLikeLabel.text = "Feels like: " + forecast.current.feelsLike.displayTemp()
-            self.symbolView.image = UIImage(systemName: forecast.current.weather.first!.systemNameString)
+            self.symbolView.image = UIImage(
+                systemName: forecast.current.weather.first!.systemNameString
+            )?.withRenderingMode(.alwaysOriginal)
             
             self.subheadlineLabel.text = forecast.current.temp.displayTemp() + " " + "|" + " " + forecast.current.weather.first!.description.capitalized
         }
@@ -117,7 +112,14 @@ class GlobalHeader: UICollectionReusableView {
         layer.zPosition = 2
     }
     
-    func setupConstraints() {
+    func setupUI() {
+        symbolView.contentMode = .scaleAspectFit
+        layer.zPosition = 2
+
+        addSubview(backgroundView)
+        addSubview(containerView)
+        addSubview(subheadlineLabel)
+        
         NSLayoutConstraint.activate([
             backgroundView.topAnchor.constraint(equalTo: topAnchor),
             backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),

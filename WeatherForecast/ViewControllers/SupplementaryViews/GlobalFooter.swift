@@ -6,9 +6,9 @@
 //
 
 import UIKit
-import CoreLocation
 
-class GlobalFooter: UICollectionReusableView {
+class GlobalFooter: UICollectionReusableView, SelfConfigurable {
+    
     static let reuseIdentifier = "GlobalFooter"
     
     private lazy var titleLabel = UILabel(.specificationText16)
@@ -59,17 +59,15 @@ class GlobalFooter: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with forecast: ForecastData) {
+    func configure(with forecast: AnyHashable, tzOffset: Int? = nil) {
+        guard let forecast = forecast as? ForecastData else { return }
+        
         DispatchQueue.main.async {
-            let coordinates = CLLocation(latitude: forecast.lat, longitude: forecast.lon)
-            
-            LocationManager.shared.getLocationName(with: coordinates, completion: { [weak self] location in
-                guard let location = location else { return }
-                if let city = location.cityName {
-                    self?.titleLabel.text = "Weather for " + city
-                }
-            })
-            
+            LocationManager.shared.getLocationName(withLat: forecast.lat, andLon: forecast.lon) { [weak self] location in
+                guard let location = location,
+                      let city = location.cityName else { return }
+                self?.titleLabel.text = "Weather for " + city
+            }
             self.subtitleLabel.text = "Provided by OpenWeather"
             self.openWeatherLogoView.image = UIImage(named: "OpenWeatherLogo")
         }

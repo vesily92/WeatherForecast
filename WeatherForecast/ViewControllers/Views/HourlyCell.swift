@@ -7,19 +7,20 @@
 
 import UIKit
 
-class HourlyCell: UICollectionViewCell, SelfConfiguringCell {
+class HourlyCell: UICollectionViewCell, SelfConfigurable {
     
-    static let reuseIdentifier = "HourlyForecastCell"
+    static let reuseIdentifier = "HourlyCell"
     
     lazy var isSunrise: Bool = true
     
     private lazy var timeLabel = UILabel(.specificationText16)
     private lazy var popLabel = UILabel(.smallText12, color: .teal)
     private lazy var temperatureLabel = UILabel(.mainText20)
-    private lazy var symbolView = UIImageView(.multicolor())
+    private lazy var symbolView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         let iconPopStackView = UIStackView(arrangedSubviews: [
             symbolView,
             popLabel
@@ -42,7 +43,13 @@ class HourlyCell: UICollectionViewCell, SelfConfiguringCell {
         setupConstraints(stackView)
     }
     
-    func configure(with forecast: AnyHashable, andTimezoneOffset offset: Int) {
+    func configure(with forecast: AnyHashable, tzOffset offset: Int?) {
+        guard let offset = offset else { return }
+        
+        let symbolFont = UIFont.systemFont(ofSize: 16, weight: .bold)
+        let symbolConfig = UIImage.SymbolConfiguration(font: symbolFont)
+        symbolView.contentMode = .scaleAspectFit
+        
         if let forecast = forecast as? Hourly {
             timeLabel.text = DateFormatter.format(forecast.dt, to: .hour, withTimeZoneOffset: offset)
             popLabel.text = forecast.pop.displayPop(
@@ -50,8 +57,9 @@ class HourlyCell: UICollectionViewCell, SelfConfiguringCell {
             )
             temperatureLabel.text = forecast.temp.displayTemp()
             symbolView.image = UIImage(
-                systemName: forecast.weather.first!.systemNameString
-            )
+                systemName: forecast.weather.first!.systemNameString,
+                withConfiguration: symbolConfig
+            )?.withRenderingMode(.alwaysOriginal)
         }
         
         if let forecast = forecast as? Current {
@@ -59,8 +67,9 @@ class HourlyCell: UICollectionViewCell, SelfConfiguringCell {
             popLabel.text = nil
             temperatureLabel.text = forecast.temp.displayTemp()
             symbolView.image = UIImage(
-                systemName: forecast.weather.first!.systemNameString
-            )
+                systemName: forecast.weather.first!.systemNameString,
+                withConfiguration: symbolConfig
+            )?.withRenderingMode(.alwaysOriginal)
         }
         
         if let forecast = forecast as? Daily {
@@ -76,12 +85,13 @@ class HourlyCell: UICollectionViewCell, SelfConfiguringCell {
             symbolView.image = UIImage(
                 systemName: isSunrise
                 ? "sunrise.fill"
-                : "sunset.fill"
-            )
+                : "sunset.fill",
+                withConfiguration: symbolConfig
+            )?.withRenderingMode(.alwaysOriginal)
         }
     }
     
-    fileprivate func setupConstraints(_ uiView: UIView) {
+    private func setupConstraints(_ uiView: UIView) {
         NSLayoutConstraint.activate([
             uiView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             uiView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),

@@ -7,12 +7,12 @@
 
 import UIKit
 
-final class SectionHeader: UICollectionReusableView {
+final class SectionHeader: UICollectionReusableView, SelfConfigurable {
 
     static let reuseIdentifier = "SectionHeader"
     
     private lazy var titleLabel = UILabel(.mainText20)
-    private lazy var symbolView = UIImageView(.monochrome(.gray))
+    private lazy var symbolView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -40,27 +40,39 @@ final class SectionHeader: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureForAlertSection(with forecast: ForecastData) {
-        guard let alerts = forecast.alerts?.count,
-              let event = forecast.alerts?.first?.event else {
-                  return
-              }
-        var areFew: Bool {
-            return alerts > 1 ? true : false
-        }
-        var text = ""
+    func configure(with model: AnyHashable, tzOffset: Int? = nil) {
         
-        titleLabel.text = event.capitalized
-        if titleLabel.isTruncated {
-            text = "Warning!"
-        } else {
-            text = event.capitalized
+        if let section = model as? Section {
+            titleLabel.textColor = .gray
+            symbolView.tintColor = .gray
+            
+            titleLabel.text = section.headerTitle
+            symbolView.image = UIImage(systemName: section.headerIcon)
         }
-        titleLabel.textColor = .white
-        symbolView.tintColor = .white
         
-        titleLabel.text = areFew ? "\(text) & \(alerts - 1) More" : "\(text)"
-        symbolView.image = UIImage(systemName: "exclamationmark.triangle.fill")
+        if let forecast = model as? ForecastData {
+            guard let alerts = forecast.alerts?.count,
+                  let event = forecast.alerts?.first?.event else {
+                return
+            }
+            
+            var areFew: Bool {
+                return alerts > 1 ? true : false
+            }
+            var text = ""
+            
+            titleLabel.text = event.capitalized
+            if titleLabel.isTruncated {
+                text = "Warning!"
+            } else {
+                text = event.capitalized
+            }
+            titleLabel.textColor = .white
+            symbolView.tintColor = .white
+            
+            titleLabel.text = areFew ? "\(text) & \(alerts - 1) More" : "\(text)"
+            symbolView.image = UIImage(systemName: "exclamationmark.triangle.fill")
+        }
     }
 
     func configure(with section: Section) {

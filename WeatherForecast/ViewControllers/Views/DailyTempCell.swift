@@ -10,111 +10,79 @@ import UIKit
 class DailyTempCell: UICollectionViewCell {
     static let reuseIdentifier = "DailyTempCell"
     
-    private lazy var timeHeadingLabel = UILabel(.specificationText16, color: .gray)
-    private lazy var morningLabel = UILabel(.mainText20)
-    private lazy var dayLabel = UILabel(.mainText20)
-    private lazy var eveningLabel = UILabel(.mainText20)
-    private lazy var nightLabel = UILabel(.mainText20)
-
-    private lazy var tempHeadingLabel = UILabel(.specificationText16, color: .gray)
-    private lazy var morningTempLabel = UILabel(.mainText20)
-    private lazy var dayTempLabel = UILabel(.mainText20)
-    private lazy var eveningTempLabel = UILabel(.mainText20)
-    private lazy var nightTempLabel = UILabel(.mainText20)
-
-    private lazy var feelsLikeHeadingLabel = UILabel(.specificationText16, color: .gray)
-    private lazy var morningFeelsLikeLabel = UILabel(.mainText20, color: .gray)
-    private lazy var dayFeelsLikeLabel = UILabel(.mainText20, color: .gray)
-    private lazy var eveningFeelsLikeLabel = UILabel(.mainText20, color: .gray)
-    private lazy var nightFeelsLikeLabel = UILabel(.mainText20, color: .gray)
+    private lazy var timeHeaderLabel = UILabel(.mainText20, color: .gray)
+    private lazy var tempSymbol = UIImageView()
+    private lazy var feelsLikeHeaderLabel = UILabel(.mainText20, color: .gray)
     
-    private lazy var morningSymbol = UIImageView(.monochrome(.gray))
-    private lazy var daySymbol = UIImageView(.monochrome(.gray))
-    private lazy var eveningSymbol = UIImageView(.monochrome(.gray))
-    private lazy var nightSymbol = UIImageView(.monochrome(.gray))
+    private lazy var timeLabel = UILabel(.mainText20)
+    private lazy var tempLabel = UILabel(.mainText20)
+    private lazy var feelsLikeLabel = UILabel(.mainText20)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         contentView.backgroundColor = .systemGray2
         contentView.layer.cornerRadius = 12
-
-        let nameStack = UIStackView(arrangedSubviews: [
-            timeHeadingLabel,
-            morningLabel,
-            dayLabel,
-            eveningLabel,
-            nightLabel
-        ])
-        nameStack.axis = .vertical
-        nameStack.alignment = .leading
-        nameStack.distribution = .fillEqually
         
-        let tempStack = UIStackView(arrangedSubviews: [
-            tempHeadingLabel,
-            morningTempLabel,
-            dayTempLabel,
-            eveningTempLabel,
-            nightTempLabel
-        ])
-        tempStack.axis = .vertical
-        tempStack.alignment = .trailing
-        tempStack.distribution = .fillEqually
+        timeLabel.numberOfLines = 0
+        tempLabel.numberOfLines = 0
+        feelsLikeLabel.numberOfLines = 0
         
-        let morningFLStack = UIStackView(arrangedSubviews: [
-            morningFeelsLikeLabel,
-            morningSymbol
+        let headerStack = UIStackView(arrangedSubviews: [
+            tempSymbol,
+            timeHeaderLabel
         ])
-        morningFLStack.axis = .horizontal
-        morningFLStack.spacing = 20
+        headerStack.axis = .horizontal
+        headerStack.spacing = 5
         
-        let dayFLStack = UIStackView(arrangedSubviews: [
-            dayFeelsLikeLabel,
-            daySymbol
-        ])
-        dayFLStack.axis = .horizontal
-        dayFLStack.spacing = 20
-        
-        let eveningFLStack = UIStackView(arrangedSubviews: [
-            eveningFeelsLikeLabel,
-            eveningSymbol
-        ])
-        eveningFLStack.axis = .horizontal
-        eveningFLStack.spacing = 20
-        
-        let nightFLStack = UIStackView(arrangedSubviews: [
-            nightFeelsLikeLabel,
-            nightSymbol
-        ])
-        nightFLStack.axis = .horizontal
-        nightFLStack.spacing = 20
+        let separator = UIView(frame: .zero)
+        separator.backgroundColor = .gray
+        separator.alpha = 0.7
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(separator)
 
         let feelsLikeStack = UIStackView(arrangedSubviews: [
-            feelsLikeHeadingLabel,
-            morningFLStack,
-            dayFLStack,
-            eveningFLStack,
-            nightFLStack
+            feelsLikeHeaderLabel,
+            feelsLikeLabel
         ])
         feelsLikeStack.axis = .vertical
         feelsLikeStack.alignment = .trailing
-        feelsLikeStack.distribution = .fillEqually
+        feelsLikeStack.distribution = .fillProportionally
+        feelsLikeStack.spacing = 6
+        feelsLikeStack.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(feelsLikeStack)
         
-        let containerStack = UIStackView(arrangedSubviews: [
-            nameStack,
-            tempStack,
-            feelsLikeStack
+        let timeAndTempStack = UIStackView(arrangedSubviews: [
+            timeLabel,
+            tempLabel
         ])
-        containerStack.axis = .horizontal
-        containerStack.distribution = .fillEqually
+        timeAndTempStack.axis = .horizontal
+        timeAndTempStack.distribution = .fillEqually
+        timeAndTempStack.translatesAutoresizingMaskIntoConstraints = false
+ 
+        let containerStack = UIStackView(arrangedSubviews: [
+            headerStack,
+            timeAndTempStack
+        ])
+        containerStack.axis = .vertical
+        containerStack.alignment = .leading
         containerStack.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(containerStack)
- 
+        
         NSLayoutConstraint.activate([
             containerStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            containerStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            containerStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-            containerStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
+            containerStack.topAnchor.constraint(equalTo: contentView.topAnchor),
+            containerStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            
+            separator.leadingAnchor.constraint(equalTo: containerStack.trailingAnchor, constant: 16),
+            separator.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            separator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            separator.widthAnchor.constraint(equalToConstant: 1),
+            
+            feelsLikeStack.leadingAnchor.constraint(equalTo: separator.trailingAnchor, constant: 16),
+            feelsLikeStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            feelsLikeStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
+            feelsLikeStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
         ])
     }
     
@@ -123,52 +91,28 @@ class DailyTempCell: UICollectionViewCell {
     }
     
     func configure(with model: Daily) {
-//        headerIcon.image = UIImage(systemName: "thermometer")
-//        headerLabel.text = DateFormatter.format(model.dt, to: .date, withTimeZoneOffset: offset)
-        
-        timeHeadingLabel.text = "Time"
-        morningLabel.text = "Morning:"
-        dayLabel.text = "Day:"
-        eveningLabel.text = "Evening:"
-        nightLabel.text = "Night:"
-        
-        tempHeadingLabel.text = "Temperature"
-        morningTempLabel.text = model.temperature.morn.displayTemp()
-        dayTempLabel.text = model.temperature.day.displayTemp()
-        eveningTempLabel.text = model.temperature.eve.displayTemp()
-        nightTempLabel.text = model.temperature.night.displayTemp()
-        
-        feelsLikeHeadingLabel.text = "Feels Like"
-        morningFeelsLikeLabel.text = model.feelsLike.morn.displayTemp()
-        dayFeelsLikeLabel.text = model.feelsLike.day.displayTemp()
-        eveningFeelsLikeLabel.text = model.feelsLike.eve.displayTemp()
-        nightFeelsLikeLabel.text = model.feelsLike.night.displayTemp()
-        
-        morningSymbol.image = UIImage(systemName: getMoreOrLessSymbol(
-            comparing: model.temperature.morn,
-            and: model.feelsLike.morn)
+        let config = UIImage.SymbolConfiguration(
+            font: UIFont.systemFont(ofSize: 16, weight: .bold)
         )
-        daySymbol.image = UIImage(systemName: getMoreOrLessSymbol(
-            comparing: model.temperature.day,
-            and: model.feelsLike.day)
-        )
-        eveningSymbol.image = UIImage(systemName: getMoreOrLessSymbol(
-            comparing: model.temperature.eve,
-            and: model.feelsLike.eve)
-        )
-        nightSymbol.image = UIImage(systemName: getMoreOrLessSymbol(
-            comparing: model.temperature.night,
-            and: model.feelsLike.night)
-        )
-    }
-    
-    fileprivate func getMoreOrLessSymbol(comparing realTemp: Double, and feelsLikeTemp: Double) -> String {
-        if realTemp.roundDecimal() > feelsLikeTemp.roundDecimal() {
-            return "chevron.down"
-        } else if realTemp.roundDecimal() < feelsLikeTemp.roundDecimal() {
-            return "chevron.up"
-        } else {
-            return "minus"
-        }
+        
+        timeLabel.text = "Morning:\nDay:\nEvening:\nNight:"
+        timeLabel.setLineSpacing(to: 6)
+        
+        tempLabel.text = "\(model.temperature.morn.displayTemp())\n\(model.temperature.day.displayTemp())\n\(model.temperature.eve.displayTemp())\n\(model.temperature.night.displayTemp())"
+        tempLabel.setLineSpacing(to: 6)
+        tempLabel.textAlignment = .right
+        
+        feelsLikeLabel.text = "\(model.feelsLike.morn.displayTemp())\n\(model.feelsLike.day.displayTemp())\n\(model.feelsLike.eve.displayTemp())\n\(model.feelsLike.night.displayTemp())"
+        feelsLikeLabel.setLineSpacing(to: 6)
+        feelsLikeLabel.textAlignment = .right
+        
+        timeHeaderLabel.text = "Temperature"
+        
+        tempSymbol.preferredSymbolConfiguration = config
+        tempSymbol.tintColor = .gray
+        tempSymbol.contentMode = .scaleAspectFit
+        tempSymbol.image = UIImage(systemName: "thermometer")
+
+        feelsLikeHeaderLabel.text = "Feels Like"
     }
 }

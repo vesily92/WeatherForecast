@@ -5,15 +5,12 @@
 //  Created by Василий Пронин on 31.03.2022.
 //
 
-import Foundation
 import UIKit
 
-class EmptyCell: UICollectionViewCell, SelfConfiguringCell {
+class EmptyCell: UICollectionViewCell, SelfConfigurable {
     static let reuseIdentifier = "EmptyCell"
     
-    func configure(with model: AnyHashable, andTimezoneOffset offset: Int) {
+    func configure(with model: AnyHashable, tzOffset offset: Int?) {
         //
     }
-    
-    
 }
