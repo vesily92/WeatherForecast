@@ -68,3 +68,19 @@ extension UILabel {
         self.textColor = textColor
     }
 }
+
+extension UILabel {
+    
+    func setLineSpacing(to value: CGFloat = 2) {
+        guard let text = text else { return }
+        let attributedString = NSMutableAttributedString(string: text)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = value
+        attributedString.addAttribute(
+            .paragraphStyle,
+            value: paragraphStyle,
+            range: NSRange(location: 0, length: attributedString.length)
+        )
+        attributedText = attributedString
+    }
+}
