@@ -15,8 +15,12 @@ class SearchViewController: UIViewController, UpdatableWithForecastData {
         case main
     }
             
-    var onSearchResultTapped: ((ForecastData, Bool) -> Void)?
+    // MARK: Callbacks
+    
+    var onSearchResultTapped: ((ForecastData, GeocodingData, Bool) -> Void)?
     var onForecastDataChanged: (([ForecastData]) -> Void)?
+    
+    // MARK: Properties
     
     var forecastData: [ForecastData] = [] {
         didSet { onForecastDataChanged?(forecastData) }
@@ -58,6 +62,8 @@ class SearchViewController: UIViewController, UpdatableWithForecastData {
         super.setEditing(editing, animated: animated)
         collectionView.isEditing = editing
     }
+    
+    // MARK: Setup UI
     
     private func setupNavBar() {
         navigationItem.rightBarButtonItem = editButtonItem
@@ -101,6 +107,8 @@ class SearchViewController: UIViewController, UpdatableWithForecastData {
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(collectionView)
     }
+    
+    // MARK: Setup Data Source
     
     private func createDataSource() {
         let searchCellRegistration = UICollectionView.CellRegistration<SearchCollectionViewCell, ForecastData> { [weak self] cell, indexPath, forecast in
@@ -159,8 +167,10 @@ class SearchViewController: UIViewController, UpdatableWithForecastData {
 
         snapshot.appendSections([.main])
         snapshot.appendItems(forecastData, toSection: .main)
-        searchDataSource.applySnapshotUsingReloadData(snapshot)
+        searchDataSource.apply(snapshot)
     }
+    
+    // MARK: Helpers
     
     private func deleteItem(_ forecastData: ForecastData) {
         if let index = self.forecastData.firstIndex(where: { $0.id == forecastData.id }) {
@@ -211,8 +221,27 @@ class SearchViewController: UIViewController, UpdatableWithForecastData {
     }
 }
 
+// MARK: Search Results Updating
+
+extension SearchViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let query = searchVC.searchBar.text,
+              let resultsVC = searchController.searchResultsController as? ResultsViewController else {
+            return
+        }
+        resultsVC.delegate = self
+        let newQuery = query.replacingOccurrences(of: " ", with: "_")
+        NetworkManager.shared.fetchCoordinates(with: newQuery) { data in
+            DispatchQueue.main.async {
+                resultsVC.update(with: data, and: query)
+            }
+        }
+    }
+}
+
+// MARK: Delegates
+
 extension SearchViewController: UICollectionViewDelegate {
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         NotificationCenter.default.post(
             name: .scrollToItem,
@@ -231,36 +260,16 @@ extension SearchViewController: UICollectionViewDelegate {
     }
 }
 
-extension SearchViewController: UISearchResultsUpdating {
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        guard let query = searchVC.searchBar.text,
-              !query.trimmingCharacters(in: .whitespaces).isEmpty,
-              let resultsVC = searchController.searchResultsController as? ResultsViewController else {
-            return
-        }
-        resultsVC.delegate = self
-        
-        LocationManager.shared.getLocations(with: query) { locations in
-            guard let locations = locations else { return }
-            DispatchQueue.main.async {
-                resultsVC.update(with: locations)
-            }
-        }
-    }
-}
-
 extension SearchViewController: ResultsViewControllerDelegate {
-    
-    func didTapLocation(with coordinates: CLLocation) {
+    func didTapLocation(withLat lat: Double, lon: Double, andData data: GeocodingData) {
         searchVC.dismiss(animated: true)
-        NetworkManager.shared.fetchOneCallData(withLatitude: coordinates.coordinate.latitude, longitude: coordinates.coordinate.longitude) { [weak self] forecastData in
+        NetworkManager.shared.fetchOneCallData(withLatitude: lat, longitude: lon) { [weak self] forecastData in
             guard let self = self else { return }
             let isNew = self.checkIf(
                 array: self.forecastData,
                 doesNotContain: forecastData
             )
-            self.onSearchResultTapped?(forecastData, isNew)
+            self.onSearchResultTapped?(forecastData, data, isNew)
         }
     }
 }

@@ -6,30 +6,52 @@
 //
 
 import UIKit
-import CoreLocation
 
 protocol ResultsViewControllerDelegate: AnyObject {
-    func didTapLocation(with coordinates: CLLocation)
+    func didTapLocation(withLat lat: Double, lon: Double, andData data: GeocodingData)
 }
 
 class ResultsViewController: UIViewController {
     
     weak var delegate: ResultsViewControllerDelegate?
-    
-    var onLocationTapped: ((CLLocation) -> Void)?
-    
-    var locations: [Location] = []
+        
+    var geocodingData: [GeocodingData] = []
     
     private var tableView: UITableView!
+    private lazy var zeroStateView = ZeroStateView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
+        setupUI()
     }
 
-    public func update(with locations: [Location]) {
-        self.locations = locations
+    public func update(with data: [GeocodingData], and query: String) {
+        if data.isEmpty {
+            zeroStateView.configure(with: query)
+            tableView.isHidden = true
+            zeroStateView.isHidden = false
+        } else {
+            self.geocodingData = data
+            tableView.isHidden = false
+            zeroStateView.isHidden = true
+        }
         tableView.reloadData()
+    }
+    
+    private func setupUI() {
+        let points = view.bounds.height / 3
+        view.backgroundColor = .black
+        
+        zeroStateView.isHidden = true
+        zeroStateView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(zeroStateView)
+                
+        
+        NSLayoutConstraint.activate([
+            zeroStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            zeroStateView.topAnchor.constraint(equalTo: view.topAnchor, constant: points)
+        ])
     }
     
     private func setupTableView() {
@@ -45,7 +67,7 @@ class ResultsViewController: UIViewController {
 
 extension ResultsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return locations.count
+        geocodingData.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -57,19 +79,19 @@ extension ResultsViewController: UITableViewDelegate, UITableViewDataSource {
         var content = cell.defaultContentConfiguration()
         content.textProperties.color = .white
         content.textProperties.numberOfLines = 0
-        content.text = locations[indexPath.row].cityName
-        
+        content.text = geocodingData[indexPath.row].fullName
         cell.contentConfiguration = content
         
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let latitude = locations[indexPath.row].latitude,
-              let longitude = locations[indexPath.row].longitude else { return }
-        tableView.deselectRow(at: indexPath, animated: true)
+        let lat = geocodingData[indexPath.row].lat
+        let lon = geocodingData[indexPath.row].lon
+        let data = geocodingData[indexPath.row]
+        
         DispatchQueue.main.async {
-            self.delegate?.didTapLocation(with: CLLocation(latitude: latitude, longitude: longitude))
+            self.delegate?.didTapLocation(withLat: lat, lon: lon, andData: data)
         }
     }
 }

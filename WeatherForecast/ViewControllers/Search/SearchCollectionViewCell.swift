@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import CoreLocation
 
 class SearchCollectionViewCell: UICollectionViewListCell {
     
@@ -16,13 +15,15 @@ class SearchCollectionViewCell: UICollectionViewListCell {
     private lazy var subtitleLabel = UILabel(.specificationText16)
     private lazy var weatherDescriptionLabel = UILabel(.smallText12)
     private lazy var tempLabel = UILabel(.largeTitle36Regular)
-    private lazy var symbolView = UIImageView(.multicolor())
+    private lazy var symbolView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         contentView.layer.cornerRadius = 12
         contentView.backgroundColor = .systemGray2
+        
+        symbolView.contentMode = .scaleAspectFit
         
         let locationStack = UIStackView(arrangedSubviews: [
             locationTitleLabel,
@@ -68,30 +69,40 @@ class SearchCollectionViewCell: UICollectionViewListCell {
     }
     
     func configure(with forecast: ForecastData, indexPath: IndexPath) {
+        let temperature = forecast.current.temp.displayTemp()
+        let description = forecast.current.weather.first!.description.capitalized
+        let time = DateFormatter.format(
+            forecast.current.dt,
+            to: .hoursMinutes,
+            withTimeZoneOffset: forecast.timezoneOffset
+        )
+        let systemName = forecast.current.weather.first!.systemNameString
+        let config = UIImage.SymbolConfiguration(
+            font: UIFont.systemFont(ofSize: 28, weight: .bold)
+        )
+        
         if indexPath.item == 0 {
             DispatchQueue.main.async {
                 self.locationTitleLabel.text = "My Location"
-                LocationManager.shared.getLocationName(with: CLLocation(latitude: forecast.lat, longitude: forecast.lon), completion: { [weak self] location in
+                LocationManager.shared.getLocationName(withLat: forecast.lat, andLon: forecast.lon) { [weak self] location in
                     self?.subtitleLabel.text = location?.cityName
-                })
-                self.weatherDescriptionLabel.text = forecast.current.weather.first!.description.capitalized
-                self.tempLabel.text = forecast.current.temp.displayTemp()
-                self.symbolView.image = UIImage(systemName: forecast.current.weather.first!.systemNameString)
+                }
+                self.weatherDescriptionLabel.text = description
+                self.tempLabel.text = temperature
+                self.symbolView.image = UIImage(systemName: systemName, withConfiguration: config)?
+                    .withRenderingMode(.alwaysOriginal)
             }
             
         } else {
             DispatchQueue.main.async {
-                LocationManager.shared.getLocationName(with: CLLocation(latitude: forecast.lat, longitude: forecast.lon), completion: { [weak self] location in
+                LocationManager.shared.getLocationName(withLat: forecast.lat, andLon: forecast.lon) { [weak self] location in
                     self?.locationTitleLabel.text = location?.cityName
-                })
-                self.subtitleLabel.text = DateFormatter.format(
-                    forecast.current.dt,
-                    to: .hoursMinutes,
-                    withTimeZoneOffset: forecast.timezoneOffset
-                )
-                self.weatherDescriptionLabel.text = forecast.current.weather.first!.description.capitalized
-                self.tempLabel.text = forecast.current.temp.displayTemp()
-                self.symbolView.image = UIImage(systemName: forecast.current.weather.first!.systemNameString)
+                }
+                self.subtitleLabel.text = time
+                self.weatherDescriptionLabel.text = description
+                self.tempLabel.text = temperature
+                self.symbolView.image = UIImage(systemName: systemName, withConfiguration: config)?
+                    .withRenderingMode(.alwaysOriginal)
             }
         }
     }
