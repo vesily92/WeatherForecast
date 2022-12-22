@@ -17,8 +17,13 @@ class DetailedDailyConditionsView: UIView {
     
     var dailyData: [Daily] {
         didSet {
-            scrollToPage(at: IndexPath(item: index, section: 0))
             collectionView.reloadData()
+            DispatchQueue.main.async {
+                self.scrollToPage(
+                    at: IndexPath(item: self.index, section: 0),
+                    animated: false
+                )
+            }
         }
     }
     var index: Int
@@ -27,17 +32,12 @@ class DetailedDailyConditionsView: UIView {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
 
-//        let collectionView = UICollectionView(
-//            frame: self.bounds,
-//            collectionViewLayout: layout
-//        )
         let collectionView = UICollectionView(
             frame: .zero,
             collectionViewLayout: layout
         )
         collectionView.delegate = self
         collectionView.dataSource = self
-
         collectionView.backgroundColor = .darkGray
         collectionView.isPagingEnabled = true
         collectionView.showsHorizontalScrollIndicator = false
@@ -62,11 +62,11 @@ class DetailedDailyConditionsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func scrollToPage(at indexPath: IndexPath) {
+    func scrollToPage(at indexPath: IndexPath, animated: Bool = true) {
         self.collectionView.scrollToItem(
             at: indexPath,
             at: .centeredHorizontally,
-            animated: true
+            animated: animated
         )
     }
     

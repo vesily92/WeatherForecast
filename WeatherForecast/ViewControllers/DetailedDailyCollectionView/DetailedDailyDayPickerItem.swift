@@ -50,7 +50,6 @@ class DetailedDailyDayPickerItem: UIView {
 }
 
 extension DetailedDailyDayPickerItem: DetailedDailyDayPickerItemProtocol {
-    
     func onSelected() {
         self.backgroundColor = .white
         self.weekdayLabel.textColor = .black

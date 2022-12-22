@@ -68,57 +68,21 @@ class DetailedDailyViewController: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = .darkGray
-        
-//        dayPickerView.frame = CGRect(
-//            x: 0,
-//            y: navigationController!.navigationBar.bounds.height,
-//            width: view.bounds.width,
-//            height: 100
-//        )
-//        dailyConditionsView.frame = CGRect(
-//            x: 0,
-//            y: navigationController!.navigationBar.bounds.height + dayPickerView.bounds.height,
-//            width: view.bounds.width,
-//            height: view.bounds.height
-//        )
-        
-//        let stack = UIStackView(arrangedSubviews: [
-//            dayPickerView,
-//            dateLabel,
-//            dailyConditionsView
-//        ])
-//        stack.axis = .vertical
-//        stack.translatesAutoresizingMaskIntoConstraints = false
-//
-//        view.addSubview(stack)
-        
-//        view.addSubview(dateLabel)
+
         view.addSubview(dayPickerView)
         view.addSubview(dailyConditionsView)
         
         NSLayoutConstraint.activate([
-//            stack.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            stack.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            stack.topAnchor.constraint(equalTo: view.topAnchor),
-//            stack.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            
             dayPickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             dayPickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             dayPickerView.topAnchor.constraint(equalTo: view.topAnchor),
             dayPickerView.heightAnchor.constraint(equalToConstant: 144),
-
-//            dateLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            dateLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            dateLabel.topAnchor.constraint(equalTo: dayPickerView.bottomAnchor),
-//            dateLabel.heightAnchor.constraint(equalToConstant: 44),
 
             dailyConditionsView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             dailyConditionsView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             dailyConditionsView.topAnchor.constraint(equalTo: dayPickerView.bottomAnchor),
             dailyConditionsView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        
-//        dayPickerView.setContentHuggingPriority(.defaultHigh, for: .vertical)
     }
     
     private func configureViews() {

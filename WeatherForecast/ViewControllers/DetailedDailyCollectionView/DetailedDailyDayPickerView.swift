@@ -18,8 +18,13 @@ class DetailedDailyDayPickerView: UIView {
     var days: [DetailedDailyDayPickerItemProtocol] {
         didSet {
             collectionView.reloadData()
-            switchTheDay(at: IndexPath(item: index, section: 0))
             days[index].onSelected()
+            DispatchQueue.main.async {
+                self.switchTheDay(
+                    at: IndexPath(item: self.index, section: 0),
+                    animated: false
+                )
+            }
         }
     }
     var index: Int
@@ -59,8 +64,12 @@ class DetailedDailyDayPickerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func switchTheDay(at indexPath: IndexPath) {
-        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+    func switchTheDay(at indexPath: IndexPath, animated: Bool = true) {
+        collectionView.scrollToItem(
+            at: indexPath,
+            at: .centeredHorizontally,
+            animated: animated
+        )
         days[index].onNotSelected()
         days[indexPath.item].onSelected()
         index = indexPath.item

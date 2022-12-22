@@ -62,6 +62,7 @@ class DetailedDailyConditionsCell: UICollectionViewCell {
             DailyTempCell.self,
             forCellWithReuseIdentifier: DailyTempCell.reuseIdentifier
         )
+
         collectionView.register(
             ConditionsCell.self,
             forCellWithReuseIdentifier: ConditionsCell.reuseIdentifier
@@ -149,6 +150,7 @@ class DetailedDailyConditionsCell: UICollectionViewCell {
                 }
                 cell.configure(with: forecast.details)
                 return cell
+                
             case .uviAndHumidityInfo:
                 guard let meteorologicCell = self.collectionView.dequeueReusableCell(
                     withReuseIdentifier: ConditionsCell.reuseIdentifier,
@@ -158,6 +160,7 @@ class DetailedDailyConditionsCell: UICollectionViewCell {
                 }
                 meteorologicCell.configure(for: .uviAndHumidity, with: forecast.details)
                 return meteorologicCell
+                
             case .pressureAndWindInfo:
                 guard let meteorologicCell = self.collectionView.dequeueReusableCell(
                     withReuseIdentifier: ConditionsCell.reuseIdentifier,
