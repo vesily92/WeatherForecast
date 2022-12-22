@@ -30,16 +30,16 @@ class MainCoordinator: Coordinator {
     private func showMainPageScreen(with indexPath: IndexPath? = nil) {
         let vc = MainPageViewController()
         vc.coordinator = self
-        
+
         vc.onSearchTapped = { [weak self] forecastData in
             self?.forecastData = forecastData
             self?.showSearchScreen(with: forecastData)
         }
-        
+
         vc.onCellDidTap = { [weak self] forecast, index in
             self?.showDetailedDailyScreen(with: forecast, and: index)
         }
-        
+
         navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -51,8 +51,12 @@ class MainCoordinator: Coordinator {
             self?.forecastData = forecastData
         }
         
-        vc.onSearchResultTapped = { [weak self] forecastData, isNew in
-            self?.showNewLocationVC(with: forecastData, isNew: isNew)
+        vc.onSearchResultTapped = { [weak self] forecast, geocodingData, isNew in
+            self?.showNewLocationVC(
+                withForecast: forecast,
+                andGeocodingData: geocodingData,
+                isNew: isNew
+            )
         }
         
         let navController = UINavigationController(rootViewController: vc)
@@ -60,9 +64,10 @@ class MainCoordinator: Coordinator {
         navigationController?.present(navController, animated: true)
     }
     
-    private func showNewLocationVC(with data: ForecastData, isNew: Bool) {
-        let vc = NewLocationViewController()
-        vc.forecastData = data
+    private func showNewLocationVC(withForecast forecast: ForecastData, andGeocodingData data: GeocodingData, isNew: Bool) {
+        let vc = MainPageNewLocationViewController()
+        vc.forecastData = forecast
+        vc.geocodingData = data
         vc.isNew = isNew
 
         let navController = UINavigationController(rootViewController: vc)
@@ -92,5 +97,7 @@ class MainCoordinator: Coordinator {
         }
         return topMostViewController
     }
+    
+    
 }
 
